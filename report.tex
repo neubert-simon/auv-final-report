@@ -1,0 +1,1324 @@
+\documentclass[11pt]{article}
+
+\input{preamble.tex}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+{\fontsize{16pt}{15pt}\selectfont\color{titleBlue}
+
+\begin{center}
+\textbf{Final Report}
+
+Date: \todayDMY
+\end{center}
+
+\hfill \break \hfill \break \hfill \break \hfill \break \hfill \break \hfill \break \hfill \break
+
+\begin{tabular}{l l}
+\\Name: & \textbf{Neubert, Simon}\\[1em]
+Matrikel-Nr. & \textbf{5013322}
+\end{tabular}
+}
+
+\newpage
+
+\phantomsection
+\section*{Ehrenwörtliche Erklärung}
+\addcontentsline{toc}{section}{Ehrenwörtliche Erklärung}
+Hiermit versichere ich, Simon Neubert, ehrenwörtlich, dass ich den vorliegenden Bericht selbstständig und ohne fremde Hilfe verfasst und keine anderen als die angegebenen Hilfsmittel benutzt habe. Die Stellen des Berichts, die dem Wortlaut oder dem Sinn nach anderen Werken entnommen wurden, sind in jedem Fall unter Angabe der Quelle kenntlich gemacht. Ich versichere, dass ich für die Erstellung dieses Berichts keine KI-Werkzeuge verwendet habe. Der Bericht ist und wird nicht veröffentlicht und er ist bisher auch nicht in dieser oder einer anderen Form als Prüfungsleistung vorgelegt worden.
+
+Ich habe die Bedeutung der ehrenwörtlichen Versicherung und die prüfungsrechtlichen Folgen\\ (§ 24 Abs. 2 Bachelor-SPO) einer unrichtigen oder unvollständigen ehrenwörtlichen Versicherung zur Kenntnis genommen. \\
+
+Stuttgart, den \todayDMY \\[2em]
+\includegraphics[height=1.5cm]{img/template/signature.jpg} \\
+Simon Neubert
+
+\newpage
+
+\phantomsection
+\section*{Table of Contents}
+\addcontentsline{toc}{section}{Table of Contents}
+\tableofcontents
+
+\newpage
+
+\section{Executive Summary}
+\vspace{-2mm}
+\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+The participants were granted access to two machines, an attacking system and a target system.
+The target system was running a server that was vulnerable to a Buffer Overflow attack.
+Said system was scanned before the Buffer Overflow weakness was exploited to create a reverse shell.
+\subsubsection{Active Scan}
+
+\begin{enumerate}
+\item{\textbf{Nmap Scan to determine open ports, services, OS, and weakpoints}}\\
+Three services were found running on three open ports on the Windows 7 machine:\\[0.5em]
+\begin{tabular}{l | l}
+Port 445: & Microsoft Directory Service\\
+\hline
+Port 3389: & Remote Desktop Service\\
+\hline
+Port 5555: & Microsoft SMBv1 Server
+\end{tabular}	
+\end{enumerate}
+
+The scan revealed a remote code execution vulnerability in the server running on port 5555.
+\vspace{-2mm}
+\subsubsection{Buffer Overflow Attack}
+
+\begin{enumerate}
+\item{\textbf{Crashing the server}}\\
+An input was sent that was not validated correctly, enabling the EIP to be overwritten.\\
+\textit{This could be prevented by validating the input, updating the software if a fix is available, or rewriting the program with bounded functions to avoid memory corruption.}
+
+\item{\textbf{Gathering information about input processing and generating a payload}}\\
+Next, the offset to write to the return address was determined, which characters should not be used in the payload, and where to find instructions to get the system to execute the payload.
+This information was used to generate a payload that would eventually create a reverse shell.\\
+\textit{Security systems could be installed that monitor requests, network traffic and application behavior. The application in question could be isolated, and a DMZ could be established.}
+
+\item{\textbf{Creating a reverse shell}}\\
+The payload was sent and executed, creating a reverse shell on the target machine.\\
+\textit{If this were to happen, a firewall configuration preventing the server from establishing unintended outbound connections might be able to stop the reverse shell.}
+\end{enumerate}
+
+\newpage
+
+\section{Introduction}
+\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsubsection{Conditions}
+This assignment was carried out in a laboratory environment.
+The participants were granted access to a laboratory computer \textit{\enquote{Anwendungssicherheit}} running Kali Linux to attack their target.
+The target machine (IP: 192.168.61.45) was set up in the Institute for Cybersecurity's laboratory, whose network was made accessible via VPN. It was a Windows 7 machine with a 32-bit architecture running a vulnerable server process (VulnServer.exe) on port 5555. The machine was accessible via remote desktop protocol, enabling participants to observe the process via debugger.
+
+\subsubsection{Goals}
+It was not part of the mission objective to stay unnoticed by any potential intrusion detection systems or system administrators, therefore not necessitating the participants to obscure their traces.
+\paragraph{Active Scan}
+This task was conducted as if no prior knowledge about the target system was present.\\
+The following information was to be gathered about the target machine:
+\begin{itemize}
+\begin{multicols}{2}
+\item{Operating System}
+\item{Open Ports}
+\item{Service information}
+\item{Vulnerabilities}
+\end{multicols}
+\end{itemize}
+
+\paragraph{Exploiting Buffer Overflow Vulnerability}
+The process \enquote{VulnServer} has a Buffer Overflow vulnerability.
+The goal of this task is to exploit that vulnerability to create a reverse shell on the target system.
+The following qualities must be met:
+\vspace{-3mm}
+\begin{enumerate}
+\item{The input should override the Extended Instruction Pointer with a suitable memory address.}
+\item{The input contains code for a reverse shell that runs on the laboratory machine \enquote{Anwendungssicherheit} / Kali Linux on port 443}
+\item{The input should not contain any bad characters that could hinder the attack.}
+\end{enumerate}
+
+\newpage
+
+\section{Definitions - Terms and Abbreviations}
+This section defines terms, abbreviations, and concepts, which will be used in this report without repeated explanation.
+\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\vspace{3mm}
+\begin{itemize}
+	\item{\textbf{Attacking machine}}\\
+	The attacker machine running Kali Linux, used for the active scan and Buffer Overflow attack.
+	\item{\textbf{Target machine}}\\
+	The target machine running the vulnerable web server with the IP address \textit{192.168.61.45}.
+	\item{\textbf{Extended Stack Pointer (ESP)}}\\
+	The register holding the memory address of the top of the stack \autocite{intel:dev_manual}.
+	\item{\textbf{Extended Instruction Pointer (EIP)}}\\
+	The register holding the return address, the address of the next instruction after a function returns \autocite{intel:dev_manual}.
+	\item{\textbf{Bad characters}}\\
+	In this context \enquote{bad characters} describe all characters that terminate the processing of inputs by the host system (e.g. line breaks, null bytes). They are to be avoided in payload generation because the execution of any injected code will terminate prematurely if a bad character is encoutered by the target machine during processing.
+	\item{\textbf{Address Space Layout Randomization (ASLR)}}\\
+	ASLR randomizes the address a process uses each time it is run, changing the location of data in memory \autocite{app9142928}.
+	\item{\textbf{Data Execution Prevention (DEP)}}\\
+	An operating system feature that allows parts of memory to be marked as non-executable \autocite{microsoft:dep}.
+	\item{\textbf{\enquote{No Operation} Opcodes (NOOPS)}}\\
+	Codes that don't prompt the executing system to run any operation \autocite{arm_developer:nop}.
+	\item{\textbf{\enquote{JMP ESP} instruction}}\\
+	An assembly instruction, prompting the system to jump to the top of the stack to look for the next operation \autocite{arm_developer:jmp}.
+	\item{\textbf{Security information and event management (SIEM) systems}}\\
+	\enquote{These types of solutions collect, aggregate, and analyze large volumes of data from organization-wide applications, devices, servers, and users in real time.} \autocite{microsoft:siem}
+	\item{\textbf{Intrusion detection systems (IDS)}}\\
+	Intrusion detection systems (IDS) are pieces of software that automatically conduct the intrusion detection process \autocite{scarfone2007guide}.
+	\item{\textbf{Intrusion prevention systems (IPS)}}\\
+	An IDS with the extendeded capability to attempt preventing detected intrusion attempts \autocite{scarfone2007guide}.
+	\item{\textbf{De-Militarized Zone (DMZ)}}\\
+	A De-Militarized Zone is a physical or logical network, separating trusted and untrusted parts of internal and external networks, in line with the defense-in-depth principle \autocite{8473328}.
+\end{itemize}
+\newpage
+
+\section{Approach / Methodology}
+\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
+The goal of the Nmap scan was to obtain the following information about the target system:
+\begin{itemize}
+\begin{multicols}{2}
+\item{Operating System}
+\item{Open Ports}
+\item{Service information}
+\item{Vulnerabilities}
+\end{multicols}
+\end{itemize}
+%TODO split nmap params into two lines
+\paragraph{Scan Setup}
+To achieve this, the following Nmap parameters were used:
+\begin{figure}[h]
+\makebox[1.05\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{img/buffer_overflow/nmap/flags}
+}
+	\vspace*{-5mm}
+	\caption{Nmap configuration used to scan the target system}
+\end{figure}\\
+The parameters were chosen with the following reasoning \autocite{nmap}:
+\vspace{-2mm}
+\begin{itemize}
+\item[-]{\textbf{T4}}\\
+Sets the timing template. In this case, the second fastest scanning mode was chosen.
+Since this scan happened in a laboratory setting, a stealthier (slower) option was not necessary.
+\item[-]{\textbf{O}}\\
+Enables OS detection, provides information about the target machine’s operating system.
+\item[-]{\textbf{p-}}\\
+Instructs Nmap to scan the complete port range to discover open ports on the target machine.
+\item[-]{\textbf{sV}}\\
+Instructs Nmap to scan for services and their versions on open ports.
+\item[\texttt{--}]{\textbf{script}=\enquote{default, vuln}}\\
+Executes the default non-intrusive general and vulnerability scripts during the scan. 
+\item[-]{\textbf{Pn}}\\
+This flag instructs Nmap to treat all hosts as online, skipping the ICMP ``ping" Nmap would otherwise perform before scanning the system.
+It was known that the target was a Windows machine, which don't answer pings by default. Therefore, Nmap would assume the host was down if this flag weren’t set, ending the scan prematurely.
+\item[-]{\textbf{v}}\\
+Sets the output to ``verbose". This was chosen to see results immediately as they were found, enabling work on the already discovered information without having to wait for the whole scan to finish.
+\item[-]{\textbf{oN} nmap.txt}\\
+Writes the output to the file ``nmap.txt" in normal mode to record the scan results.
+\item[-]{192.168.61.45}\\
+The IP adress of the target machine that was to be scanned.
+\end{itemize}
+
+\paragraph{Scan Results}
+
+\subparagraph{Port Scan}
+
+\begin{figure}[!h]
+
+\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.034\linewidth]{img/buffer_overflow/nmap/ports} \\
+}	
+	\caption{Nmap port scan results}
+	\label{portScan}
+\end{figure}
+\newpage
+
+Nmap found the following open ports (see \cref{portScan}):
+\begin{itemize}
+\begin{multicols}{3}
+\item{445} \item{3389} \item{5555}
+\end{multicols}
+\end{itemize}
+
+\subparagraph{Service Scan} \label{paragraph:service-scan}
+Nmap attempted to identify the services running on the discovered open ports (see \cref{portScanResult}):
+
+
+\begin{figure}[h]
+\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/nmap/services1.png}
+}
+        \caption*{}     
+\end{figure}
+\vspace*{-13mm}
+\begin{figure}[h]
+\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/nmap/services2.png}
+}
+        \vspace*{-5mm}
+	\caption{Nmap service scan results}
+	\label{portScanResult}
+\end{figure}
+
+Nmap gathered the following information via service scan:
+
+\begin{tabular}{l | l}
+Port 445: & microsoft-ds\\
+\hline
+Port 3389: & tcpwrapped\\
+\hline
+Port 5555: & Service unrecognized
+\end{tabular}	
+
+\newpage
+
+\begin{enumerate}
+\item{\textbf{Port 445 - Windows 7 Enterprise 7601 Service Pack 1 microsoft ds}}\\
+Nmap was able to identify the service running on port 445 as ``microsoft-ds".\\
+The directory service (``ds") running here is common for port 445, implying that the SMB (Server Message Block) protocol is being used. \enquote{The SMB protocol is a network file sharing protocol. SMB allows you to read and write to files over the network on top of TCP/IP or other protocols.} \autocite{microsoft:smb_feature_descriptions}.
+
+\item{\textbf{Port 3389 - tcpwrapped}}\\
+Nmap returning \enquote{tcpwrapped} means the TCP handshake was completed, but that the connection was closed by the host immediately without transmitting further data \autocite{venema1992tcp}. 
+A service running on port 3389 usually is Microsoft's Remote Desktop Service \autocite{microsoft:rds_ports}.
+
+\item{\textbf{Port 5555 - Service unrecognized}}\\
+Nmap could not infer the service running on port 5555.
+The closest fingerprint match it got is ``freeciv", a program that seems to be identified on port 5555 commonly by Nmap according to multiple user reports \autocite{samsepi0l:android4_vulnhub_writeup, nmap:issue1276, fahmifj:htb_explore_writeup}, even though it is not actually running on the port.
+
+The two following lines returned by the service can be gathered from the fingerprint:\\
+- \textit{``Hello There.\textbackslash r\textbackslash n"}\\
+- \textit{``I break rules too!\textbackslash r\textbackslash n"}
+
+All that can be gleamed from this scan result is that a service is running on port 5555 that returns text when called.
+
+\end{enumerate}
+
+To check if the service running on port 3389 was Microsoft's Remote Desktop service, a connection attempt was made via FreeRDP (see \cref{conn_attempt}).
+\begin{figure}[!h]
+\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/nmap/conn_attempt.png}
+}
+        \caption{Connection attempt via Remote Desktop protocol on port 3389}     
+        \label{conn_attempt}
+\end{figure}
+
+\newpage
+FreeRDP is an open source tool preinstalled on Kali Linux that allows users to connect to systems via Remote Desktop protocol. In this case, an actual session will not be established, instead the software will be used to probe the target machine.
+The parameters were chosen with the following reasoning \autocite{freerdp:manual}:
+\begin{itemize}
+\item[/]{\textbf{sec}:rdp}\\
+Sets the protocol to Microsoft's Remote Desktop Protocol, which is suspected to be running on port 3389.
+\item[/]{\textbf{v}:192.168.61.45:3389}\\
+Provides FreeRDP with the target machine's IP and the port to connect to.
+\item[/]{\textbf{u}:}\\
+Leaves the user empty, since we are just probing to see if the service is running at all.
+\end{itemize}
+
+The connection attempt was successful, since a response was received. This confirms the suspicion that some Remote Desktop service is running on the open port. To determine the service version, another attempt to scan with nmap was made.
+
+The scan was repeated on a virtual Kali machine tunneled into the ICS network, running an older version of nmap (7.98 instead of 7.99) (see \cref{nmap2}).
+The following parameters were changed with the following reasoning \autocite{nmap}:
+\begin{itemize}
+\item[-]{\textbf{p} 445,3389,555}\\
+Limits the scanned port range to the ports already known to be open.
+\item[-]{\textbf{oN} nmap-3389.txt}\\
+Writes to a separate new file, to collect the scan results.
+\item[-]{\textbf{O}}\\
+Omitted, since the OS information already gathered seemed conclusive enough.
+\end{itemize}
+
+The second scan confirms that Microsoft's Terminal Service (renamed to Remote Desktop service after Windows 7) \autocite{microsoft:rds} is running on port 3389.
+
+Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the service running on port 445 appears to be a Microsoft SMBv1 server.
+
+\newpage
+\begin{landscape}
+\begin{figure}[h]
+\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/nmap/3389_scan.png}
+}
+        \caption{Nmap service scan result showing Microsoft Terminal Service running on port 3389}     
+        \label{nmap2}
+\end{figure}
+\end{landscape}
+
+\clearpage
+\newpage
+
+\cref{portScanResult} was cut off for brevity, because showing the entire fingerprint of the unidentified service is not strictly necessary to show nmap being unable to resolve the service. Nevertheless, the full fingerprint is provided for a complete picture of the service scan (see \cref{fingerprint}). 
+
+\begin{figure}[htb]
+\centering
+\makebox[1.03\linewidth][c]{%
+  \begin{minipage}{1.1\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/buffer_overflow/nmap/fingerprint1.png}\\[-0.5em]
+    \includegraphics[width=\linewidth]{img/buffer_overflow/nmap/fingerprint2.png}
+  \end{minipage}
+}
+\caption{Nmap fingerprint}
+\label{fingerprint}
+\end{figure}
+
+To verify these findings the complete fingerprint and both complete Nmap scan reports can be viewed in the appended files under:\\
+\textit{Assignment 1 - Windows Scanning und Buffer Overflow → Nmap Scan}
+
+\clearpage
+\newpage
+
+\subparagraph{Operating System Scan} \label{paragraph:os-scan}
+\begin{figure}[h]
+\makebox[1.02\linewidth][c]{%
+	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/nmap/os1.png}
+}
+	\vspace*{-5mm}
+	\caption{Nmap OS scan results}
+	\label{osScanResult}
+\end{figure}
+
+Nmap tried to guess the host machine and came up with a few possible results.
+The guesses with the highest confidence score (96\%) (see \cref{osScanResult}) are:
+\begin{itemize}
+	\itemsep0em
+	\item{Windows Server 2008 R2}
+	\item{Windows 7 SP1}
+	\item{Windows 8}
+\end{itemize}
+
+As per previous mention, Nmap identified the ``Windows 7 Enterprise 7601
+Service Pack 1" on the machine, strengthening the evidence for a Windows 7 machine.\\
+This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
+\begin{figure}[h]
+\makebox[1.02\linewidth][c]{%
+	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/nmap/os2.png}
+}
+	\vspace*{-5mm}
+	\caption{Nmap smb-os discovery results}
+	\label{osScanResult2}
+\end{figure}
+
+\newpage
+\subparagraph{Vulnerability Scan} \label{sec:vuln_scan}
+
+\begin{figure}[h]
+\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.13\linewidth]{img/buffer_overflow/nmap/vulns.png}
+}
+	\vspace*{-5mm}
+	\caption{Nmap vulnerability scan results}
+	\label{vulnScanResult}
+\end{figure}
+
+\vspace*{-2mm}
+Nmap discovered the following vulnerability:
+\begin{itemize}
+\item{\textbf{smb-vuln-ms17-010} with the ID \textbf{CVE-2017-0143}}
+\end{itemize}
+%TODO analyze other vulnerabilities
+According to CVE-2017-0143, Microsoft SMBv1 servers are susceptible to attacks via specially crafted packets that enable remote code execution  \autocite{cve:2017-0143}. This vulnerability has a CVSS score of 8.8 (high severity) (see \cref{cvss}).
+
+\begin{figure}[!h]
+	\includegraphics[width=\linewidth]{img/buffer_overflow/nmap/cvss.png} \\
+	\vspace*{-5mm}
+	\caption{CVSS score of CVE-2017-0143}
+	\vspace*{-1.5mm}
+	\caption*{\small Source: https://www.cve.org/CVERecord?id=CVE-2017-0143}
+	\label{cvss}
+\end{figure}
+
+Furthermore, Nmap discovered possibly exploitable misconfigurations.
+SMB Message Block Signing is disabled on this machine, making the system potentially vulnerable to relay attacks, since a message's integrity can't be verified without the signature \autocite{microsoft:smb-signing}.
+Other scripts were unsucessful.
+\newpage
+
+\subsubsection{Buffer Overflow Attack} \label{subsec:buffer_overflow}
+A detailed explanation of the exploited Buffer Overflow vulnerability itself can be found in\\ \fullref{subsubsec:buffer_overflow_expl}.
+
+\paragraph{Setting up the environment}
+To be able to observe the attack in memory, remote desktop login via Remmina was facilitated.
+After each step, the following procedure was executed to restart the vulnerable server on the target machine:
+\vspace*{-3mm}
+\begin{enumerate}
+	\item{Start the server (as Administrator)}
+	\item{Start the ImmunityDebugger (as Administrator)}
+	\item{Attach the debugger to the VulnServer program}
+	\item{Resume the program since the debugger halts execution}
+\end{enumerate}
+\vspace*{-3mm}
+Unless specified otherwise, these steps have been repeated after each incited crash, triggered by the provided python script (see \cref{main}).
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/buffer_overflow/script/main.png} \\
+	\caption{Python script main method}
+	\label{main}
+\end{figure}
+
+This script is used for all attacks on the target system in the subsequent steps. From \fullref{subsubsec:offset_calc} on, only the changes to the script will be documented, lines not shown to have been changed will remain in the form documented in this subsection.
+
+\newpage
+
+\paragraph{Provoking a crash}
+Running the provided script without any changes was already enough to provoke the VulnServer application to crash (see \cref{crash}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[height=4cm]{img/buffer_overflow/vulnServ/1_crash.png} \\
+	\caption{VulnServer crash notice}
+	\label{crash}
+\end{figure}
+
+The script generates input for the prompted authentication string (see \cref{default}), connects to the server via the known socket (see \cref{conn}), and transmits the generated string to it.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/1_default.png} \\
+	\caption{Default script configuration}
+	\label{default}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/script/conn.png}
+	\caption{Connection function in the python script}
+	\label{conn}
+\end{figure}
+
+\clearpage \newpage
+To run the script conveniently, an alias passing the target machine's IP address as a command line parameter was created (see \cref{alias}).
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/script/alias.png}
+	\caption{Alias for the python script execution command}
+	\label{alias}
+\end{figure}
+
+Connection to the server was possible via netcat, confirming it was running.
+Running the script unmodified crashed the server, which (besides being observable on the target machine) was confirmed by attempting a new connection, which failed (see \cref{execution}).
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.6\linewidth]{img/buffer_overflow/script/execution.png}
+	\caption{Crashing the server via vulnserver-poc-orig.py}
+	\label{execution}
+\end{figure}
+\clearpage \newpage
+
+Processing the input sent via the script leads the server to crashing, since 1072 \enquote{A}-characters fill the buffer and override the return address.
+This can be observed in the ImmunityDebugger.\\ 
+The buffer contained the expected string of \enquote{A}s (see \cref{1_a_chain}) after running the script.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/1_a_chain.png} \\
+	\caption{Buffer filled with 41s}
+	\label{1_a_chain}
+\end{figure}
+
+The EIP was filled by four \enquote{41}s (see \cref{1_eip}), corresponding to four \enquote{A}s.
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/1_eip.png} \\
+	\caption{EIP filled with 41s}
+	\label{1_eip}
+\end{figure}
+\\This lead to the crash, since \textit{41414141} is not a valid memory address containing instructions that should be performed after the function returned (see \cref{access_violation}).
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/overflow/access_violation.png}
+	\caption{Access violation notice in the ImmunityDebugger}
+	\label{access_violation}
+\end{figure}
+
+\paragraph{Determining the offset} \label{subsubsec:offset_calc}
+Now that the possibility of a crash was confirmed, the offset to write to the EIP needed to be determined.
+To achieve this, a non-repeating string of characters was created. (see \cref{2_unique}).
+Since it was known that a string length of 1072 incites a crash, that exact length was chosen as the length of the character string by passing the metaspolit script the parameter \textit{-\textbf{l} 1072}.
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_generate_unique.png} \\
+	\caption{Generation of a non-repeating string of characters using metasploit}
+	\label{2_unique}
+\end{figure}
+
+The output was written to a file \textit{unique\_charseq.txt} and moved into the script's directory to be easily used in the python script (see \cref{2_unique_script}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_unique_script.png} \\
+	\caption{Script using the non-repeating string of characters}
+	\label{2_unique_script}
+\end{figure}
+\vspace{-3mm}
+
+This string was used to identify the exact position of characters that were being written into the EIP register.
+The transmitted input lead to the server crashing as was expected, and by following the ESP register in dump the string was identified in the process' memory (see \cref{2_unique_memory}).
+
+\newpage
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_unique_memory.png} \\
+	\caption{Observing the non-repeating string in ImmunityDebugger}
+	\label{2_unique_memory}
+\end{figure}
+
+
+ The debugger was used to determine which bytes from the unique character string were written to the EIP register (see \cref{2_unique_eip}).
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_unique_eip.png} \\
+	\caption{Observing the EIP after crashing the server with the unique character sequence}
+	\label{2_unique_eip}
+\end{figure}
+
+\clearpage\newpage
+
+The EIP now read: \\[0.5em]
+\setlength{\fboxsep}{6pt}
+\fbox{\large \textbf{37694236}}
+
+This was used to determine the offset by feeding this value back into metasploit (see \cref{2_offset}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_offset.png} \\
+	\caption{Determining the offset to write to the Extended Instruction Pointer}
+	\label{2_offset}
+\end{figure}
+
+\vspace*{-4mm}
+The following parameters were used:
+\begin{itemize}
+	\vspace*{-5mm}
+	\item[-]{\textbf{q} 37694236}\\
+	The value contained in the EIP.
+	\item[-]{\textbf{l} 1072}\\
+	The length of the generated non-repeating character string.
+\end{itemize}
+
+\vspace*{-2mm}
+Metasploit calculated the offset based on the length of the string sent originally and the value written to the EIP to be \textbf{1040} characters.
+
+To confirm, the script was altered to send 1040 \enquote{A}s, followed by 4 \enquote{B}s (which should be written into the EIP, followed by some \enquote{C}s (see \cref{2_confirm_script}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_confirm_script.png} \\
+	\caption{Script to confirm determined offset}
+	\label{2_confirm_script}
+\end{figure}
+
+The expected character sequence was observed in memory. 4 \enquote{B}s (4 x \enquote{42}) were written to the EIP, surrounded by \enquote{A}s before it and \enquote{C}s after it on the stack (see \cref{2_confirm1}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=8cm]{img/buffer_overflow/vulnServ/2_confirm1.png}
+	\includegraphics[height=8cm]{img/buffer_overflow/vulnServ/2_confirm2.png}
+	\caption{Buffer filled with expected characters}
+	\label{2_confirm1}
+\end{figure}
+
+Analyzing \cref{2_confirm1}, one can see that the program inserts the character \textbf{\textbackslash FF} four times close to the EIP. If the payload doesn't fit in the buffer after the return address, it might be necessary to stage it. In that case this overwriting of bytes could become relevant, since it could overwrite a payload placed before the EIP in the buffer.
+
+\newpage
+\paragraph{Determining bad characters}
+Before generating a payload we need to determine bad characters to avoid them interrupting the processing of the generated payload.
+To test the input, the file \enquote{\textit{badchars.txt}} was provided. Its contents were written to a variable in the script and sent as part of the input (see \cref{3_bad_chars}).
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/3_bad_chars.png} \\
+	\caption{Badchars as input in the python script}
+	\label{3_bad_chars}
+\end{figure}
+
+To determine the bad characters, the bad character candidate string was inserted behind the previously determined amount of characters needed to write to the EIP register (1044 \enquote{A}s) (see \cref{3_bad_chars_script}). These concatenated characters were followed by 24 \enquote{B}s.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/3_bad_chars_script.png} \\
+	\caption{Badchars testing against the server}
+	\label{3_bad_chars_script}
+\end{figure}
+
+This enabled determining which characters got processed by analyzing the memory in ImmunityDebugger by following the ESP in dump. 
+If the \enquote{B}s didn't showed up in memory, a bad character had to have been sent since the input processing was terminated prematurely.
+
+Sending the original unaltered bad character string prevented the input from being processed fully, meaning a bad character was present. Immediately noticeable was, that the required string of \enquote{B}s was not present (see \cref{no-b}).\\
+Since no characters from the bad\_chars list showed up in memory, it was assumed that the first byte (\enquote{\textbackslash x00}, the null byte) was a bad character and needed to be removed.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/script/no_bad_chars.png}
+	\caption{Input without bad character "\textbackslash x00"}
+	\label{no_bad_chars}
+\end{figure}
+
+Removing the character \enquote{\textbf{\textbackslash x00}} (see \cref{no_bad_chars}) resulted in the input being parsed completely and written to the buffer (see \cref{yes-b}), meaning no other bad characters were relevant in this context.
+
+After the string of \enquote{A}s, the interpreted characters from the bad\_chars sequence were observable in memory, followed by the sequence of \enquote{B}s (see \cref{yes-b}).
+ The \enquote{B}s were placed to make a fully processed input more easily identifiable.
+
+\begin{figure}[!htb]
+	\centering
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/bad_chars/no-b.png}
+}
+	\caption{Buffer after receiving input with bad character "\textbackslash x00" and no Bs}
+	\label{no-b}
+\end{figure}
+\newpage
+\begin{figure}[!htb]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/bad_chars/yes-b.png} 
+}
+	\caption{Buffer after receiving input without bad character "\textbackslash x00" and Bs in buffer}
+	\label{yes-b}
+\end{figure}
+
+\clearpage
+\newpage
+\paragraph{Finding JMP ESP instruction}
+To inject a payload carrying malicious code that creates a reverse shell, a reliable way of executing the reverse shell instructions was needed.
+To instruct the host system to run the payload code, it must jump to the injected code and execute it.
+Since the buffer is filled by the input sent to the target machine, and the ESP points to the top of the stack, the ESP will point to the injected code. Instruct the system to jump to the ESP would therefore lead to it executing the payload.
+This can be achieved by writing the memory address of a JMP ESP instruction to the EIP, since it stores the address of the next instruction the system should execute after the current method returns.
+
+First, the Opcode for JMP ESP needs to be determined.
+The NASM shell, which shows opcodes for instructions on x86 systems \autocite{github:nasm_shell}, shows the JMP ESP opcode to be \textbf{0xFF 0xE4} (see \cref{4_jmp_esp_opcode}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[height=3cm]{img/buffer_overflow/vulnServ/4_jmp_esp_opcode.png}
+	\caption{Opcode determination}
+	\label{4_jmp_esp_opcode}
+\end{figure}
+
+Now an address in memory storing this opcode could be searched for.
+The first approach to find such an address would be to use the debuggers \enquote{Search for Command} feature in the thread that gets interrupted by attaching the debugger to the process (see \cref{search_jmp}).
+The following memory address containing a JMP ESP instruction was found during the first search attempt (see \cref{jmp_found}):
+\vspace{-6mm}
+\begin{center}
+	\setlength{\fboxsep}{6pt}
+	\fbox{\large \textbf{0x 77 90 E8 71}}
+\end{center}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=1.054\linewidth]{img/buffer_overflow/pre_restart/jmp_found.png}
+	\caption{Found JMP ESP instruction in the paused thread}
+	\label{jmp_found}
+\end{figure}
+
+\clearpage
+\begin{figure}[htb]
+	\centering
+	\includegraphics[height=14cm]{img/buffer_overflow/pre_restart/search1.png}\\
+	\includegraphics[width=12.2cm]{img/buffer_overflow/pre_restart/search2.png}
+	\caption{Searching for JMP ESP in the paused process}
+	\label{search_jmp}
+\end{figure}
+\clearpage
+
+Upon restarting the target machine, this JMP ESP instruction was not located at the same memory address anymore. It was now stored at the following address (see \cref{jmp_found_post}):
+\vspace{-3mm}
+\begin{center}
+	\setlength{\fboxsep}{6pt}
+	\fbox{\large \textbf{0x 76 E4 E8 71}}
+\end{center}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[height=4cm]{img/buffer_overflow/post_restart/jmp_found_post.png}\\
+	\caption{Found JMP ESP instruction in the paused thread post restart}
+	\label{jmp_found_post}
+\end{figure}
+
+The address discovered via the \enquote{Search For} feature was inside the memory space of a non-main thread (see \cref{wrong_thread}), meaning the location in memory would change across restarts since the thread will be opened anew by the process with differently allocated memory \autocite{microsoft:threads_in_stack}.
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.87\linewidth]{img/buffer_overflow/post_restart/wrong_thread.png} \\
+	\caption{JMP ESP command not located in main thread}
+	\label{wrong_thread}
+\end{figure}
+\\To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
+This instruction could be located within the address space of any accessible module. The command \textit{!mona modules} \autocite{mona} was used to list them (see \cref{modules}).
+
+\newpage
+\begin{landscape}
+\begin{figure}[ht]
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.175\linewidth, height=1.028\textheight]{img/buffer_overflow/overflow/modules.png}
+	}
+	\caption{Mona modules list, showing ASLR and DEP being disabled for VulnServer.exe only}
+	\label{modules}
+\end{figure}
+\end{landscape}
+\newpage
+
+The instruction inside an accessible module needs to meet the following criteria: \vspace{-4mm}
+\begin{itemize}
+\item{\textbf{No ASLR}}\\
+Memory addresses cannot be randomized inside the module to make accessing the JMP ESP instruction reliable.
+\item{\textbf{No DEP}}\\
+If memory is marked as non-executable, using the JMP ESP instruction wouldn't work, even if such an instruction were present.
+\end{itemize}
+
+The  vulnerable server process itself (\textit{VulnServer.exe}) had both ASLR and DEP not enabled, (see \cref{modules_zoomed}, a zoomed-in cutout of \cref{modules}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/overflow/modules_zoomed.png}
+	\caption{VulnServer.exe without ASLR or DEP enabled in module overview}
+	\label{modules_zoomed}
+\end{figure}
+
+The full overview shows, that it is the only module available with this property (see \cref{modules}).\\
+To search within the process' memory the following command was used (see \cref{mona_result}):
+
+\textit{!mona find -s "\textbackslash xff \textbackslash xe4" -m VulnServer.exe}
+
+The parameters were chosen with the following reasoning \autocite{mona}:
+\vspace{-3mm}
+\begin{itemize}
+\item[-]{\textbf{s} "\textbackslash xff \textbackslash xe4"}\\
+Searches for the JMP ESP opcode.
+\item[-]{\textbf{m} VulnServer.exe}\\
+Searches within the process' memory.
+\end{itemize}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/overflow/mona_result.png} \\
+	\caption{Mona finding one result for JMP ESP instruction inside process memory}
+	\label{mona_result}
+\end{figure}
+
+The following memory address was discovered (see \cref{mona_result}):
+\begin{center}
+	\setlength{\fboxsep}{6pt}
+	\fbox{\large \textbf{0x 65 D1 1D 71}}
+\end{center}
+
+This address persistently held the JMP ESP instruction, even across restarts of the target machine.
+
+\newpage
+
+\paragraph{Generating and encoding payload}
+After determining the offset, the bad characters and the address of the JMP ESP command a payload could be generated to create a reverse shell on the host system.
+
+First, an encoder needed to be selected (see \cref{5_encoder_selection}).
+
+\begin{figure}[htb]
+	\centering
+\makebox[1.02\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{img/buffer_overflow/payload/0_encoder_selection.png}
+}
+	\caption{Encoder options}
+	\label{5_encoder_selection}
+\end{figure}
+
+An encoder from the highest ranked results was selected (\enquote{excellent} rank) by grepping for them.\\
+Since the payload was not to be injected in a powershell environment, \textit{x86/shikata\_ga\_nai} was chosen.
+
+To create the payload, the IP address of the attacker machine needed to be determined via the console command \textbf{ip a | grep tun0} (\textit{ip addr show tun0} would have worked as well, but grepping for the address makes the output shorter, and therefore easier to display as a figure).\\
+The relevant interface is \textit{tun0}, the virtual network interface the attacker machine is tunneling into the laboratory through, since the target machine is part of the laboratory network.
+
+\begin{figure}[htb]
+\makebox[1.02\linewidth][c]{%
+	\includegraphics[width=\linewidth]{img/buffer_overflow/payload/0_ip.png}
+}
+	\caption{IP address in the ICS laboratory network}
+	\label{ip}
+\end{figure}
+
+The IP address was determined to be \textbf{10.0.61.7} during the assignment (see \cref{ip}).\\
+The payload to create a reverse shell on the target system was generated with the chosen encoder and the determined IP address (see \cref{1_payload_generation}).
+
+\begin{figure}[htb]
+	\centering
+	\makebox[1.02\linewidth][c]{%
+		\includegraphics[width=1.15\linewidth, height=5.5cm]{img/buffer_overflow/payload/1_payload_generation.png}
+	}
+	\caption{Payload generation via msfvenom}
+	\label{1_payload_generation}
+\end{figure}
+
+The parameters were chosen with the following reasoning \autocite{msfvenom}:
+\begin{itemize}
+\item[-]{\textbf{p} windows/shell\_reverse\_tcp}\\
+Metasploit provides a payload that establishes a TCP connection to the attacker on a windows machine, which was chosen here.
+\item[-]{\textbf{LHOST}=10.0.61.2}\\
+Provides the IP address of the attacking system, enabling the script to establish the connection via TCP to that system to send the packets for the reverse shell via the network.
+\item[-]{\textbf{LPORT}=443}\\
+The port on the attacking system on which netcat will be listening for the incoming reverse shell connection attempt.
+\item[-]{\textbf{EXITFUNC}=thread}\\
+Prevents a crash when disconnecting by starting a thread on the target system for the reverse shell.
+\item[-]{\textbf{a} x86}\\
+Sets the target system's architecture (32 bit) to generate the appropriate code. 
+\item[\texttt{--}]{\textbf{platform} windows}\\
+Sets the target system's platform to generate the appropriate code.
+\item[-]{\textbf{b} "\textbackslash x00"}\\
+Sets the bad characters that will not be included in the generated code.
+\item[-]{\textbf{n} 16}\\
+Inserts 16 NOOP opcodes to provide space for the decoder, to prevent it from overwriting the paylod itself.
+\item[-]{\textbf{e} x86/shikata\_ga\_nai}\\
+Selects the chosen encoder.
+\item[-]{\textbf{f} py}\\
+Sets the output format to \textit{python}, to enable the code to be easily pasted into the script.
+\item[-]{\textbf{o} payload.txt}\\
+Saves the ouput to the specified file.
+\end{itemize}
+
+It should be noted, that an outbound connection to port 443 might not be typical for the server that is being attacked. Since this was being done in a laboratory environment, no analysis was done to determine the port that would arouse the least suspicion.
+
+Before starting the attack, a listener for the reverse shell was created via netcat on the attacking machine (see \cref{2_start_reverse_shell}).
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[height=2cm]{img/buffer_overflow/payload/2_start_reverse_shell.png} \\
+	\caption{Starting a reverse shell listener via netcat}
+	\label{2_start_reverse_shell}
+\end{figure}
+
+The parameters for netcat were chosen with the following reasoning \autocite{nmap:ncat}:
+\begin{itemize}
+\item[-]{\textbf{l}}\\
+Starts \enquote{listener} mode, listening for incoming connections.
+\item[-]{\textbf{v}}\\
+Puts netcat into verbose mode, showing the status of the listener on the console.
+\item[-]{\textbf{p} 443}\\
+Tells netcat to listen on port 443, the port we are establishing the connection to in our generated payload via the option \textit{LPORT=443} (see \cref{1_payload_generation}).
+\end{itemize}
+
+\paragraph{Decoding payload and creating reverse shell}
+To facilitate the final attack the script was altered the following way (see \cref{payload_script}):
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{img/buffer_overflow/overflow/payload_script.png} \\
+	\caption{Payload script}
+	\label{payload_script}
+\end{figure}
+\vspace{-8mm}
+\begin{itemize}
+\item{\textbf{get\_payload()}}\\
+This method returns the string representation of the payload generated with msfvenom (see \cref{payload_bytes}).
+\item{\textbf{\enquote{\textbackslash x71 \textbackslash x1D \textbackslash xD1 \textbackslash x65}}}\\
+The previously determined memory address holding the JMP ESP instruction.
+It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering, having the least significant byte at the smallest address, therefore reading the address right to left. \autocite{microsoft:little_endian}
+\end{itemize}
+
+Upon executing the attack, the following happened:
+\vspace{-3mm}
+\begin{enumerate}
+\item{\textbf{Overwriting the EIP}}\\
+After the determined offset of 1040 bytes, which the script filled with \enquote{A}s, the EIP got overwritten with the address that reliable contained the JMP ESP command.
+\item{\textbf{Jumping to the top of the stack}}\\
+Upon returning (RETN), the JMP ESP instruction was executed.
+Since some padding was injected, followed by the payload, the malicious code got decoded and executed.
+\item{\textbf{Reverse shell creation}}\\
+The payload initiated a connection to the attacking system, which had a netcat listener waiting on an incoming connection (see \cref{reverse_shell}).
+\end{enumerate}
+%TODO add execution of temporary address
+\begin{figure}[!htb]
+	\makebox[1.02\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{img/buffer_overflow/overflow/reverse_shell.png}
+	}
+	\caption{Reverse shell listener established}
+	\label{reverse_shell}
+\end{figure}
+
+\newpage
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{img/buffer_overflow/script/payload.png}
+	\caption{Payload as a byte string in python}
+	\label{payload_bytes}
+\end{figure}
+\newpage
+
+%TODO find flags
+%TODO meterpreter attack
+
+\section{Vunerabilities and Countermeasures} \label{sec:vuln_counter}
+This section will detail exploited vulnerabilities, utilized attack vectors, and possible countermeasures, while providing a risk assessment for each employed tactic. The risk assessment will be done for the specific setup encountered in the provided environment, assuming it will be used in an enterprise context, exposing the machine to traffic outside a laboratory environment. Risk assessment will use a simple scale from 1-10 to estimate likelihood and possible damages.
+
+To categorize, the following frameworks and classifications will be used:
+\begin{itemize}
+\item{\textbf{MITRE ATT\&CK Framework}} \autocite{mitre:attack}
+\item{\textbf{MITRE D3FEND Framework}} \autocite{mitre:defend}
+\item{\textbf{CVE: Common Vulnerabilities and Exposures}} \autocite{mitre:cve}
+\item{\textbf{CWE: Common Weakness Enumeration}} \autocite{mitre:cwe}
+
+\end{itemize}
+
+\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsubsection{Reconnaissance (TA0043) \autocite{mitre:attack:TA0043}}
+
+To gather information about the host system and possible vulnerabilities, an active scan was conducted via Nmap (see \fullref{subsec:Nmap_scan}).
+
+\paragraph{Offensive techniques}
+
+\begin{itemize}
+\item{\textbf{Active Scanning} (T1595)}
+\item{\textbf{Active Scanning: Vulnerability Scanning} (T1595.002)}
+\end{itemize}
+\vspace{-3mm}
+An Active Scan is utilized to gather information about the target system for later use in an attack \autocite{mitre:attack:T1595} (open ports, services, the operating system, and possible vulnerabilities \autocite{mitre:attack:T1595/002}). The target was known, therefore it was not necessary to scan the whole laboratories IP range (Scanning IP Blocks [T1595.001] \autocite{mitre:attack:T1595/001}). Further scanning or reconnaissance was not necessitated by the assignment either. Since the attacking machine was able to tunnel into the laboratory network, scanning the machine directly was possible via network without any other setup. There were no mitigation tactics set up, therefore no tactics to stay covert were employed.
+
+\paragraph{Defensive techniques} \label{subsec:TA0043-def}
+
+\subparagraph{Mitigation Techniques}
+\begin{itemize}
+\item{\textbf{Pre-Compromise} (M1056)}
+\end{itemize}
+\vspace{-4mm}
+Proactive measures can be taken to prevent a compromise.
+Active scans are difficult to prevent, so the amount of sensitive data that is publicly accessible should be minimized, reducing the possible attack surface \autocite{mitre:attack:M1056}.
+
+\subparagraph{Detection Techniques}
+\begin{itemize}
+\item{\textbf{Detection of Active Scanning} (DET0830)}
+\item{\textbf{Detection of Vulnerability Scanning} (DET0867)}
+\end{itemize}
+\vspace{-3mm}
+Both defensive techniques implore the system's administrator to monitor network traffic to detect anomalous behavior, for example port scanning. If suspicious traffic were to be detected, a firewall entry could be generated preventing the attacker from connecting to the target system. The act of Active Scanning itself does not necessarily need to be mitigated, in fact it cannot realistically be prevented when one is running public facing services. These strategies should be employed to monitor suspect behavior and act accordingly on subsequent connection attempts (for example blacklisting IPs that scanned the machine) \autocite{mitre:attack:DET0830, mitre:attack:DET0867}.
+
+\paragraph{Risk assessment}
+Active Scanning is more or less guaranteed to happen if the machine ever were to be put into a publicly reachable network.
+Services like Shodan \autocite{shodan} regularly scan the internet. The cost of an Active Scan like this for the attacker is close to none, and the possible upside could be large for the attacker in terms of information gain for future attacks.
+
+Likelihood: 10 / 10
+
+The damages Active Scanning can cause are minimal. Information flow cannot be restricted practically.
+If the setup is misconfigured, information could leak that should not be publicly available, therefore the possible damages are not none but still minimal. The laboratory setup only exposed the running services, no sensitive information was gained in the active scan.
+
+Damages: 0.5 / 10
+
+\subparagraph{Total risk}
+
+0.5 (Damage Score) x 10 (Likelihood Score)  = 5
+
+The total risk score for Active Scanning is \textbf{5 / 100}.
+
+\subsubsection{Vulnerability - Buffer Overflow} \label{subsubsec:buffer_overflow_expl}
+To access the system initially, a Buffer Overflow vulnerability was used (see \fullref{subsec:buffer_overflow} for execution details).
+The vulnerability can be classified as:\\
+\textbf{CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')} \autocite{mitre:cwe:120}\\
+There is no CVE entry for the vulnerability in the VulnServer program, since it was specifically designed as an educational tool for Buffer Overflows \autocite{vulnserver}.
+
+\paragraph{Working principle}
+Cowan et al. explain the principle behind a Buffer Overflow is, that a program vulnerable to Buffer Overflow does not validate input length or contents, instead writing the input to memory without proper bounds-checks. The attacker's goal is exploiting the fact that input isn't being validated correctly by the server, enabling them to overwrite memory with malicious code, taking over the program \autocite{cowan2000buffer}.
+
+Cowan et al. explain that the program should be provided a string as input, which is made up of native CPU instructions. 
+The program then writes this string to the buffer, storing the injected code. Since there are insufficient bounds-checks, the allotted buffer can be overstepped, writing to adjacent memory.
+The exploit used intends to overwrite \textit{code pointers}, pointing to the instruction that should be executed next.
+Cowan et al. go on to explain that the program lays down an Activation Record on the Stack for each function call, contain the return address, which point the operating system to the next instruction to run after the function has returned \autocite{cowan2000buffer}. 
+In the case of the attacked Windows machine, this return address is held in the EIP register.
+By corrupting this register with a suitable address, the attacker can force the target system to execute the injected code, which is called \enquote{The stack-smashing attack} \autocite{https://doi.org/10.1002/spe.515}.
+
+The most common approach is to provide the vulnerable service with a string, that overflows the buffer, corrupts the return address and provides the payload right after \autocite{aleph:96}, which was utilized in this assignment. Providing the input string therefore achieved the following:
+\begin{enumerate}
+\vspace{-3mm}
+\itemsep0em
+\item{Overflow the buffer with noise}
+\item{Corrupt the return address with a suitable replacement}
+\item{Execution of the payload at the aforementioned address}
+\end{enumerate}
+
+\paragraph{Procedure}
+\vspace{2mm}
+%TODO Base on source
+\begin{itemize}
+\item{\textbf{Step 1: Inciting a crash}}
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth, margin=10pt]{img/buffer_overflow/vulns_counter/overflow.png}
+	\caption{Visualization of Buffer Overflow exploitation procedure - Crashing the server}
+	\label{stacks}
+\end{figure}
+
+To check if a Buffer Overflow is possible, an input consisting of repeating characters can be sent to the host system.
+If the input is of sufficient size, and is not being validated correctly, the server will crash.
+This happens, because writing the input to memory uncritically leads to the corruption of the return address (see \cref{stacks}, Step 1).
+A string of repeating characters is not a valid address for the next instruction anymore, leading to a crash.
+Inciting a crash this way indicates that a Buffer Overflow is present and could be exploited.
+
+\item{\textbf{Step 2: Determining the offset}}\\
+To determine how big the input needs to be to write to the EIP, the offset needs to be determined. Sending a non-repeating string of characters and inspecting, which characters get written to memory as bytes, allows the attacker to determine how long the input needs to be before the return address gets overwritten by the input (see \cref{unique_vis}).
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.6\linewidth]{img/buffer_overflow/vulns_counter/unique.png}
+	\caption{Visualization of Buffer Overflow exploitation procedure - Offset determination}
+	\label{unique_vis}
+\end{figure}
+
+\newpage
+\item{\textbf{Step 3: Determining bad characters}}\\
+For the injected code to be executed, the transmitted input including the payload needs to be processed by the host system. This could be prevented by bad characters, like the null byte or the carriage return.
+To figure out which characters should be omitted in the final input, a string of all possible candidates can be sent to the host system, followed by an identifiable sequence of characters. Inspecting which characters show up in memory helps determine which characters should be omitted. If the identifiable sequence at the end shows up, no more bad characters remain.
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.6\linewidth, margin=5pt]{img/buffer_overflow/vulns_counter/bad.png}
+	\caption{Visualization of Buffer Overflow exploitation procedure - Bad character determination}
+	\label{bad_vis}
+\end{figure}
+
+\item{\textbf{Step 4: Determining the return address}}\\
+To corrupt the return address properly, an advantageous address needs to be determined.
+Since we elected to send a singular input containing the payload, we needed to find an instruction in memory which would force the host system to execute our payload after the function processing the input returns. On the Windows target machine, the JMP ESP assembly instruction was possible to be utilized. This instruction should be stored in non-randomized executable memory, to make use of the instruction possible and consistent.
+
+\item{\textbf{Step 5: Executing the attack}}\\
+The payload can now be transmitted, preceded in the input string by a string filling the buffer up to the return address, and the address that should overwrite the EIP (see \cref{attack_vis}).
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.6\linewidth, margin=10pt]{img/buffer_overflow/vulns_counter/attack.png}
+	\caption{Visualization of Buffer Overflow exploitation procedure - Bad character determination}
+	\label{attack_vis}
+\end{figure}\\
+Care should be taken to provide the return address in the correct format.\\
+Windows uses \enquote{Little Endian}, which may necessitate the byte order to be reversed.
+\end{itemize}
+
+The likelihood of exploitation is "High", according to the CWE entry (see \cref{likelihood}):
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=0.3\linewidth]{img/buffer_overflow/analysis/likelihood.png}
+\caption{High likelihood of exploit according to CWE-120}
+\vspace{-2mm}
+\caption*{\small Source: https://cwe.mitre.org/data/definitions/120.html}
+\label{likelihood}
+\end{figure}
+
+
+\newpage
+\subsubsection{Initial Access (TA0001) \autocite{mitre:attack:TA0001}}
+\paragraph{Vulnerability}
+See \fullref{subsubsec:buffer_overflow_expl}
+
+\paragraph{Offensive techniques}
+\vspace{1mm}
+\begin{itemize}
+\item{\textbf{Exploit Public-Facing Application} (T1190)}
+\end{itemize}
+\vspace{-5mm}
+The attacker attempts to gain initial access via vulnerabilities in an outwardly exposed host or system \autocite{mitre:attack:T1190}.
+In this case, the system was susceptible to an attack because unvalidated input is being written to memory without bounds-checking, enabling the Buffer Overflow.
+
+\paragraph{Defensive techniques} \label{subsubsec:T1190-defenses}
+The simplest way to prevent this attack would be input validation on the application level.
+Checking that the authentication string and rejecting malformed inputs would help mitigation.
+
+\subparagraph{Mitigation Strategies}
+\begin{itemize}
+\itemIT{Application Isolation and Sandboxing (M10448)}
+Segmenting and virtualization can help isolate compromised parts of the system. \autocite{mitre:attack:M1048}.\\
+If the vulnerable application had been isolated more, it would be more difficult for an attacker to compromise the whole system even if they were to exploit the vulnerability.
+\itemIT{Exploit Protection (M1050)}
+Security applications monitoring the host system can detect malicious activity \autocite{mitre:attack:M1050}.\\
+No SIEM, IDS, IPS or comparable system was in use in the laboratory, which should be employed in real environments.
+\itemIT{Update Software (M1051)}
+Performing regular software updates might patch possible vulnerabilities \autocite{mitre:attack:M1051}. The VulnServer application would not receive any updates, since it was deliberately designed to be flawed, but a real server application would likely receive regular patches during its lifetime.
+\itemIT{Filter Network Traffic (M1037)}
+Restricting outbound network traffic from publicly exposed servers can prevent connections to attackers \autocite{mitre:attack:M1037}. The reverse shell created during the assignment could be stopped if the appropriate packets were filtered out by a firewall.
+\itemIT{Limit Access to Resource Over Network (M1035)}
+Ensure all publicly exposed services are intended to be exposed \autocite{mitre:attack:M1035}.
+It can be assumed that an actual server like the application running in the application would be intended to be exposed. Still, it could be useful to conduct checks on all publicly running applications, since other services might expose information or entry points into the network via other vulnerabilities inadvertendly.
+\itemIT{Network Segmentation (M1030)}
+Create a demilitarized zone (DMZ) to encapsulate public-facing services \autocite{mitre:attack:M1030}.
+A DMZ could help encapsulate the compromised server, shielding it from the rest of the trusted network if it were deployed in a real environment. 
+\itemIT{Privileged Account Management (M1026)}
+Use the least privilege principle to limit exploitable permissions \autocite{mitre:attack:M1026}.
+A real server should run with the least privileged user possible, to prevent compromised servers to immediately be able to access any part of the system.
+\itemIT{Vulnerability Scanning (M1016)}
+Periodically scan public-facing systems for vulnerabilities \autocite{mitre:attack:M1016}. If a vulnerability like the one in VulnServer were to be discovered in a real server, a regular scan could alert relevant personnel.
+\end{itemize}
+
+All listed mitigation strategies could reduce the risk of infiltration if the server were to be deployed outside the laboratory environment.
+
+\subparagraph{Detection strategies}
+\begin{itemize}
+\item{\textbf{Exploit Public-Facing Application – multi-signal correlation (request → error → post-exploit process/egress)} (DET0080)}. \label{DET0080}
+\end{itemize}
+The following steps could be taken to detect Initial Access of this kind \autocite{mitre:attack:DET0080}:
+\begin{enumerate}
+\itemIT{Detect abnormal request patterns to the public endpoint}
+Repeated connection attempts to the server with suspicious inputs could be flagged automatically.
+\itemIT{Detect elevated 4xx / 5xx responses or invocations of unusual methods or paths}
+Detecting repeated errors (crashing in the case of VulnServer) could indicate malicious requests.
+\itemIT{Detect unusual instructions or loading of unusual modules}
+Catching the invocation of unusual memory locations, like the JMP ESP command for example could indicate adversarial inputs.
+\itemIT{Detect outbound callbacks}
+The server should not be creating a reverse shell connection, detecting the outbound traffic could prevent attackers from utilizing their access.
+\end{enumerate} 
+
+\paragraph{Risk assessment} \label{subsubsec:T1190-risk}
+If an actual production server configured like the one set up in the laboratory were to be deployed on the internet, automated attacks would most likely hit the service and exploit the Buffer Overflow vulnerability.
+Since the Buffer Overflow is discoverable easily in the VulnServer application (sending a long string is enough), it is reasonable to assume a similar vulnerability in a real server would quickly become public knowledge.
+
+Likelihood: 10 / 10
+
+Crashing the server compromises the security goal Availability, preventing the server from functioning. To calculate the risk for this step, a full takeover via payload injection will not be assessed yet, just crashing the server via Buffer Overflow will be assessed.
+
+Damages: 7 / 10
+
+\subparagraph{Total risk}
+
+7 (Damage Score) x 10 (Likelihood Score)  = 70
+
+The total risk score for Initial Access phase is \textbf{70 / 100}.
+
+\subsubsection{Execution (TA0002)} \label{subsec:TA0002}
+\paragraph{Vulnerability}
+See \fullref{subsubsec:buffer_overflow_expl}
+
+\paragraph{Offensive techniques}
+\vspace{2mm}
+\begin{itemize}
+\item{\textbf{Exploitation for Client Execution} (T1203) \autocite{mitre:attack:T1203}}\\
+\end{itemize}
+\vspace{-11mm}
+Software vulnerabilities in client applications lead to arbitrary execute code \autocite{mitre:attack:T1203}.\\
+The attack in this assignment resulted in arbitrary code execution, compromising the system.
+
+\paragraph{Defensive techniques}
+
+\subparagraph{Mitigation Strategies}
+If such a vulnerability is not possible to fix immediately, some of the same steps which were discussed in \fullref{subsubsec:T1190-defenses} can be taken to mitigate the exploitation of such vulnerabilities:
+\begin{itemize}
+\item{\textit{Application Isolation and Sandboxing (M10448)} \autocite{mitre:attack:M1048}}
+\item{\textit{Exploit Protection (M1050)} \autocite{mitre:attack:M1050}}
+\item{\textit{Update Software (M1051)} \autocite{mitre:attack:M1051}}
+\end{itemize}
+
+\subparagraph{Detection Strategies}
+\begin{itemize}
+\item{\textbf{Exploitation for Client Execution – cross-platform behavior chain (browser/Office/3rd-party apps)} (DET0287) \autocite{mitre:attack:DET0287}}
+\end{itemize}
+\vspace{-3mm}
+Detection can be once again facilitated by observing a cause and effect chain \autocite{mitre:attack:DET0287}:
+\vspace{-4mm}
+\begin{enumerate}
+\itemIT{A client app experiences a crash or abnormal exit / loads from an unusual location}
+The server crashed because of the Buffer Overflow, which should raise red flags.
+\itemIT{The app drops or modifies files}
+Monitoring unexpected file access could help detect an attack, even though no files were modified during the attack in this assignment. 
+\itemIT{The app spawns an unexpected child}
+Creating a new powershell instance or an installer for example can be suspicious. The reverse shell connection was established directly via TCP during the attack in this assignment, therefore this technique wouldn't have worked as well here, but is still advisable to employ.
+\itemIT{The app establishes an unusual outbound connection}
+Detecting unwanted connections can aid detection, see \fullref{DET0080}.
+\end{enumerate}
+
+\paragraph{Risk assessment}
+The same rational explained in \fullref{subsubsec:T1190-risk} applies here. The likelihood of a Buffer Overflow of this manner being exploited is high, see \cref{likelihood}.
+The discovered Buffer Overflow would need to be probed and exploited. In the laboratory setup, this was easy because access to a debugger on the host system was granted. It is reasonable to assume an exploit for a server like VulnServer would be written and available publicly on services like Exploit-DB \autocite{exploit-db}.
+
+Likelihood: 10 / 10
+
+The damages exploitation of the vulnerability could cause would be devastating. Crashing the server already compromises the security goal Availability, as was discussed in \fullref{subsubsec:T1190-risk}. Since the vulnerability enables the attacker to take over the system, Confidentiality, Integrity, and basically all other security goals are compromised as well if the attacker injects a payload that leads to a full system compromise.
+
+Damages: 10 / 10
+
+\subparagraph{Total risk}
+
+10 (Damage Score) x 10 (Likelihood Score)  = 100
+
+The total risk score for the Execution phase is \textbf{100 / 100}.
+
+It should be kept in mind, that no real defense systems were setup in the laboratory environment. If this were the case in a real scenario, the damages would be large, and attacks or intrusions would be difficult to detect as well, further expanding the scope of possible negative impact the vulnerability could have.
+
+\newpage
+\subsubsection{Command and Control (TA0011) \autocite{mitre:attack:TA0101}}
+\paragraph{Vulnerability}
+See \fullref{subsubsec:buffer_overflow_expl}
+
+\paragraph{Offensive techniques}
+\vspace{2mm}
+\begin{itemize}
+\item{\textbf{Application Layer Protocol (T1071)}}
+\end{itemize}
+\vspace{-4mm}
+Commands to the remote attacker system are sent via application layer protocols \autocite{mitre:attack:T1071}.\\
+In this assignment, a TCP reverse shell was created via netcat, compromising the system.
+
+\paragraph{Defensive techniques}
+
+\subparagraph{Mitigation Strategies}
+
+\begin{itemize}
+\item{\textit{Filter Network Traffic (M1037)} \autocite{mitre:attack:M1037}} \\
+See \fullref{subsubsec:T1190-defenses}
+\itemIT{Network Intrusion Prevention (M1031)}
+Intrusion prevention systems (IPS) could prevent attacks by identifying adversarial traffic and possibly thwarting exploitation attempts. \autocite{mitre:attack:M1031}
+\end{itemize}
+
+\subparagraph{Detection Strategies}
+\begin{itemize}
+\item{\textbf{Detection of Command and Control Over Application Layer Protocols} (DET0444)}\\
+Detects suspicious usage of application-layer protocols via different metrics (e.g. byte count, ports etc.) \autocite{mitre:defend}
+In the assignment the reverse shell connected to port 443 on the attacking machine, a port outbound traffic from a public server shouldn't connect to. 
+\end{itemize}
+
+Like was mentioned before, the laboratory environment didn't provide any implementation of these mitigation or detection tactics, from which a real life application would benefit.
+
+\paragraph{Risk assessment}
+
+If the attacker has reached the point of compromising the system, the likelihood of this vector being utilized is very high. No protections were setup to prevent the outbound connection.
+
+Likelihood: 10 / 10
+
+The target system has been compromised at this point, and since no further security procedures were present in the laboratory setup nothing prevents the attacker from exploiting it further.
+
+Damages: 10 / 10
+
+\subparagraph{Total risk}
+
+10 (Damage Score) x 10 (Likelihood Score)  = 100
+
+The total risk score for the Command \& Control phase is \textbf{100 / 100}.
+
+\subsubsection{Overall Risk assessment}
+It should be noted, that the laboratory environment itself is much different from many real life black box scenarios. The risk assessment changes, if the attacker was able to clone the target environment to perfect their attack and freely discover possible attack vectors like in this example, or if they are trying to break in without the same insights into the target system.
+
+The risk presented by the presented laboratory setup is high enough that it would require immediate action, presenting a high likelihood of high damages. 
+Disregarding the total risk of Reconnaissance, which is not factored in here because of the nature of being a pre-attack step, the total overall risk comes out to:
+\[ (70 + 100 + 100 ) / 3 = 90 \]
+
+ Total overall risk: \textbf{90 / 100}
+ 
+ A Buffer Overflow vulnerability like this should be prevented / fixed immediately in any productive system.
+
+\newpage
+
+\section{Personal Evaluation}
+\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+
+\subsubsection{Mistakes and Challenges}
+Something that cost time unnecessarily was a lack of attention to detail during the first appointment. 
+\begin{figure}[!h]
+\includegraphics[width=\linewidth]{img/buffer_overflow/reflection/missing_whitespace.png}
+\caption{Missing whitespace in AUTH string}
+\end{figure}
+
+Exploiting the Buffer Overflow required understanding of the stack and how operations work on the machine level, which i lacked from prior studies. I was under the impression i had grasped the concept from explanations during the lecture alone.
+
+\subsubsection{Reflection}
+Using the ImmunityDebugger gave me a little trouble at first.
+Small things like a missing white space in my input strings also delayed me during the first session. I had to learn to check thoroughly for small mistakes like that.
+
+A lot if time was spent during the first session to learn the tooling and accustom myself to the environment.
+
+That became clear during the assignment, which helped me gain a better understanding of the processes close to the hardware.
+
+Writing the report was very time intensive, requiring more time than i had anticipated when starting out.
+
+\newpage
+
+\section{References}
+\printbibliography[heading=none]
+
+\newpage
+\section{Appendix}
+The appendix provided as a directory is laid out the following way, containing the following content:
+\\
+\dirtree{%
+.1 Final Report - Simon Neubert/.
+.2 Assignment 1 - Windows Scanning und Buffer Overflow.
+.3 Nmap Scan.
+.4 nmap.txt.
+.4 nmap-3389.txt.
+.3 vulnserver\_script.
+.4 unique\_charseq.txt.
+.4 vulnserver-poc-orig.py.
+}
+
+\normalsize
+\begin{itemize}
+\item{The subdirectory \enquote{Nmap scan} the output generated by Nmap (nmap.txt and nmap-3389.txt).}
+\item{The subdirectory \enquote{vulnserver\_script} contains the python script used to execute the attack, and the resources it accessed during runtime.}\\
+It was altered during the assignment, and all relevant steps have been left in the code and labeled with comments.
+\end{itemize}
+
+\end{document}

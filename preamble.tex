@@ -1,0 +1,214 @@
+% Page format
+\usepackage[
+	top=0.98in,
+	bottom=0.98in,
+	left=0.98in,
+	right=0.98in,
+	footskip=26.5pt
+]{geometry}
+\setlength{\parindent}{0pt}
+\linespread{1.5}
+\setlength{\parskip}{10.08pt}
+\usepackage{pdflscape}
+
+% Math
+\usepackage{amsmath}
+
+% Lists and tables
+\newcommand{\itemIT}[1]{\item{\textit{#1}\par}}
+\newcommand{\itemBF}[1]{\item{\textbf{#1}\par}}
+
+% Date
+\newcommand{\leadingzero}[1]{\ifnum #1<10 0\the#1\else\the#1\fi}
+\newcommand{\todayDMY}{\leadingzero{\day}.\leadingzero{\month}.\the\year}
+
+% Typeface and language
+% \usepackage[english]{babel}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage{csquotes}
+\DeclareQuoteStyle{straight}
+  {"}{"}
+  {"}{"}
+\setquotestyle{straight}
+
+% Colors
+\usepackage{xcolor}
+\pagecolor{white}
+\definecolor{darkblue}{rgb}{0.31,0.53,0.90}
+\definecolor{titleBlue}{HTML}{1F355A}
+\definecolor{chapterBlue}{HTML}{405E8D}
+\definecolor{sectionBlue}{HTML}{5A80B8}
+
+% Sections
+\setcounter{secnumdepth}{5}
+\usepackage{titlesec}
+\titleformat{\section}
+{\fontsize{16pt}{19pt}\selectfont\bfseries\color{chapterBlue}}
+{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{5pt}{8pt}%
+\titleformat{\subsection}
+{\fontsize{14pt}{18pt}\selectfont\bfseries\color{chapterBlue}}
+{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{5pt}{-5pt}%
+\titleformat{\subsubsection}
+{\fontsize{11pt}{18pt}\selectfont\bfseries\color{sectionBlue}}
+{\thesubsubsection}{0.8em}{}
+\titlespacing*{\subsubsection}{0pt}{5pt}{-5pt}%
+\titleformat{\paragraph}
+{\itshape\fontsize{10.5pt}{14pt}\selectfont\bfseries\color{sectionBlue}}
+{\theparagraph}{0.8em}{}
+\titlespacing*{\paragraph}{0pt}{6pt}{-5pt}%
+\titleformat{\subparagraph}
+{\itshape\fontsize{10pt}{10pt}\selectfont\bfseries\color{sectionBlue}}
+{\thesubparagraph}{0.5em}{}
+\titlespacing*{\subparagraph}{0pt}{0pt}{0pt}
+
+
+% TOC
+\setcounter{tocdepth}{2}
+\usepackage{tocloft}
+\renewcommand{\contentsname}{}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{0pt}
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsubsecfont}{\normalfont}
+\renewcommand{\cftsubsubsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsubsecpagefont}{\normalfont}
+\renewcommand{\cftsubsubsecpagefont}{\normalfont}
+\setlength{\cftbeforesecskip}{2pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+\setlength{\cftbeforesubsubsecskip}{0pt}
+\renewcommand{\cftsecaftersnum}{}
+\setlength{\cftparskip}{0pt}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{10pt}
+\renewcommand{\cftaftertoctitle}{}
+\renewcommand{\cftdotsep}{0.5}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\usepackage[hidelinks]{hyperref}
+
+% References
+\usepackage[nameinlink]{cleveref}
+\Crefname{subparagraph}{Section}{Sections}
+\Crefname{paragraph}{Section}{Sections}
+\crefname{figure}{Figure}{Figures}
+\newcommand{\fullref}[1]{\textit{\Cref{#1} -- \nameref{#1}}}
+
+% Figures
+\usepackage{graphicx}
+\usepackage[skip=2pt]{caption}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{framed}
+\usepackage[export]{adjustbox}
+
+% Appendix
+\usepackage{dirtree}
+
+% Bibliography
+\usepackage{csquotes}
+\usepackage[
+	style=numeric,
+	backend=biber, 
+	sorting=none,
+	sortcites=true,
+  	maxnames=3,
+  	minnames=3
+]{biblatex}
+\addbibresource{bibliography.bib}
+\DefineBibliographyStrings{english}{
+  urlseen = {accessed on}
+}
+\DeclareNameAlias{default}{last-first}
+
+% Cover
+\usepackage{titling}
+\setlength{\droptitle}{-2.5cm}
+\pretitle{%
+\begin{center}
+\includegraphics[height=.97in]{img/template/ICS_logo.png}
+\includegraphics[height=1.94in]{img/template/HdM_logo.png}
+\vskip 3em
+\linespread{1}\selectfont
+\LARGE\bfseries
+}
+\posttitle{\par\end{center} {\color{sectionBlue}\hrule height 0.6pt} \vspace{-9.5em}}
+\title{\textcolor{titleBlue}{\textbf{IT-Sicherheit: Angriff und Verteidigung\\SS2026\\Prof. Dr. Dirk Heuzeroth\\[2em]}}}
+\author{}
+\date{}
+
+% Footer
+\usepackage{etoolbox}
+\usepackage{afterpage}
+\newif\iflandscapepage
+\AtBeginEnvironment{landscape}{%
+  \landscapepagetrue
+  \thispagestyle{empty}
+}
+\AtEndEnvironment{landscape}{%
+  \afterpage{\landscapepagefalse}
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyfoot[R]{\hspace{3cm}\thepage}
+  \fancyfootoffset[R]{-2cm}
+}
+\fancyhf{} \renewcommand{\headrulewidth}{0pt}
+\fancyfoot[R]{\hspace{3cm}\thepage}
+\fancyfootoffset[R]{-2cm}
+\usepackage{tikz}
+\AddToHook{shipout/foreground}{%
+\begin{tikzpicture}[remember picture,overlay]
+
+  \iflandscapepage
+    % --- landscape version ---
+
+    % page number (upright)
+    \node[anchor=south east, rotate=90]
+      at ([xshift=-1.43cm,yshift=25.8cm]current page.south east)
+      {\thepage}; 
+
+    % lines adapted to rotated layout
+    {\color{sectionBlue}
+    \draw[line width=0.4pt]
+      ([yshift=25.05cm]current page.south east)
+      -- ([yshift=25.05cm, xshift=51.3em]current page.south west);
+
+    \draw[line width=0.4pt]
+      ([yshift=25.1cm]current page.south east)
+      -- ([yshift=25.1cm, xshift=51.3em]current page.south west);
+
+    \draw[line width=0.4pt]
+      ([yshift=25.15cm]current page.south east)
+      -- ([yshift=25.15cm, xshift=51.3em]current page.south west);
+     }
+  \else
+    % --- normal portrait version ---
+    \ifnum\value{page}>1
+     {\color{sectionBlue}
+      \draw[line width=0.4pt]
+        ([xshift=-5.05cm]current page.south east)
+        -- ([xshift=-5.05cm, yshift=-26.1cm]current page.north east);
+
+      \draw[line width=0.4pt]
+        ([xshift=-5.1cm]current page.south east)
+        -- ([xshift=-5.1cm, yshift=-26.1cm]current page.north east);
+
+      \draw[line width=0.4pt]
+        ([xshift=-5.15cm]current page.south east)
+        -- ([xshift=-5.15cm, yshift=-26.1cm]current page.north east);
+      }
+    \fi
+
+  \fi
+
+\end{tikzpicture}%
+}

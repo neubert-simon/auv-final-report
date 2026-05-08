@@ -1,0 +1,45 @@
+# Nmap 7.98 scan initiated Mon May  4 14:32:55 2026 as: /usr/lib/nmap/nmap -p 445,3389,5555 -Pn -sV -v -oN nmap-3389.txt 192.168.61.45
+Nmap scan report for 192.168.61.45
+Host is up (0.012s latency).
+
+PORT     STATE SERVICE       VERSION
+445/tcp  open  microsoft-ds  Microsoft Windows 7 - 10 microsoft-ds (workgroup: WORKGROUP)
+3389/tcp open  ms-wbt-server Microsoft Terminal Service
+5555/tcp open  freeciv?
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port5555-TCP:V=7.98%I=7%D=5/4%Time=69F891FF%P=aarch64-unknown-linux-gnu
+SF:%r(NULL,F,">Hello\x20There\.\r\n")%r(GenericLines,28,">Hello\x20There\.
+SF:\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(DNSVersionBindReqTCP,28
+SF:,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(SMBP
+SF:rogNeg,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n
+SF:")%r(adbConnect,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x2
+SF:0too!\r\n")%r(GetRequest,28,">Hello\x20There\.\r\n>I\x20can\x20break\x2
+SF:0rules\x20too!\r\n")%r(HTTPOptions,28,">Hello\x20There\.\r\n>I\x20can\x
+SF:20break\x20rules\x20too!\r\n")%r(RTSPRequest,28,">Hello\x20There\.\r\n>
+SF:I\x20can\x20break\x20rules\x20too!\r\n")%r(RPCCheck,28,">Hello\x20There
+SF:\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(DNSStatusRequestTCP,2
+SF:8,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(Hel
+SF:p,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(
+SF:SSLSessionReq,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20t
+SF:oo!\r\n")%r(TerminalServerCookie,28,">Hello\x20There\.\r\n>I\x20can\x20
+SF:break\x20rules\x20too!\r\n")%r(TLSSessionReq,28,">Hello\x20There\.\r\n>
+SF:I\x20can\x20break\x20rules\x20too!\r\n")%r(Kerberos,28,">Hello\x20There
+SF:\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(X11Probe,28,">Hello\x
+SF:20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(FourOhFourRequ
+SF:est,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%
+SF:r(LPDString,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too
+SF:!\r\n")%r(LDAPSearchReq,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20
+SF:rules\x20too!\r\n")%r(LDAPBindReq,28,">Hello\x20There\.\r\n>I\x20can\x2
+SF:0break\x20rules\x20too!\r\n")%r(SIPOptions,28,">Hello\x20There\.\r\n>I\
+SF:x20can\x20break\x20rules\x20too!\r\n")%r(LANDesk-RC,28,">Hello\x20There
+SF:\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(TerminalServer,28,">H
+SF:ello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(NCP,28,"
+SF:>Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(NotesR
+SF:PC,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r
+SF:(JavaRMI,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r
+SF:\n");
+Service Info: Host: WIN-ILACCGON861; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Read data files from: /usr/share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Mon May  4 14:35:39 2026 -- 1 IP address (1 host up) scanned in 164.44 seconds
