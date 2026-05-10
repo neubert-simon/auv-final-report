@@ -46,7 +46,7 @@ Simon Neubert
 
 \section{Executive Summary}
 \vspace{-2mm}
-\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow}
 The participants were granted access to two machines, an attacking system and a target system.
 The target system was running a server that was vulnerable to a Buffer Overflow attack.
 Said system was scanned before the Buffer Overflow weakness was exploited to create a reverse shell.
@@ -60,7 +60,7 @@ Port 445: & Microsoft Directory Service\\
 \hline
 Port 3389: & Remote Desktop Service\\
 \hline
-Port 5555: & Microsoft SMBv1 Server
+Port 5555: & Unidentified Server (known to be VulnServer application)
 \end{tabular}	
 \end{enumerate}
 
@@ -84,9 +84,11 @@ The payload was sent and executed, creating a reverse shell on the target machin
 \end{enumerate}
 
 \newpage
+\subsection{Linux - Complete Pentest (Mesa)}
+\newpage
 
 \section{Introduction}
-\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow}
 \subsubsection{Conditions}
 This assignment was carried out in a laboratory environment.
 The participants were granted access to a laboratory computer \textit{\enquote{Anwendungssicherheit}} running Kali Linux to attack their target.
@@ -121,7 +123,7 @@ The following qualities must be met:
 
 \section{Definitions - Terms and Abbreviations}
 This section defines terms, abbreviations, and concepts, which will be used in this report without repeated explanation.
-\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow}
 \vspace{3mm}
 \begin{itemize}
 	\item{\textbf{Attacking machine}}\\
@@ -154,7 +156,7 @@ This section defines terms, abbreviations, and concepts, which will be used in t
 \newpage
 
 \section{Approach / Methodology}
-\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow}
 \subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
 The goal of the Nmap scan was to obtain the following information about the target system:
 \begin{itemize}
@@ -342,7 +344,7 @@ Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the 
 \end{figure}
 
 To verify these findings the complete fingerprint and both complete Nmap scan reports can be viewed in the appended files under:\\
-\textit{Assignment 1 - Windows Scanning und Buffer Overflow → Nmap Scan}
+\textit{Assignment 1 - Windows Scanning and Buffer Overflow → Nmap Scan}
 
 \clearpage
 \newpage
@@ -723,7 +725,7 @@ The address discovered via the \enquote{Search For} feature was inside the memor
 	\caption{JMP ESP command not located in main thread}
 	\label{wrong_thread}
 \end{figure}
-\\To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
+\\This address stopped working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_start} - \cref{fail_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
 This instruction could be located within the address space of any accessible module. The command \textit{!mona modules} \autocite{mona} was used to list them (see \cref{modules}).
 
 \newpage
@@ -853,7 +855,6 @@ Saves the ouput to the specified file.
 \end{itemize}
 
 It should be noted, that an outbound connection to port 443 might not be typical for the server that is being attacked. Since this was being done in a laboratory environment, no analysis was done to determine the port that would arouse the least suspicion.
-
 Before starting the attack, a listener for the reverse shell was created via netcat on the attacking machine (see \cref{2_start_reverse_shell}).
 
 \begin{figure}[htb]
@@ -887,7 +888,8 @@ To facilitate the final attack the script was altered the following way (see \cr
 This method returns the string representation of the payload generated with msfvenom (see \cref{payload_bytes}).
 \item{\textbf{\enquote{\textbackslash x71 \textbackslash x1D \textbackslash xD1 \textbackslash x65}}}\\
 The previously determined memory address holding the JMP ESP instruction.
-It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering, having the least significant byte at the smallest address, therefore reading the address right to left. \autocite{microsoft:little_endian}
+It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering, storing the least significant byte at the smallest address, therefore reading the address right to left \autocite{microsoft:little_endian}.\\
+The attack was also done twice more with the discovered memory addresses which were impermanent across restarts respectively, to show them not working after a reboot (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{private_vpn1} - \cref{reverse_foreign}).
 \end{itemize}
 
 Upon executing the attack, the following happened:
@@ -934,7 +936,7 @@ To categorize, the following frameworks and classifications will be used:
 
 \end{itemize}
 
-\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow}
 \subsubsection{Reconnaissance (TA0043) \autocite{mitre:attack:TA0043}}
 
 To gather information about the host system and possible vulnerabilities, an active scan was conducted via Nmap (see \fullref{subsec:Nmap_scan}).
@@ -978,7 +980,6 @@ If the setup is misconfigured, information could leak that should not be publicl
 Damages: 0.5 / 10
 
 \subparagraph{Total risk}
-
 0.5 (Damage Score) x 10 (Likelihood Score)  = 5
 
 The total risk score for Active Scanning is \textbf{5 / 100}.
@@ -1273,26 +1274,57 @@ Disregarding the total risk of Reconnaissance, which is not factored in here bec
 \newpage
 
 \section{Personal Evaluation}
-\subsection{Assignment 1 - Windows Scanning und Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow}
 
-\subsubsection{Mistakes and Challenges}
-Something that cost time unnecessarily was a lack of attention to detail during the first appointment. 
+Something that cost time unnecessarily was a lack of attention to detail during the first appointment.
+Executing the script kept failing to write the "bad character" candidate string to memory, no matter what characters were passed. I failed to notice for a while that the first part of the string, the \enquote{\textit{AUTH}} portion, was missing a whitespace (see \cref{miss_space}). From that point onward, I was more vigilant.
 \begin{figure}[!h]
 \includegraphics[width=\linewidth]{img/buffer_overflow/reflection/missing_whitespace.png}
 \caption{Missing whitespace in AUTH string}
+\label{miss_space}
 \end{figure}
 
-Exploiting the Buffer Overflow required understanding of the stack and how operations work on the machine level, which i lacked from prior studies. I was under the impression i had grasped the concept from explanations during the lecture alone.
+Another misstep was the assumption, that the IP address on the eth1 network interface should be used in payload generation (see \cref{miss_ip}).
+\begin{figure}[!h]
+\includegraphics[width=\linewidth]{img/buffer_overflow/reflection/ip}
+\caption{Wrong IP address for the attack}
+\label{miss_ip}
+\end{figure}
 
-\subsubsection{Reflection}
+After some experimentation with payload generation, I took a look at all network interfaces on the attacking computer once more (see \cref{miss_ip2}). Thinking back to the networking lecture \enquote{Rechnernetze}, I realized all addresses are located inside private address ranges. That made me think consider them actively, which lead to the realization that the address the computer was assigned inside the ICS laboratory network under the virtual \textbf{tun0} interface is the address that was necessary for the reverse shell connection to work.
+\begin{figure}[!h]
+\includegraphics[width=\linewidth]{img/buffer_overflow/reflection/ip2}
+\caption{All IP addresse of the attacker machine}
+\label{miss_ip2}
+\end{figure}
+
+\newpage
+
+Starting the VPN at the beginning of each session was an afterthought, which lead to me not realizing it impacts how the machine needs to be addressed for the attack to work. 
+This realization took a while to manifest, and made it clear to me that I should question my assumptions, and make sure that the conclusions I reach are thought through instead of assumed without critical questioning.\\
+
+\newpage
 Using the ImmunityDebugger gave me a little trouble at first.
-Small things like a missing white space in my input strings also delayed me during the first session. I had to learn to check thoroughly for small mistakes like that.
+A lot of time was spent during the first session learning the tooling and accustoming myself to the environment.
 
-A lot if time was spent during the first session to learn the tooling and accustom myself to the environment.
+Exploiting the Buffer Overflow required understanding of the stack and how operations work on the machine level, which I lacked from prior studies. I had grasped the concept from explanations during the lecture, but did not fully understand how to apply the concept in practice.
+That became clear during work on the assignment, which helped me gain a better understanding of the processes happening close to the hardware.
 
-That became clear during the assignment, which helped me gain a better understanding of the processes close to the hardware.
+Writing the report was very time intensive, requiring more time than I had anticipated when starting out.
+In addition, the level of detail required was only apparent once I had started the writing process. When I was documenting my approach, I didn't take enough care to represent the steps I took with readable, appropriately formatted screnshots. I had to go back and repeat some steps to take satisfactory screengrabs, only gaining usable material during the second session. At that point I had gone over the material again and reviewed the steps i took in detail. I was therefore able to repeat the steps quickly with intent. A deeper understanding of the subject matter gave me with the ability to anticipate what information was relevant, which made it easier to take the steps in an easily documentable way.
 
-Writing the report was very time intensive, requiring more time than i had anticipated when starting out.
+ Moving into the next assignment, I knew what to expect in terms of documentation of my actions. I practiced the discussed concepts on my private system, to prepare myself for the scheduled appointments in which we could work on the assignment. I had learned that preparation and familiarity with the tooling and the subject matter enable me to focus on executing the necessary steps while being able to document them. If I don't know what I am doing or why I am doing it, my ability to document and communicate my actions diminishes drastically. Hence I did my utmost to be prepared for the following assignments. 
+
+ \newpage
+ \subsection{Linux: Complete Pentest (Mesa)}
+Since this exercise was much less guided than the previous one, i took care to prepare as best i could for this assignment.
+I studied the provided materials and practiced using the tools on private hardware.
+I set up two virtual machines, an attacker machine running Kali Linux and a target machine running Debian. I purposely configured it so that it would be attackable by the tools discussed in the lecture preceding the appointments.
+
+I further studied the Mitre Attack Framework, trying to formulate a high level strategy concerning what approaches i should employ when i pentest the Linux machine.
+
+Lastly, i revisited the materials I produced when I held the Linux - Basics seminar in my third semester. I was still familiar with the concepts we taught, but didn't remember all the tooling needed to apply that knowledge in practice. I figured a general familiarity with the basic functions could come in handy if interaction with the target machine strays from the expected path.
+
 
 \newpage
 
@@ -1300,12 +1332,15 @@ Writing the report was very time intensive, requiring more time than i had antic
 \printbibliography[heading=none]
 
 \newpage
-\section{Appendix}
+\section{Appendix} \label{Appendix}
+\stoptoc
+
+\subsection{Buffer Overflow}  \label{Appendix-1}
 The appendix provided as a directory is laid out the following way, containing the following content:
 \\
 \dirtree{%
 .1 Final Report - Simon Neubert/.
-.2 Assignment 1 - Windows Scanning und Buffer Overflow.
+.2 Windows Scanning and Buffer Overflow.
 .3 Nmap Scan.
 .4 nmap.txt.
 .4 nmap-3389.txt.
@@ -1321,4 +1356,93 @@ The appendix provided as a directory is laid out the following way, containing t
 It was altered during the assignment, and all relevant steps have been left in the code and labeled with comments.
 \end{itemize}
 
+\newpage
+\begin{landscape}
+\begin{figure}[h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/0_vpn1}
+}
+\caption{VPN configuration on an attacker machine not provided by the HdM}
+\label{private_vpn1}
+\end{figure}
+
+\begin{figure}[h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/0_vpn2}
+}
+\caption{VPN connected on attacker machine not provided by the HdM with IP 10.0.61.2}
+\end{figure}
+\end{landscape}
+
+\begin{figure}[h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/1_generate}
+}
+\caption{Payload generation on attacker machine}
+\end{figure}
+
+\begin{figure}[h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/1_payload}
+}
+\caption{Payload used in python script on attacker machine}
+\end{figure}
+
+\newpage
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/2_pre_jmp}
+}
+\caption{Impermanent JMP ESP instruction located at 7709E871, pre-restart}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/2_jmp_esp}
+}
+\caption{Impermanent JMP ESP instruction located at 76E4E871, post-restart}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/pre_address/0_script}
+}
+\caption{Using impermanent JMP ESP instruction location found before the restart in attack script}
+\label{fail_start}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/pre_address/2_no_conn}
+}
+\caption{No reverse shell when attacking with the old JMP ESP address post restart}
+\label{fail_end}
+\end{figure}
+
+
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/3_code}
+}
+\caption{Using impermanent JMP ESP instruction location found after the restart in attack script}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/3_run}
+}
+\caption{Running attack using the impermanent address found after the restart}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/4_shell}
+}
+\caption{Reverse shell created by exploiting the post-restart JMP ESP location}
+\label{reverse_foreign}
+\end{figure}
+
+\resumetoc
 \end{document}
