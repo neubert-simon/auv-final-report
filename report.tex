@@ -64,7 +64,7 @@ Port 5555: & Unidentified Server (known to be VulnServer application)
 \end{tabular}	
 \end{enumerate}
 
-The scan revealed a remote code execution vulnerability in the server running on port 5555.
+The scan revealed a remote code execution vulnerability in the server running on port 445.
 \vspace{-2mm}
 \subsubsection{Buffer Overflow Attack}
 
@@ -80,19 +80,21 @@ This information was used to generate a payload that would eventually create a r
 
 \item{\textbf{Creating a reverse shell}}\\
 The payload was sent and executed, creating a reverse shell on the target machine.\\
-\textit{If this were to happen, a firewall configuration preventing the server from establishing unintended outbound connections might be able to stop the reverse shell.}
+\textit{If this were to happen, a firewall configuration preventing the server from establishing unintended outbound connections could be able to stop the reverse shell.}
 \end{enumerate}
 
 \newpage
 \subsection{Linux - Complete Pentest (Mesa)}
 \newpage
+\subsection{Digital Forensics}
+\newpage
 
 \section{Introduction}
 \subsection{Windows Scanning and Buffer Overflow}
 \subsubsection{Conditions}
-This assignment was carried out in a laboratory environment.
+The assignment was carried out in a laboratory environment.
 The participants were granted access to a laboratory computer \textit{\enquote{Anwendungssicherheit}} running Kali Linux to attack their target.
-The target machine (IP: 192.168.61.45) was set up in the Institute for Cybersecurity's laboratory, whose network was made accessible via VPN. It was a Windows 7 machine with a 32-bit architecture running a vulnerable server process (VulnServer.exe) on port 5555. The machine was accessible via remote desktop protocol, enabling participants to observe the process via debugger.
+The target machine (IP: 192.168.61.45) was set up in the Institute for Cybersecurity's laboratory, whose network was made accessible via VPN. It was a Windows 7 machine with a 32-bit architecture running a vulnerable server process (VulnServer.exe) on port 5555. The machine was accessible via remote desktop protocol, enabling participants to observe processes via a debugger.
 
 \subsubsection{Goals}
 It was not part of the mission objective to stay unnoticed by any potential intrusion detection systems or system administrators, therefore not necessitating the participants to obscure their traces.
@@ -110,7 +112,7 @@ The following information was to be gathered about the target machine:
 
 \paragraph{Exploiting Buffer Overflow Vulnerability}
 The process \enquote{VulnServer} has a Buffer Overflow vulnerability.
-The goal of this task is to exploit that vulnerability to create a reverse shell on the target system.
+The goal was to exploit that vulnerability to create a reverse shell on the target system.
 The following qualities must be met:
 \vspace{-3mm}
 \begin{enumerate}
@@ -120,16 +122,17 @@ The following qualities must be met:
 \end{enumerate}
 
 \newpage
+\subsection{Linux - Complete Pentest (Mesa)}
+\newpage
+\subsection{Digital Forensics}
+\newpage
 
 \section{Definitions - Terms and Abbreviations}
-This section defines terms, abbreviations, and concepts, which will be used in this report without repeated explanation.
-\subsection{Windows Scanning and Buffer Overflow}
+\stoptoc
+This section defines terms, abbreviations, and concepts, which are going to be used in this report without repeated explanation.
+\subsection{General}
 \vspace{3mm}
 \begin{itemize}
-	\item{\textbf{Attacking machine}}\\
-	The attacker machine running Kali Linux, used for the active scan and Buffer Overflow attack.
-	\item{\textbf{Target machine}}\\
-	The target machine running the vulnerable web server with the IP address \textit{192.168.61.45}.
 	\item{\textbf{Extended Stack Pointer (ESP)}}\\
 	The register holding the memory address of the top of the stack \autocite{intel:dev_manual}.
 	\item{\textbf{Extended Instruction Pointer (EIP)}}\\
@@ -153,6 +156,16 @@ This section defines terms, abbreviations, and concepts, which will be used in t
 	\item{\textbf{De-Militarized Zone (DMZ)}}\\
 	A De-Militarized Zone is a physical or logical network, separating trusted and untrusted parts of internal and external networks, in line with the defense-in-depth principle \autocite{8473328}.
 \end{itemize}
+
+\subsection{Assignment 1- Windows Scanning and Buffer Overflow}
+\vspace{3mm}
+\begin{itemize}
+	\item{\textbf{Attacking machine}}\\
+	The attacker machine running Kali Linux, used for the active scan and Buffer Overflow attack.
+	\item{\textbf{Target machine}}\\
+	The target Windows machine running the vulnerable web server with the IP address \textit{192.168.61.45}.
+\end{itemize}
+\resumetoc
 \newpage
 
 \section{Approach / Methodology}
@@ -921,9 +934,12 @@ The payload initiated a connection to the attacking system, which had a netcat l
 \end{figure}
 \newpage
 
-%TODO find flags
-%TODO meterpreter attack
-
+ \newpage
+ \subsection{Linux - Complete Pentest (Mesa)}
+ \newpage
+ \subsection{Digital Forensics}
+ \newpage
+ 
 \section{Vunerabilities and Countermeasures} \label{sec:vuln_counter}
 This section will detail exploited vulnerabilities, utilized attack vectors, and possible countermeasures, while providing a risk assessment for each employed tactic. The risk assessment will be done for the specific setup encountered in the provided environment, assuming it will be used in an enterprise context, exposing the machine to traffic outside a laboratory environment. Risk assessment will use a simple scale from 1-10 to estimate likelihood and possible damages.
 
@@ -1272,6 +1288,10 @@ Disregarding the total risk of Reconnaissance, which is not factored in here bec
  A Buffer Overflow vulnerability like this should be prevented / fixed immediately in any productive system.
 
 \newpage
+\subsection{Linux - Complete Pentest (Mesa)}
+\newpage
+\subsection{Digital Forensics}
+\newpage
 
 \section{Personal Evaluation}
 \subsection{Windows Scanning and Buffer Overflow}
@@ -1316,7 +1336,7 @@ In addition, the level of detail required was only apparent once I had started t
  Moving into the next assignment, I knew what to expect in terms of documentation of my actions. I practiced the discussed concepts on my private system, to prepare myself for the scheduled appointments in which we could work on the assignment. I had learned that preparation and familiarity with the tooling and the subject matter enable me to focus on executing the necessary steps while being able to document them. If I don't know what I am doing or why I am doing it, my ability to document and communicate my actions diminishes drastically. Hence I did my utmost to be prepared for the following assignments. 
 
  \newpage
- \subsection{Linux: Complete Pentest (Mesa)}
+ \subsection{Linux - Complete Pentest (Mesa)}
 Since this exercise was much less guided than the previous one, i took care to prepare as best i could for this assignment.
 I studied the provided materials and practiced using the tools on private hardware.
 I set up two virtual machines, an attacker machine running Kali Linux and a target machine running Debian. I purposely configured it so that it would be attackable by the tools discussed in the lecture preceding the appointments.
@@ -1325,7 +1345,8 @@ I further studied the Mitre Attack Framework, trying to formulate a high level s
 
 Lastly, i revisited the materials I produced when I held the Linux - Basics seminar in my third semester. I was still familiar with the concepts we taught, but didn't remember all the tooling needed to apply that knowledge in practice. I figured a general familiarity with the basic functions could come in handy if interaction with the target machine strays from the expected path.
 
-
+ \newpage
+ \subsection{Digital Forensics}
 \newpage
 
 \section{References}
@@ -1440,9 +1461,15 @@ It was altered during the assignment, and all relevant steps have been left in t
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/flimsy/4_shell}
 }
-\caption{Reverse shell created by exploiting the post-restart JMP ESP location}
+\caption{Reverse shell created by exploiting the impermanent post-restart JMP ESP location}
 \label{reverse_foreign}
 \end{figure}
+
+\clearpage
+\newpage
+\subsection{Linux - Complete Pentest (Mesa)}  \label{Appendix-2}
+\newpage
+\subsection{Digital Forensics}  \label{Appendix-3}
 
 \resumetoc
 \end{document}
