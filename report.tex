@@ -123,8 +123,12 @@ The following qualities must be met:
 
 \newpage
 \subsection{Linux - Complete Pentest (Mesa)}
+\subsubsection{Conditions}
+\subsubsection{Goals}
 \newpage
 \subsection{Digital Forensics}
+\subsubsection{Conditions}
+\subsubsection{Goals}
 \newpage
 
 \section{Definitions - Terms and Abbreviations}
@@ -157,7 +161,7 @@ This section defines terms, abbreviations, and concepts, which are going to be u
 	A De-Militarized Zone is a physical or logical network, separating trusted and untrusted parts of internal and external networks, in line with the defense-in-depth principle \autocite{8473328}.
 \end{itemize}
 
-\subsection{Assignment 1- Windows Scanning and Buffer Overflow}
+\subsection{Assignment 1 - Windows Scanning and Buffer Overflow}
 \vspace{3mm}
 \begin{itemize}
 	\item{\textbf{Attacking machine}}\\
@@ -165,6 +169,10 @@ This section defines terms, abbreviations, and concepts, which are going to be u
 	\item{\textbf{Target machine}}\\
 	The target Windows machine running the vulnerable web server with the IP address \textit{192.168.61.45}.
 \end{itemize}
+
+\subsection{Assignment 2 - Linux - Complete Pentest (Mesa)}
+\subsection{Assignment 3 - Digital Forensics}
+
 \resumetoc
 \newpage
 
@@ -188,7 +196,7 @@ To achieve this, the following Nmap parameters were used:
 	\includegraphics[width=1.1\linewidth]{img/buffer_overflow/nmap/flags}
 }
 	\vspace*{-5mm}
-	\caption{Nmap configuration used to scan the target system}
+	\caption{Nmap - Configuration used to scan the target system}
 \end{figure}\\
 The parameters were chosen with the following reasoning \autocite{nmap}:
 \vspace{-2mm}
@@ -224,7 +232,7 @@ The IP adress of the target machine that was to be scanned.
 \makebox[1.03\linewidth][c]{%
 	\includegraphics[width=1.034\linewidth]{img/buffer_overflow/nmap/ports} \\
 }	
-	\caption{Nmap port scan results}
+	\caption{Nmap - Port scan results}
 	\label{portScan}
 \end{figure}
 \newpage
@@ -252,7 +260,7 @@ Nmap attempted to identify the services running on the discovered open ports (se
 	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/nmap/services2.png}
 }
         \vspace*{-5mm}
-	\caption{Nmap service scan results}
+	\caption{Nmap - Service scan result}
 	\label{portScanResult}
 \end{figure}
 
@@ -330,10 +338,10 @@ Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the 
 \newpage
 \begin{landscape}
 \begin{figure}[h]
-\makebox[1.03\linewidth][c]{%
+\makebox[\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{img/buffer_overflow/nmap/3389_scan.png}
 }
-        \caption{Nmap service scan result showing Microsoft Terminal Service running on port 3389}     
+        \caption{Nmap - Service scan result showing Microsoft Terminal Service running on port 3389}     
         \label{nmap2}
 \end{figure}
 \end{landscape}
@@ -345,14 +353,14 @@ Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the 
 
 \begin{figure}[htb]
 \centering
-\makebox[1.03\linewidth][c]{%
+\makebox[1.02\linewidth][c]{%
   \begin{minipage}{1.1\linewidth}
     \centering
     \includegraphics[width=\linewidth]{img/buffer_overflow/nmap/fingerprint1.png}\\[-0.5em]
     \includegraphics[width=\linewidth]{img/buffer_overflow/nmap/fingerprint2.png}
   \end{minipage}
 }
-\caption{Nmap fingerprint}
+\caption{Nmap - Fingerprint of service running on port 5555}
 \label{fingerprint}
 \end{figure}
 
@@ -368,7 +376,7 @@ To verify these findings the complete fingerprint and both complete Nmap scan re
 	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/nmap/os1.png}
 }
 	\vspace*{-5mm}
-	\caption{Nmap OS scan results}
+	\caption{Nmap - OS scan results}
 	\label{osScanResult}
 \end{figure}
 
@@ -389,7 +397,7 @@ This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
 	\includegraphics[width=1.2\linewidth]{img/buffer_overflow/nmap/os2.png}
 }
 	\vspace*{-5mm}
-	\caption{Nmap smb-os discovery results}
+	\caption{Nmap - Smb-os discovery results}
 	\label{osScanResult2}
 \end{figure}
 
@@ -401,7 +409,7 @@ This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
 	\includegraphics[width=1.13\linewidth]{img/buffer_overflow/nmap/vulns.png}
 }
 	\vspace*{-5mm}
-	\caption{Nmap vulnerability scan results}
+	\caption{Nmap - Vulnerability scan results}
 	\label{vulnScanResult}
 \end{figure}
 
@@ -410,7 +418,7 @@ Nmap discovered the following vulnerability:
 \begin{itemize}
 \item{\textbf{smb-vuln-ms17-010} with the ID \textbf{CVE-2017-0143}}
 \end{itemize}
-%TODO analyze other vulnerabilities
+
 According to CVE-2017-0143, Microsoft SMBv1 servers are susceptible to attacks via specially crafted packets that enable remote code execution  \autocite{cve:2017-0143}. This vulnerability has a CVSS score of 8.8 (high severity) (see \cref{cvss}).
 
 \begin{figure}[!h]
@@ -446,7 +454,7 @@ Unless specified otherwise, these steps have been repeated after each incited cr
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/buffer_overflow/script/main.png} \\
-	\caption{Python script main method}
+	\caption{Provided Python script - Main method}
 	\label{main}
 \end{figure}
 
@@ -459,24 +467,24 @@ Running the provided script without any changes was already enough to provoke th
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[height=4cm]{img/buffer_overflow/vulnServ/1_crash.png} \\
-	\caption{VulnServer crash notice}
+	\includegraphics[height=5cm]{img/buffer_overflow/vulnServ/1_crash.png} \\
+	\caption{VulnServer - Crash notice after overflowing the buffer}
 	\label{crash}
 \end{figure}
 
-The script generates input for the prompted authentication string (see \cref{default}), connects to the server via the known socket (see \cref{conn}), and transmits the generated string to it.
+The script generates input for the prompted authentication string (see \cref{default}), connects to the server via the known socket and transmits the generated string (see \cref{conn}).
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/1_default.png} \\
-	\caption{Default script configuration}
+	\caption{Provided Python Script - Default replicate\_crash() function}
 	\label{default}
 \end{figure}
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{img/buffer_overflow/script/conn.png}
-	\caption{Connection function in the python script}
+	\includegraphics[width=0.85\linewidth]{img/buffer_overflow/script/conn.png}
+	\caption{Provided Python Script - Connection function to connect to the vulnerable server}
 	\label{conn}
 \end{figure}
 
@@ -506,7 +514,7 @@ The buffer contained the expected string of \enquote{A}s (see \cref{1_a_chain}) 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/1_a_chain.png} \\
-	\caption{Buffer filled with 41s}
+	\caption{Buffer filled with \enquote{A}s}
 	\label{1_a_chain}
 \end{figure}
 
@@ -596,12 +604,12 @@ The following parameters were used:
 \vspace*{-2mm}
 Metasploit calculated the offset based on the length of the string sent originally and the value written to the EIP to be \textbf{1040} characters.
 
-To confirm, the script was altered to send 1040 \enquote{A}s, followed by 4 \enquote{B}s (which should be written into the EIP, followed by some \enquote{C}s (see \cref{2_confirm_script}).
+To confirm, the script was altered to send 1040 \enquote{A}s, followed by 4 \enquote{B}s (which should be written into the EIP, followed by 24 \enquote{C}s (see \cref{2_confirm_script}).
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{img/buffer_overflow/vulnServ/2_confirm_script.png} \\
-	\caption{Script to confirm determined offset}
+	\caption{Script configuration to confirm determined offset}
 	\label{2_confirm_script}
 \end{figure}
 
@@ -620,7 +628,7 @@ Analyzing \cref{2_confirm1}, one can see that the program inserts the character 
 \newpage
 \paragraph{Determining bad characters}
 Before generating a payload we need to determine bad characters to avoid them interrupting the processing of the generated payload.
-To test the input, the file \enquote{\textit{badchars.txt}} was provided. Its contents were written to a variable in the script and sent as part of the input (see \cref{3_bad_chars}).
+To test the input, the file \enquote{\textit{badchars.txt}} was provided. Its contents were written to a variable in the script (see \cref{3_bad_chars}).
 
 \begin{figure}[!htb]
 	\centering
@@ -639,7 +647,7 @@ To determine the bad characters, the bad character candidate string was inserted
 \end{figure}
 
 This enabled determining which characters got processed by analyzing the memory in ImmunityDebugger by following the ESP in dump. 
-If the \enquote{B}s didn't showed up in memory, a bad character had to have been sent since the input processing was terminated prematurely.
+If the \enquote{B}s didn't show up in memory, a bad character had to have been sent since the input processing was terminated prematurely.
 
 Sending the original unaltered bad character string prevented the input from being processed fully, meaning a bad character was present. Immediately noticeable was, that the required string of \enquote{B}s was not present (see \cref{no-b}).\\
 Since no characters from the bad\_chars list showed up in memory, it was assumed that the first byte (\enquote{\textbackslash x00}, the null byte) was a bad character and needed to be removed.
@@ -738,7 +746,7 @@ The address discovered via the \enquote{Search For} feature was inside the memor
 	\caption{JMP ESP command not located in main thread}
 	\label{wrong_thread}
 \end{figure}
-\\This address stopped working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_start} - \cref{fail_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
+\\This address stops working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_start} - \cref{fail_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
 This instruction could be located within the address space of any accessible module. The command \textit{!mona modules} \autocite{mona} was used to list them (see \cref{modules}).
 
 \newpage
@@ -892,7 +900,7 @@ To facilitate the final attack the script was altered the following way (see \cr
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\linewidth]{img/buffer_overflow/overflow/payload_script.png} \\
-	\caption{Payload script}
+	\caption{Script configuration to send payload to the vulnerable server}
 	\label{payload_script}
 \end{figure}
 \vspace{-8mm}
@@ -902,7 +910,7 @@ This method returns the string representation of the payload generated with msfv
 \item{\textbf{\enquote{\textbackslash x71 \textbackslash x1D \textbackslash xD1 \textbackslash x65}}}\\
 The previously determined memory address holding the JMP ESP instruction.
 It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering, storing the least significant byte at the smallest address, therefore reading the address right to left \autocite{microsoft:little_endian}.\\
-The attack was also done twice more with the discovered memory addresses which were impermanent across restarts respectively, to show them not working after a reboot (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{private_vpn1} - \cref{reverse_foreign}).
+The attack was also done twice more with the discovered memory addresses which were impermanent across restarts, to show them not working anymore after a reboot (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{private_vpn1} - \cref{reverse_foreign}).
 \end{itemize}
 
 Upon executing the attack, the following happened:
@@ -921,7 +929,7 @@ The payload initiated a connection to the attacking system, which had a netcat l
 	\makebox[1.02\linewidth][c]{%
 	\includegraphics[width=1.1\linewidth]{img/buffer_overflow/overflow/reverse_shell.png}
 	}
-	\caption{Reverse shell listener established}
+	\caption{Reverse shell established}
 	\label{reverse_shell}
 \end{figure}
 
@@ -1072,7 +1080,7 @@ The payload can now be transmitted, preceded in the input string by a string fil
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.6\linewidth, margin=10pt]{img/buffer_overflow/vulns_counter/attack.png}
-	\caption{Visualization of Buffer Overflow exploitation procedure - Bad character determination}
+	\caption{Visualization of Buffer Overflow exploitation procedure - Attack execution}
 	\label{attack_vis}
 \end{figure}\\
 Care should be taken to provide the return address in the correct format.\\
@@ -1205,7 +1213,7 @@ Monitoring unexpected file access could help detect an attack, even though no fi
 \itemIT{The app spawns an unexpected child}
 Creating a new powershell instance or an installer for example can be suspicious. The reverse shell connection was established directly via TCP during the attack in this assignment, therefore this technique wouldn't have worked as well here, but is still advisable to employ.
 \itemIT{The app establishes an unusual outbound connection}
-Detecting unwanted connections can aid detection, see \fullref{DET0080}.
+Looking out for unwanted connections can aid detection, see \fullref{DET0080}.
 \end{enumerate}
 
 \paragraph{Risk assessment}
@@ -1254,8 +1262,8 @@ Intrusion prevention systems (IPS) could prevent attacks by identifying adversar
 \subparagraph{Detection Strategies}
 \begin{itemize}
 \item{\textbf{Detection of Command and Control Over Application Layer Protocols} (DET0444)}\\
-Detects suspicious usage of application-layer protocols via different metrics (e.g. byte count, ports etc.) \autocite{mitre:defend}
-In the assignment the reverse shell connected to port 443 on the attacking machine, a port outbound traffic from a public server shouldn't connect to. 
+Detects suspicious usage of application-layer protocols via different metrics (e.g. byte count, ports etc.) \autocite{mitre:attack:DET0444}.
+In the assignment the reverse shell connected to port 443 on the attacking machine, a port for which outbound traffic from a public server is highly unusual. 
 \end{itemize}
 
 Like was mentioned before, the laboratory environment didn't provide any implementation of these mitigation or detection tactics, from which a real life application would benefit.
@@ -1331,9 +1339,9 @@ Exploiting the Buffer Overflow required understanding of the stack and how opera
 That became clear during work on the assignment, which helped me gain a better understanding of the processes happening close to the hardware.
 
 Writing the report was very time intensive, requiring more time than I had anticipated when starting out.
-In addition, the level of detail required was only apparent once I had started the writing process. When I was documenting my approach, I didn't take enough care to represent the steps I took with readable, appropriately formatted screnshots. I had to go back and repeat some steps to take satisfactory screengrabs, only gaining usable material during the second session. At that point I had gone over the material again and reviewed the steps i took in detail. I was therefore able to repeat the steps quickly with intent. A deeper understanding of the subject matter gave me with the ability to anticipate what information was relevant, which made it easier to take the steps in an easily documentable way.
+In addition, the level of detail required was only apparent once I had started the writing process. When I was documenting my approach, I didn't take enough care to represent the steps I took with readable, appropriately formatted screenshots. I had to go back and repeat some steps to take satisfactory screengrabs, only gaining usable material during the second session. At that point I had gone over the material again and reviewed the steps i took in detail. I was therefore able to repeat the steps quickly with intent. A deeper understanding of the subject matter gave me with the ability to anticipate what information was relevant, which made it easier to take the steps in an easily documentable way.
 
- Moving into the next assignment, I knew what to expect in terms of documentation of my actions. I practiced the discussed concepts on my private system, to prepare myself for the scheduled appointments in which we could work on the assignment. I had learned that preparation and familiarity with the tooling and the subject matter enable me to focus on executing the necessary steps while being able to document them. If I don't know what I am doing or why I am doing it, my ability to document and communicate my actions diminishes drastically. Hence I did my utmost to be prepared for the following assignments. 
+Moving into the next assignment, I knew what to expect in terms of documentation of my actions. I practiced the discussed concepts on my private system, to prepare myself for the scheduled appointments in which we could work on the assignment. I had learned that preparation and familiarity with the tooling and the subject matter enable me to focus on executing the necessary steps while being able to document them. If I don't know what I am doing or why I am doing it, my ability to document and communicate my actions diminishes drastically. Hence I did my utmost to be prepared for the following assignments. 
 
  \newpage
  \subsection{Linux - Complete Pentest (Mesa)}
