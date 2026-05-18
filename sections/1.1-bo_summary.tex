@@ -1,0 +1,42 @@
+\documentclass[../report.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Windows Scanning and Buffer Overflow}
+The participants were granted access to two machines, an attacking system and a target system.
+The target system was running a server that was vulnerable to a Buffer Overflow attack.
+Said system was scanned before the Buffer Overflow weakness was exploited to create a reverse shell.
+\subsubsection{Active Scan}
+
+\begin{enumerate}
+\item{\textbf{Nmap Scan to determine open ports, services, OS, and weakpoints}}\\
+Three services were found running on three open ports on the Windows 7 machine:\\[0.5em]
+\begin{tabular}{l | l}
+Port 445: & Microsoft Directory Service\\
+\hline
+Port 3389: & Remote Desktop Service\\
+\hline
+Port 5555: & Unidentified Server (known to be VulnServer application)
+\end{tabular}	
+\end{enumerate}
+
+The scan revealed a remote code execution vulnerability in the server running on port 445.
+\vspace{-2mm}
+\subsubsection{Buffer Overflow Attack}
+
+\begin{enumerate}
+\item{\textbf{Crashing the server}}\\
+An input was sent that was not validated correctly, enabling the EIP to be overwritten.\\
+\textit{This could be prevented by validating the input, updating the software if a fix is available, or rewriting the program with bounded functions to avoid memory corruption.}
+
+\item{\textbf{Gathering information about input processing and generating a payload}}\\
+Next, the offset to write to the return address was determined, which characters should not be used in the payload, and where to find instructions to get the system to execute the payload.
+This information was used to generate a payload that would eventually create a reverse shell.\\
+\textit{Security systems could be installed that monitor requests, network traffic and application behavior. The application in question could be isolated, and a DMZ could be established.}
+
+\item{\textbf{Creating a reverse shell}}\\
+The payload was sent and executed, creating a reverse shell on the target machine.\\
+\textit{If this were to happen, a firewall configuration preventing the server from establishing unintended outbound connections could be able to stop the reverse shell.}
+\end{enumerate}
+
+\end{document}

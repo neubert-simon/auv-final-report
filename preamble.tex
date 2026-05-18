@@ -1,3 +1,6 @@
+%General
+%\usepackage{subfiles}
+
 % Page format
 \usepackage[
 	top=0.98in,
@@ -17,6 +20,13 @@
 % Lists and tables
 \newcommand{\itemIT}[1]{\item{\textit{#1}\par}}
 \newcommand{\itemBF}[1]{\item{\textbf{#1}\par}}
+\usepackage{array}
+\newcolumntype{L}{>{\bfseries}l}
+\newcolumntype{C}{>{\bfseries}c}
+\newcolumntype{R}{>{\bfseries}r}
+\newcommand{\tabnote}[1]{%
+  \multicolumn{2}{p{\dimexpr\linewidth-2\tabcolsep\relax}}{\normalfont #1}\\%
+}
 
 % Date
 \newcommand{\leadingzero}[1]{\ifnum #1<10 0\the#1\else\the#1\fi}
@@ -42,8 +52,8 @@
 \definecolor{sectionBlue}{HTML}{5A80B8}
 
 % Sections
-\setcounter{secnumdepth}{5}
 \usepackage{titlesec}
+\setcounter{secnumdepth}{5}
 \titleformat{\section}
 {\fontsize{16pt}{19pt}\selectfont\bfseries\color{chapterBlue}}
 {\thesection}{1em}{}
@@ -129,7 +139,7 @@
   	maxnames=3,
   	minnames=3
 ]{biblatex}
-\addbibresource{bibliography.bib}
+\addbibresource{\subfix{bibliography.bib}}
 \DefineBibliographyStrings{english}{
   urlseen = {accessed on}
 }
