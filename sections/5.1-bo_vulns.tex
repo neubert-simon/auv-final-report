@@ -2,6 +2,85 @@
 
 \begin{document}
 
-Text here.
+\subsection{Windows Scanning and Buffer Overflow}
+
+\subsubsection{Vulnerability - Buffer Overflow} \label{subsubsec:buffer_overflow_expl}
+To access the system initially, a Buffer Overflow vulnerability was used (see \fullref{subsec:buffer_overflow} for execution details).
+The vulnerability can be classified as:\\
+\textbf{CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')} \autocite{mitre:cwe:120}\\
+There is no CVE entry for the vulnerability in the VulnServer program, since it was specifically designed as an educational tool for Buffer Overflows \autocite{vulnserver}.
+
+\paragraph{Working principle}
+Cowan et al. explain the principle is, that a program vulnerable to Buffer Overflow does not validate input length or contents, instead writing the input to memory without proper bounds-checks. The attacker's goal is exploiting the fact that input isn't being validated correctly by the server, enabling them to overwrite memory with malicious code, taking over the program \autocite{cowan2000buffer}.
+
+Cowan et al. continue that the program should be provided a string as input, which is made up of native CPU instructions. 
+The program then writes this string to the buffer, storing the injected code. Since there are insufficient bounds-checks, the allotted buffer can be overstepped, writing to adjacent memory.
+The exploit used intends to overwrite \textit{code pointers}, pointing to the instruction that should be executed next.
+Cowan et al. go on to explain that the program lays down an Activation Record on the Stack for each function call, contain the return address, which point the operating system to the next instruction to run after the function has returned \autocite{cowan2000buffer}. 
+In the case of the attacked Windows machine, this return address is held in the EIP register.
+By corrupting this register with a suitable address, the attacker can force the target system to execute the injected code, which is called \enquote{The stack-smashing attack} \autocite{https://doi.org/10.1002/spe.515}.
+The most common approach is to provide the vulnerable service with a string, that overflows the buffer, corrupts the return address and provides the payload right after \autocite{aleph:96}, which was utilized in this assignment.
+
+\paragraph{Cause and Prevention of the vulnerability}
+The VulnServer application cloneable from Bradshaw's Github repository uses \emph{strcpy} (see \cref{strcopy}), a C function which does not check if enough space is present before it copies input into the buffer \autocite{microsoft:strcpy}. 
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{buffer_overflow/analysis/strcopy}
+	\caption{Example of C Code vulnerable to Buffer Overflows from VulnServer Repo}
+	\vspace{-2mm}
+	\caption*{\small Source: \url{https://github.com/stephenbradshaw/vulnserver/blob/master/vulnserver.c}}
+	\label{strcopy}
+\end{figure}
+
+Since the Buffer Overflow vulnerability is present, it can be assumed that the modified version of VulnServer deployed in the laboratory similarly does not conduct any bounds checks when processing the input.
+To fix this vulnerability, a safer function like strcpy\_s could be used \autocite{microsoft:strcpy}, or a bounds check could be implemented before calling the unsafe function. In the latter case, the input length should be validated, ensuring it fits inside the allotted char buffer without flowing over.
+
+\subsubsection{Risk Assessment}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{buffer_overflow/analysis/cvss}
+	\caption{CVSS v4.0 Score calculation}
+	\vspace{-2mm}
+	\caption*{\small Source: \url{https://www.first.org/cvss/calculator/4.0}}
+\end{figure}
+\begin{tabular}{l l}
+Vector: & CVSS:4.0/AV:A/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H\\
+CVSS v4.0 Score: & 9.4 / Critical\\
+\end{tabular}
+
+\paragraph*{Base Metrics}
+\subparagraph*{Exploitability Metrics}
+\begin{tabular}{L | L}
+Attack Vector (AV) & Adjacent (A)\\
+\tabnote{The attack had to be launched inside the laboratory subnet, the logical network of the server.}
+Attack Complexity (AC): & Low (L)\\
+\tabnote{Once the script was perfected, execution of the script was all an attacker needed to do.}
+Attack Requirements (AR): & None (N)\\
+\tabnote{Attacks using the finalized script can be expected to work on all servers configured this way.}
+Privileges Required (PR) & None (N)\\
+\tabnote{No privileges are necessary, any unauthenticated user can execute the attack.}
+User Interaction (UI) & None (N)\\
+\tabnote{The system runs the payload without need for interaction.}
+\end{tabular}
+
+\subparagraph*{Impact Metrics}
+\begin{tabular}{L | L}
+Confidentiality & High (H)\\
+\tabnote{Files and information can be extracted via the reverse shell.}
+Integrity & High (H)\\
+\tabnote{The system can be altered via the reverse shell.}
+Availability & High (H)\\
+\tabnote{The attack can crash the server, denying access to the service.}
+\end{tabular}
+
+Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), both metric types got the same scores.
+
+\paragraph*{Supplemental Metrics}
+\begin{tabular}{L | L}
+Automatable (AU) & Yes (Y)\\
+\tabnote{An attacker could automate scanning a network for servers matching the VulnServer fingerprint, create a listener on separate ports for each match, generate a payload for each port, and launch the script with different payloads against multiple machines automatically.}
+\end{tabular}
 
 \end{document}
