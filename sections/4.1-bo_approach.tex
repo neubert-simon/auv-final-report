@@ -5,21 +5,14 @@
 \subsection{Windows Scanning and Buffer Overflow}
 
 \subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
-The goal of the Nmap scan was to obtain the following information about the target system:
-\begin{itemize}
-\begin{multicols}{2}
-\item{Operating System}
-\item{Open Ports}
-\item{Service information}
-\item{Vulnerabilities}
-\end{multicols}
-\end{itemize}
-%TODO split nmap params into two lines
+The Active Scanning technique (T1595) (Reconnaissance (TA0043) \autocite{mitre:attack:TA0043} tactic) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.\\
+The goal of the Nmap scan was to obtain information about the operating system, open ports, service information, and vulnerabilities on the target system:
+
 \paragraph{Scan Setup}
 To achieve this, the following Nmap parameters were used:
 \begin{figure}[h]
 \makebox[1.05\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{buffer_overflow/nmap/flags}
+	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/flags}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - Configuration used to scan the target system}
@@ -36,7 +29,7 @@ Enables OS detection, provides information about the target machine’s operatin
 Instructs Nmap to scan the complete port range to discover open ports on the target machine.
 \item[-]{\textbf{sV}}\\
 Instructs Nmap to scan for services and their versions on open ports.
-\item[\texttt{--}]{\textbf{script}=\enquote{default, vuln}}\\
+\item[\texttt{--}]{\textbf{script}=\enquote{default,vuln}}\\
 Executes the default non-intrusive general and vulnerability scripts during the scan. 
 \item[-]{\textbf{Pn}}\\
 This flag instructs Nmap to treat all hosts as online, skipping the ICMP ``ping" Nmap would otherwise perform before scanning the system.
@@ -53,22 +46,15 @@ The IP adress of the target machine that was to be scanned.
 
 \subparagraph{Port Scan}
 
-\begin{figure}[!h]
 
+\begin{figure}[!h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.034\linewidth]{buffer_overflow/nmap/ports} \\
+	\includegraphics[width=1.034\linewidth]{../img/buffer_overflow/nmap/ports} \\
 }	
 	\caption{Nmap - Port scan results}
 	\label{portScan}
 \end{figure}
 \newpage
-
-Nmap found the following open ports (see \cref{portScan}):
-\begin{itemize}
-\begin{multicols}{3}
-\item{445} \item{3389} \item{5555}
-\end{multicols}
-\end{itemize}
 
 \subparagraph{Service Scan} \label{paragraph:service-scan}
 Nmap attempted to identify the services running on the discovered open ports (see \cref{portScanResult}):
@@ -76,14 +62,14 @@ Nmap attempted to identify the services running on the discovered open ports (se
 
 \begin{figure}[h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/nmap/services1.png}
+	\includegraphics[width=1.15\linewidth]{../img/buffer_overflow/nmap/services1.png}
 }
         \caption*{}     
 \end{figure}
 \vspace*{-13mm}
 \begin{figure}[h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/nmap/services2.png}
+	\includegraphics[width=1.15\linewidth]{../img/buffer_overflow/nmap/services2.png}
 }
         \vspace*{-5mm}
 	\caption{Nmap - Service scan result}
@@ -126,7 +112,7 @@ All that can be gleamed from this scan result is that a service is running on po
 To check if the service running on port 3389 was Microsoft's Remote Desktop service, a banner grabbing attempt was made via FreeRDP (see \cref{conn_attempt}).
 \begin{figure}[!h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{buffer_overflow/nmap/conn_attempt.png}
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/conn_attempt.png}
 }
         \caption{Connection attempt via Remote Desktop protocol on port 3389}     
         \label{conn_attempt}
@@ -165,7 +151,7 @@ Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the 
 \begin{landscape}
 \begin{figure}[h]
 \makebox[\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/nmap/3389_scan.png}
+	\includegraphics[width=1.15\linewidth]{../img/buffer_overflow/nmap/3389_scan.png}
 }
         \caption{Nmap - Service scan result showing Microsoft Terminal Service running on port 3389}     
         \label{nmap2}
@@ -182,8 +168,8 @@ Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the 
 \makebox[1.02\linewidth][c]{%
   \begin{minipage}{1.1\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{buffer_overflow/nmap/fingerprint1.png}\\[-0.5em]
-    \includegraphics[width=\linewidth]{buffer_overflow/nmap/fingerprint2.png}
+    \includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/fingerprint1.png}\\[-0.5em]
+    \includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/fingerprint2.png}
   \end{minipage}
 }
 \caption{Nmap - Fingerprint of service running on port 5555}
@@ -199,7 +185,7 @@ To verify these findings the complete fingerprint and both complete Nmap scan re
 \subparagraph{Operating System Scan} \label{paragraph:os-scan}
 \begin{figure}[h]
 \makebox[1.02\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{buffer_overflow/nmap/os1.png}
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/os1.png}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - OS scan results}
@@ -220,7 +206,7 @@ Service Pack 1" on the machine, strengthening the evidence for a Windows 7 machi
 This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
 \begin{figure}[h]
 \makebox[1.02\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{buffer_overflow/nmap/os2.png}
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/os2.png}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - Smb-os discovery results}
@@ -232,7 +218,7 @@ This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
 
 \begin{figure}[h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.13\linewidth]{buffer_overflow/nmap/vulns.png}
+	\includegraphics[width=1.13\linewidth]{../img/buffer_overflow/nmap/vulns.png}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - Vulnerability scan results}
@@ -248,7 +234,7 @@ Nmap discovered the following vulnerability:
 According to CVE-2017-0143, Microsoft SMBv1 servers are susceptible to attacks via specially crafted packets that enable remote code execution  \autocite{cve:2017-0143}. This vulnerability has a CVSS score of 8.8 (high severity) (see \cref{cvss}).
 
 \begin{figure}[!h]
-	\includegraphics[width=\linewidth]{buffer_overflow/nmap/cvss.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/cvss.png} \\
 	\vspace*{-5mm}
 	\caption{CVSS score of CVE-2017-0143}
 	\vspace*{-1.5mm}
@@ -268,7 +254,7 @@ Running the provided script without any changes was already enough to provoke th
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[height=5cm]{buffer_overflow/vulnServ/1_crash.png} \\
+	\includegraphics[height=5cm]{../img/buffer_overflow/vulnServ/1_crash.png} \\
 	\caption{VulnServer - Crash notice after overflowing the buffer}
 	\label{crash}
 \end{figure}
@@ -277,7 +263,7 @@ The script generates input for the prompted authentication string (see \cref{def
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/1_default.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/1_default.png} \\
 	\caption{Provided Python Script - Default replicate\_crash() function}
 	\label{default}
 \end{figure}
@@ -285,7 +271,7 @@ The script generates input for the prompted authentication string (see \cref{def
 To run the script conveniently, an alias passing the target machine's IP address as a command line parameter was created (see \cref{alias}).
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/script/alias.png}
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/script/alias.png}
 	\caption{Alias for the python script execution command}
 	\label{alias}
 \end{figure}
@@ -294,7 +280,7 @@ Connection to the server was possible via netcat, confirming it was running.
 Running the script unmodified crashed the server, which (besides being observable on the target machine) was confirmed by attempting a new connection, which failed (see \cref{execution}).
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.6\linewidth]{buffer_overflow/script/execution.png}
+	\includegraphics[width=0.6\linewidth]{../img/buffer_overflow/script/execution.png}
 	\caption{Crashing the server via vulnserver-poc-orig.py}
 	\label{execution}
 \end{figure}
@@ -305,7 +291,7 @@ The buffer contained the expected string of \enquote{A}s (see \cref{1_a_chain}) 
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/1_a_chain.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/1_a_chain.png} \\
 	\caption{Buffer filled with \enquote{A}s}
 	\label{1_a_chain}
 \end{figure}
@@ -313,16 +299,18 @@ The buffer contained the expected string of \enquote{A}s (see \cref{1_a_chain}) 
 The EIP was filled by four \enquote{41}s (see \cref{1_eip}), corresponding to four \enquote{A}s.
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/1_eip.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/1_eip.png} \\
 	\caption{EIP filled with 41s}
 	\label{1_eip}
 \end{figure}
 \\This lead to the crash, since \textit{41414141} is not a valid memory address containing instructions that should be performed after the function returned (see \cref{access_violation}).
 
+At this point, without any further exploitation set up, this cursory attack could be categorized as Endpoint Denial of Service: Application or System Exploitation \autocite{mitre:attack:T1499:004}, since all that is being achieved with the script is a server crash that denies regular users availability.
+
 \clearpage\newpage
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/overflow/access_violation.png}
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/overflow/access_violation.png}
 	\caption{Access violation notice in the ImmunityDebugger}
 	\label{access_violation}
 \end{figure}
@@ -332,7 +320,7 @@ To achieve this, a non-repeating string of characters was created. (see \cref{2_
 Since it was known that a string length of 1072 incites a crash, that exact length was chosen as the length of the character string by passing the metaspolit script the parameter \textit{-\textbf{l} 1072}.
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/2_generate_unique.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_generate_unique.png} \\
 	\caption{Generation of a non-repeating string of characters using metasploit}
 	\label{2_unique}
 \end{figure}
@@ -341,7 +329,7 @@ The output was written to a file \textit{unique\_charseq.txt} and moved into the
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/2_unique_script.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_unique_script.png} \\
 	\caption{Script using the non-repeating string of characters}
 	\label{2_unique_script}
 \end{figure}
@@ -353,7 +341,7 @@ The transmitted input lead to the server crashing as was expected, and by follow
 \newpage
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/2_unique_memory.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_unique_memory.png} \\
 	\caption{Observing the non-repeating string in ImmunityDebugger}
 	\label{2_unique_memory}
 \end{figure}
@@ -363,7 +351,7 @@ The transmitted input lead to the server crashing as was expected, and by follow
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/2_unique_eip.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_unique_eip.png} \\
 	\caption{Observing the EIP after crashing the server with the unique character sequence}
 	\label{2_unique_eip}
 \end{figure}
@@ -378,7 +366,7 @@ This was used to determine the offset by feeding this value back into metasploit
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/2_offset.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_offset.png} \\
 	\caption{Determining the offset to write to the Extended Instruction Pointer}
 	\label{2_offset}
 \end{figure}
@@ -400,7 +388,7 @@ To confirm, the script was altered to send 1040 \enquote{A}s, followed by 4 \enq
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/2_confirm_script.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_confirm_script.png} \\
 	\caption{Script configuration to confirm determined offset}
 	\label{2_confirm_script}
 \end{figure}
@@ -409,8 +397,8 @@ The expected character sequence was observed in memory. 4 \enquote{B}s (4 x \enq
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[height=8cm]{buffer_overflow/vulnServ/2_confirm1.png}
-	\includegraphics[height=8cm]{buffer_overflow/vulnServ/2_confirm2.png}
+	\includegraphics[height=8cm]{../img/buffer_overflow/vulnServ/2_confirm1.png}
+	\includegraphics[height=8cm]{../img/buffer_overflow/vulnServ/2_confirm2.png}
 	\caption{Buffer filled with expected characters}
 	\label{2_confirm1}
 \end{figure}
@@ -424,7 +412,7 @@ To test the input, the file \enquote{\textit{badchars.txt}} was provided. Its co
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/3_bad_chars.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/3_bad_chars.png} \\
 	\caption{Badchars as input in the python script}
 	\label{3_bad_chars}
 \end{figure}
@@ -433,7 +421,7 @@ To determine the bad characters, the bad character candidate string was inserted
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/vulnServ/3_bad_chars_script.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/3_bad_chars_script.png} \\
 	\caption{Badchars testing against the server}
 	\label{3_bad_chars_script}
 \end{figure}
@@ -446,7 +434,7 @@ Since no characters from the bad\_chars list showed up in memory, it was assumed
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/script/no_bad_chars.png}
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/script/no_bad_chars.png}
 	\caption{Input without bad character "\textbackslash x00"}
 	\label{no_bad_chars}
 \end{figure}
@@ -459,7 +447,7 @@ After the string of \enquote{A}s, the interpreted characters from the bad\_chars
 \begin{figure}[!htb]
 	\centering
 \makebox[1.01\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{buffer_overflow/bad_chars/no-b.png}
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/bad_chars/no-b.png}
 }
 	\caption{Buffer after receiving input with bad character "\textbackslash x00" and no Bs}
 	\label{no-b}
@@ -467,7 +455,7 @@ After the string of \enquote{A}s, the interpreted characters from the bad\_chars
 \newpage
 \begin{figure}[!htb]
 \makebox[1.01\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{buffer_overflow/bad_chars/yes-b.png} 
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/bad_chars/yes-b.png} 
 }
 	\caption{Buffer after receiving input without bad character "\textbackslash x00" and Bs in buffer}
 	\label{yes-b}
@@ -486,7 +474,7 @@ The NASM shell, which shows opcodes for instructions on x86 systems \autocite{gi
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[height=3cm]{buffer_overflow/vulnServ/4_jmp_esp_opcode.png}
+	\includegraphics[height=3cm]{../img/buffer_overflow/vulnServ/4_jmp_esp_opcode.png}
 	\caption{Opcode determination}
 	\label{4_jmp_esp_opcode}
 \end{figure}
@@ -502,7 +490,7 @@ The following memory address containing a JMP ESP instruction was found during t
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=1.054\linewidth]{buffer_overflow/pre_restart/jmp_found.png}
+	\includegraphics[width=1.054\linewidth]{../img/buffer_overflow/pre_restart/jmp_found.png}
 	\caption{Found JMP ESP instruction in the paused thread}
 	\label{jmp_found}
 \end{figure}
@@ -516,7 +504,7 @@ Upon restarting the target machine, this JMP ESP instruction was not located at 
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[height=4cm]{buffer_overflow/post_restart/jmp_found_post.png}\\
+	\includegraphics[height=4cm]{../img/buffer_overflow/post_restart/jmp_found_post.png}\\
 	\caption{Found JMP ESP instruction in the paused thread post restart}
 	\label{jmp_found_post}
 \end{figure}
@@ -524,7 +512,7 @@ Upon restarting the target machine, this JMP ESP instruction was not located at 
 The address discovered via the \enquote{Search For} feature was inside the memory space of a non-main thread (see \cref{wrong_thread}), meaning the location in memory would change across restarts since the thread will be opened anew by the process with differently allocated memory \autocite{microsoft:threads_in_stack}.
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.87\linewidth]{buffer_overflow/post_restart/wrong_thread.png} \\
+	\includegraphics[width=0.87\linewidth]{../img/buffer_overflow/post_restart/wrong_thread.png} \\
 	\caption{JMP ESP command not located in main thread}
 	\label{wrong_thread}
 \end{figure}
@@ -535,7 +523,7 @@ This instruction could be located within the address space of any accessible mod
 \begin{landscape}
 \begin{figure}[ht]
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=1.175\linewidth, height=1.028\textheight]{buffer_overflow/overflow/modules.png}
+		\includegraphics[width=1.175\linewidth, height=1.028\textheight]{../img/buffer_overflow/overflow/modules.png}
 	}
 	\caption{Mona modules list, showing ASLR and DEP being disabled for VulnServer.exe only}
 	\label{modules}
@@ -555,7 +543,7 @@ The  vulnerable server process itself (\textit{VulnServer.exe}) had both ASLR an
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/overflow/modules_zoomed.png}
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/overflow/modules_zoomed.png}
 	\caption{VulnServer.exe without ASLR or DEP enabled in module overview}
 	\label{modules_zoomed}
 \end{figure}
@@ -576,7 +564,7 @@ Searches within the process' memory.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/overflow/mona_result.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/overflow/mona_result.png} \\
 	\caption{Mona finding one result for JMP ESP instruction inside process memory}
 	\label{mona_result}
 \end{figure}
@@ -599,7 +587,7 @@ First, an encoder needed to be selected (see \cref{5_encoder_selection}).
 \begin{figure}[htb]
 	\centering
 \makebox[1.02\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{buffer_overflow/payload/0_encoder_selection.png}
+	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/payload/0_encoder_selection.png}
 }
 	\caption{Encoder options}
 	\label{5_encoder_selection}
@@ -613,7 +601,7 @@ The relevant interface is \textit{tun0}, the virtual network interface the attac
 
 \begin{figure}[htb]
 \makebox[1.02\linewidth][c]{%
-	\includegraphics[width=\linewidth]{buffer_overflow/payload/0_ip.png}
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/payload/0_ip.png}
 }
 	\caption{IP address in the ICS laboratory network}
 	\label{ip}
@@ -625,7 +613,7 @@ The payload to create a reverse shell on the target system was generated with th
 \begin{figure}[htb]
 	\centering
 	\makebox[1.02\linewidth][c]{%
-		\includegraphics[width=1.15\linewidth, height=5.5cm]{buffer_overflow/payload/1_payload_generation.png}
+		\includegraphics[width=1.15\linewidth, height=5.5cm]{../img/buffer_overflow/payload/1_payload_generation.png}
 	}
 	\caption{Payload generation via msfvenom}
 	\label{1_payload_generation}
@@ -662,7 +650,7 @@ Before starting the attack, a listener for the reverse shell was created via net
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[height=2cm]{buffer_overflow/payload/2_start_reverse_shell.png} \\
+	\includegraphics[height=2cm]{../img/buffer_overflow/payload/2_start_reverse_shell.png} \\
 	\caption{Starting a reverse shell listener via netcat}
 	\label{2_start_reverse_shell}
 \end{figure}
@@ -678,10 +666,10 @@ Tells netcat to listen on port 443, the port we are establishing the connection 
 \end{itemize}
 \newpage
 \paragraph{Decoding payload and creating reverse shell}
-To facilitate the final attack the script was altered the following way (see \cref{payload_script}):
+To facilitate the final attack, the script was altered the following way (see \cref{payload_script}):
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{buffer_overflow/overflow/payload_script.png} \\
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/overflow/payload_script.png} \\
 	\caption{Script configuration to send payload to the vulnerable server}
 	\label{payload_script}
 \end{figure}
@@ -699,26 +687,39 @@ Upon executing the attack, the following happened:
 \vspace{-3mm}
 \begin{enumerate}
 \item{\textbf{Overwriting the EIP}}\\
-After the determined offset of 1040 bytes, which the script filled with \enquote{A}s, the EIP got overwritten with the address that reliable contained the JMP ESP command.
+After the determined offset of 1040 bytes, which the script filled with \enquote{A}s, the EIP got overwritten with the address that reliably contained the JMP ESP command. The input wasn't terminated at any point during processing, since any bad characters had been omitted in payload generation.
 \item{\textbf{Jumping to the top of the stack}}\\
 Upon returning (RETN), the JMP ESP instruction was executed.
-Since some padding was injected, followed by the payload, the malicious code got decoded and executed.
+The payload got decoded, the injected NOP-padding ensured the payload wouldn't get overwritten during the decoding process.
+The decoded malicious code got executed after decoding had finished . 
 \item{\textbf{Reverse shell creation}}\\
-The payload initiated a connection to the attacking system, which had a netcat listener waiting on an incoming connection (see \cref{reverse_shell}).
+The payload initiated a connection to the attacking system, which had the netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
 \end{enumerate}
-%TODO add execution of temporary address
+
 \begin{figure}[!htb]
 	\makebox[1.02\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{buffer_overflow/overflow/reverse_shell.png}
+	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/overflow/reverse_shell.png}
 	}
 	\caption{Reverse shell established}
 	\label{reverse_shell}
 \end{figure}
 
+This finalized attack was used to \enquote{Exploit Public-Facing Application (T1190)} \autocite{mitre:attack:T1190}, in order to get \enquote{Initial Access (TA0001)} \autocite{mitre:attack:TA0001} to the target system. The public facing VulnerServer application was exploited to get a payload onto the system.
+
+\enquote{Execution (TA0002)} \autocite{mitre:attack:TA0002} of the payload happened because the unprotected buffer was exploited, which is categorized as \enquote{Exploitation for Client Execution (T1203)} \autocite{mitre:attack:T1203}. 
+Arbitrary code was executed by the target machine because of the exploited vulnerability.
+
+\enquote{Command and Control (TA0011)} \autocite{mitre:attack:TA0101} was then established to the attacking machine via \enquote{Application Layer Protocol (T1071)} \autocite{mitre:attack:T1071}.
+The chosen payload \enquote{windows/shell\_reverse\_tcp} used a TCP connection to connect to port 443 on the attacker machine, which could appear as an outbound connection to a webserver.
+
+The reverse shell served as a \enquote{Command and Scripting Interpreter: Windows Command Shell (T1059.003)} \autocite{mitre:attack:T1059.003} enabling the attacker to take over the host system via reverse shell, which was opened by the injected payload.
+
+The scope of the assignment ended at this point, not requiring further privilege escalation, lateral movement, or exploitation of any kind. Access via reverse shell on the system is a dangerous attack vector, since the attacker gets interactive control over the target machine. Mitigation, Detection and Defense Strategies and countermeasures are discussed in \fullref{buff:vulns}.
+
 \newpage
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.75\linewidth]{buffer_overflow/script/payload.png}
+	\includegraphics[width=0.93\linewidth]{../img/buffer_overflow/script/payload.png}
 	\caption{Payload as a byte string in python}
 	\label{payload_bytes}
 \end{figure}

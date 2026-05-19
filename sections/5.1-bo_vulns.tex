@@ -2,7 +2,7 @@
 
 \begin{document}
 
-\subsection{Windows Scanning and Buffer Overflow}
+\subsection{Windows Scanning and Buffer Overflow} \label{buff:vulns}
 
 \subsubsection{Vulnerability - Buffer Overflow} \label{subsubsec:buffer_overflow_expl}
 To access the system initially, a Buffer Overflow vulnerability was used (see \fullref{subsec:buffer_overflow} for execution details).
@@ -33,7 +33,7 @@ The VulnServer application cloneable from Bradshaw's Github repository uses \emp
 	\label{strcopy}
 \end{figure}
 
-Since the Buffer Overflow vulnerability is present, it can be assumed that the modified version of VulnServer deployed in the laboratory similarly does not conduct any bounds checks when processing the input.
+The modified version of VulnServer deployed in the laboratory similarly does not conduct any bounds checks when processing the input, allowing for the Buffer Overflow to occur.
 To fix this vulnerability, a safer function like strcpy\_s could be used \autocite{microsoft:strcpy}, or a bounds check could be implemented before calling the unsafe function. In the latter case, the input length should be validated, ensuring it fits inside the allotted char buffer without flowing over.
 
 \subsubsection{Risk Assessment}
@@ -82,5 +82,33 @@ Since compromise of the vulnerable system (VulnServer) lead to a reverse shell o
 Automatable (AU) & Yes (Y)\\
 \tabnote{An attacker could automate scanning a network for servers matching the VulnServer fingerprint, create a listener on separate ports for each match, generate a payload for each port, and launch the script with different payloads against multiple machines automatically.}
 \end{tabular}
+
+\newpage
+\subsubsection{Countermeasures}
+The laboratory setup was purposely designed with a low level of security, therefore a multitude of possible mitigation, detection, and incident response measures exist.
+
+\begin{itemize}
+
+\itemBF{Exploit Protection (M1050)}
+Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult \autocite{mitre:attack:M1050}.
+
+\itemBF{Reducing attack surface}
+Reducing publicly accessible sensitive data is advisable to minimize damages \autocite{mitre:attack:M1056}.
+\itemBF{Detecting abnormal network traffic}
+Monitoring network traffic can help identify threats and prevent them.
+IP addresses could be blacklisted via firewall e.g. if port scanning is detected. \autocite{mitre:attack:DET0830, mitre:attack:DET0867}
+Monitoring outbound callbacks could also be of value. A webserver shouldn't connect to port 443 on another machine, that could have been blocked by a firewall rule as well \autocite{mitre:attack:DET0080, mitre:attack:M1037, mitre:attack:DET0444}.
+\itemBF{Isolating applications}
+If an attacker were to exploit a vulnerability, sandboxing the application could make it more difficult for the whole system to get compromised \autocite{mitre:attack:M1048}.
+\itemBF{Network segmentation}
+Create a demilitarized zone (DMZ) to encapsulate public-facing services can limit damages to the whole network if an attack were to be successful \autocite{mitre:attack:M1030}.
+\itemBF{Security monitoring}
+Employing a SIEM system or other security applications (like IDS / IPS) could aid detection of malicious activity \autocite{mitre:attack:M1050}.
+\itemBF{Privileged Account Management (M1026)}
+Use the least privilege principle to limit exploitable permissions \autocite{mitre:attack:M1026}.
+\itemBF{Vulnerability Scanning (M1016)}
+Periodically scan public-facing systems for vulnerabilities \autocite{mitre:attack:M1016}. This could lead to the discovery of potential weaknesses like the Buffer Overflow.
+\end{itemize}
+
 
 \end{document}
