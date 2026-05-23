@@ -183,6 +183,7 @@ It was altered during the assignment, and all relevant steps have been left in t
 
 \newpage
 
+\begin{landscape}
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/2_pre_jmp}
@@ -191,14 +192,14 @@ It was altered during the assignment, and all relevant steps have been left in t
 \end{figure}
 
 \begin{figure}[!h]
-\makebox[1.01\linewidth][c]{%
+\makebox[\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/2_jmp_esp}
 }
 \caption{Impermanent JMP ESP instruction located at 76E4E871, post-restart}
 \end{figure}
 
 \begin{figure}[!h]
-\makebox[1.01\linewidth][c]{%
+\makebox[\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/pre_address/0_script}
 }
 \caption{Using impermanent JMP ESP instruction location found before the restart in attack script}
@@ -212,8 +213,6 @@ It was altered during the assignment, and all relevant steps have been left in t
 \caption{No reverse shell when attacking with the old JMP ESP address post restart}
 \label{fail_end}
 \end{figure}
-
-
 
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
@@ -236,11 +235,109 @@ It was altered during the assignment, and all relevant steps have been left in t
 \caption{Reverse shell created by exploiting the impermanent post-restart JMP ESP location}
 \label{reverse_foreign}
 \end{figure}
+\end{landscape}
+
+\subsection{Linux - Complete Pentest (Mesa)}  \label{Appendix-2}
+
+\begin{figure}[!htb]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=0.75\linewidth]{pentest/1_active_scan/4_fuzzing/ffuf/ffuf}
+}
+\caption{Port 80 Ffuf result}
+\label{ffuf_80_full}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=\linewidth]{pentest/1_active_scan/4_fuzzing/dirbuster/setup/1337-setup}
+}
+\caption{Port 1337 scan - Dirbuster setup}
+\label{dirbuster_1337_setup}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=\linewidth]{pentest/1_active_scan/4_fuzzing/dirbuster/1337-result}
+}
+\caption{Port 1337 scan - Dirbuster result}
+\label{dirbuster_1337_result}
+\end{figure}
+
+\newpage
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.82\linewidth, height=21.4cm]{pentest/1_active_scan/5_technologies/80}
+	}
+	\caption{Whatweb results for port 80}
+	\label{whatweb_80}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.62\linewidth]{pentest/1_active_scan/5_technologies/port_80/bootstrap/chatgpt}
+	\caption{Whatweb - Reasons for multiple Bootstrap versions on port 80 ChatGPT log}
+	\vspace{-2mm}
+	\caption*{Source: \url{https://chatgpt.com}}
+	\label{multiple_versions_log}
+\end{figure}
+
+\begin{landscape}
+
+\begin{figure}[!htb]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{pentest/2_login/sql_injection/full_inject1}
+}
+	\caption{Successful SQL injection attempt 1}
+	\label{full_inject1}
+\end{figure}
+
+\begin{figure}[!htb]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{pentest/2_login/sql_injection/full_inject2}
+}
+	\caption{Successful SQL injection attempt 2}
+	\label{full_inject2}
+\end{figure}
+
+\begin{figure}[!htb]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{pentest/2_login/sql_injection/full_inject3}
+}
+	\caption{Successful SQL injection attempt 3}
+	\label{full_inject3}
+\end{figure}
+
+\end{landscape}
+
+\begin{figure}[!htb]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{pentest/4_source_code/2_login.php}
+}
+	\caption{login.php read via reverse shell}
+	\label{login_php_full}
+\end{figure}
+
+\begin{figure}[!htb]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.18\linewidth]{pentest/4_source_code/1_login_save}
+}
+	\caption{login.php.save read via reverse shell}
+	\label{login_save_full}
+\end{figure}
+
+\begin{figure}[!htb]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.18\linewidth]{pentest/4_source_code/3_management.php}
+}
+	\caption{management.php read via reverse shell}
+	\label{management_full}
+\end{figure}
 
 \clearpage
 \newpage
-\subsection{Linux - Complete Pentest (Mesa)}  \label{Appendix-2}
-\newpage
+
 \subsection{Digital Forensics}  \label{Appendix-3}
 
 \resumetoc

@@ -1,5 +1,6 @@
 %General
 \usepackage{subfiles}
+\usepackage{minted}
 
 % Page format
 \usepackage[
@@ -73,7 +74,7 @@
 \titleformat{\subparagraph}
 {\itshape\fontsize{10pt}{10pt}\selectfont\bfseries\color{sectionBlue}}
 {\thesubparagraph}{0.5em}{}
-\titlespacing*{\subparagraph}{0pt}{0pt}{0pt}
+\titlespacing*{\subparagraph}{0pt}{0pt}{-10pt}
 
 
 % TOC
@@ -117,6 +118,9 @@
 \Crefname{paragraph}{Section}{Sections}
 \crefname{figure}{Figure}{Figures}
 \newcommand{\fullref}[1]{\textit{\Cref{#1} -- \nameref{#1}}}
+\newcommand{\urlCaption}[1]{%
+    \vspace{-2mm} \caption*{\small Source: \url{#1}}%
+}
 
 % Figures
 \usepackage{graphicx}
