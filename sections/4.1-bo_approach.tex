@@ -5,7 +5,7 @@
 \subsection{Windows Scanning and Buffer Overflow}
 
 \subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
-The Active Scanning technique (T1595) (Reconnaissance (TA0043) \autocite{mitre:attack:TA0043} tactic) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.\\
+The Active Scanning technique (T1595) (Reconnaissance (TA0043) tactic \autocite{mitre:attack:TA0043}) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.\\
 The goal of the Nmap scan was to obtain information about the operating system, open ports, service information, and vulnerabilities on the target system:
 
 \paragraph{Scan Setup} \label{bo:scan-setup}
@@ -259,7 +259,7 @@ Running the provided script without any changes was already enough to provoke th
 	\label{crash}
 \end{figure}
 
-The script generates input for the prompted authentication string (see \cref{default}), connects to the server via the known socket and transmits the generated string (see \cref{conn}).
+The script generates input for the prompted authentication string (see \cref{default}), connects to the server via the known socket and transmits the generated string.
 
 \begin{figure}[htb]
 	\centering
@@ -336,7 +336,7 @@ The output was written to a file \textit{unique\_charseq.txt} and moved into the
 \vspace{-3mm}
 
 This string was used to identify the exact position of characters that were being written into the EIP register.
-The transmitted input lead to the server crashing as was expected, and by following the ESP register in dump the string was identified in the process' memory (see \cref{2_unique_memory}).
+The transmitted input lead to the server crashing, as was expected, and by following the ESP register in dump the string was identified in the process' memory (see \cref{2_unique_memory}).
 
 \newpage
 \begin{figure}[!htb]

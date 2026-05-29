@@ -28,6 +28,7 @@
 \newcommand{\tabnote}[1]{%
   \multicolumn{2}{p{\dimexpr\linewidth-2\tabcolsep\relax}}{\normalfont #1}\\%
 }
+\usepackage{enumitem}
 
 % Date
 \newcommand{\leadingzero}[1]{\ifnum #1<10 0\the#1\else\the#1\fi}
@@ -194,43 +195,61 @@
 \AddToHook{shipout/foreground}{%
 \begin{tikzpicture}[remember picture,overlay]
 
-  \iflandscapepage
-    % --- landscape version ---
+\iflandscapepage
+  % --- landscape version ---
 
-    % page number (upright)
-    \node[anchor=south east, rotate=90]
-      at ([xshift=-1.43cm,yshift=25.8cm]current page.south east)
-      {\thepage}; 
+  % Adjust offsets for 3-digit page numbers
+  \ifnum\value{page}>99
+    \def\LandscapePageNumberOffset{-1.63cm}
+    \def\LandscapeLineOffset{24.85cm}
+  \else
+    \def\LandscapePageNumberOffset{-1.43cm}
+    \def\LandscapeLineOffset{25.05cm}
+  \fi
 
-    % lines adapted to rotated layout
-    {\color{sectionBlue}
-    \draw[line width=0.4pt]
-      ([yshift=25.05cm]current page.south east)
-      -- ([yshift=25.05cm, xshift=51.3em]current page.south west);
+  % page number (upright)
+  \node[anchor=south east, rotate=90]
+    at ([xshift=\LandscapePageNumberOffset+0.2cm,yshift=25.8cm]current page.south east)
+    {\thepage};
 
-    \draw[line width=0.4pt]
-      ([yshift=25.1cm]current page.south east)
-      -- ([yshift=25.1cm, xshift=51.3em]current page.south west);
+  % lines adapted to rotated layout
+  {\color{sectionBlue}
 
-    \draw[line width=0.4pt]
-      ([yshift=25.15cm]current page.south east)
-      -- ([yshift=25.15cm, xshift=51.3em]current page.south west);
-     }
+  \draw[line width=0.4pt]
+    ([yshift=\LandscapeLineOffset]current page.south east)
+    -- ([yshift=\LandscapeLineOffset, xshift=51.3em]current page.south west);
+
+  \draw[line width=0.4pt]
+    ([yshift=\dimexpr\LandscapeLineOffset+0.05cm\relax]current page.south east)
+    -- ([yshift=\dimexpr\LandscapeLineOffset+0.05cm\relax, xshift=51.3em]current page.south west);
+
+  \draw[line width=0.4pt]
+    ([yshift=\dimexpr\LandscapeLineOffset+0.10cm\relax]current page.south east)
+    -- ([yshift=\dimexpr\LandscapeLineOffset+0.10cm\relax, xshift=51.3em]current page.south west);
+
+  }
   \else
     % --- normal portrait version ---
     \ifnum\value{page}>1
      {\color{sectionBlue}
+     
+      % Adjust position for 3-digit page numbers
+      \ifnum\value{page}>99
+       \def\PageLineOffset{-5.25cm}
+       \else
+       \def\PageLineOffset{-5.05cm}
+      \fi
       \draw[line width=0.4pt]
-        ([xshift=-5.05cm]current page.south east)
-        -- ([xshift=-5.05cm, yshift=-26.1cm]current page.north east);
+        ([xshift=\PageLineOffset]current page.south east)
+        -- ([xshift=\PageLineOffset, yshift=-26.1cm]current page.north east);
 
       \draw[line width=0.4pt]
-        ([xshift=-5.1cm]current page.south east)
-        -- ([xshift=-5.1cm, yshift=-26.1cm]current page.north east);
+        ([xshift=\dimexpr\PageLineOffset-0.05cm\relax]current page.south east)
+        -- ([xshift=\dimexpr\PageLineOffset-0.05cm\relax, yshift=-26.1cm]current page.north east);
 
       \draw[line width=0.4pt]
-        ([xshift=-5.15cm]current page.south east)
-        -- ([xshift=-5.15cm, yshift=-26.1cm]current page.north east);
+        ([xshift=\dimexpr\PageLineOffset-0.10cm\relax]current page.south east)
+        -- ([xshift=\dimexpr\PageLineOffset-0.10cm\relax, yshift=-26.1cm]current page.north east);
       }
     \fi
 

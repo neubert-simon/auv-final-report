@@ -46,8 +46,8 @@ To fix this vulnerability, a safer function like strcpy\_s could be used \autoci
 	\caption*{\small Source: \url{https://www.first.org/cvss/calculator/4.0}}
 \end{figure}
 \begin{tabular}{l l}
-Vector: & CVSS:4.0/AV:A/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H\\
-CVSS v4.0 Score: & 9.4 / Critical\\
+\textbf{Vector}: & CVSS:4.0/AV:A/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H\\
+\textbf{CVSS v4.0 Score}: & 9.4 / Critical\\
 \end{tabular}
 
 \paragraph*{Base Metrics}
@@ -85,10 +85,7 @@ Automatable (AU) & Yes (Y)\\
 
 \newpage
 \subsubsection{Countermeasures}
-The laboratory setup was purposely designed with a low level of security, therefore a multitude of possible mitigation, detection, and incident response measures exist.
-
 \begin{itemize}
-
 \itemBF{Exploit Protection (M1050)}
 Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult \autocite{mitre:attack:M1050}.
 
