@@ -516,7 +516,7 @@ The address discovered via the \enquote{Search For} feature was inside the memor
 	\caption{JMP ESP command not located in main thread}
 	\label{wrong_thread}
 \end{figure}
-\\This address stops working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_start} - \cref{fail_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
+\\This address stops working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_end} - \cref{succ_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
 This instruction could be located within the address space of any accessible module. The command \textit{!mona modules} \autocite{mona} was used to list them (see \cref{modules}).
 
 \newpage
