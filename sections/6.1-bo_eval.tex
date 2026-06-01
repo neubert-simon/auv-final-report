@@ -19,19 +19,11 @@ Another misstep was the assumption, that the IP address on the eth1 network inte
 \label{miss_ip}
 \end{figure}
 
-After some experimentation with payload generation, I took a look at all network interfaces on the attacking computer once more (see \cref{miss_ip2}). Thinking back to the networking lecture \enquote{Rechnernetze}, I realized all addresses are located inside private address ranges. That made me think consider them actively, which lead to the realization that the address the computer was assigned inside the ICS laboratory network under the virtual \textbf{tun0} interface is the address that was necessary for the reverse shell connection to work.
-\begin{figure}[!h]
-\includegraphics[width=\linewidth]{buffer_overflow/reflection/ip2}
-\caption{All IP addresse of the attacker machine}
-\label{miss_ip2}
-\end{figure}
-
-\newpage
+Thinking back to the networking lecture \enquote{Rechnernetze}, I realized all addresses are located inside private address ranges. That made me consider them actively, which lead to the realization that the address the computer was assigned inside the ICS laboratory network under the virtual \textbf{tun0} interface is the address that was necessary for the reverse shell connection to work.
 
 Starting the VPN at the beginning of each session was an afterthought, which lead to me not realizing it impacts how the machine needs to be addressed for the attack to work. 
-This realization took a while to manifest, and made it clear to me that I should question my assumptions, and make sure that the conclusions I reach are thought through instead of assumed without critical questioning.\\
+This realization took a while to manifest, and made it clear to me that I should question my assumptions, and make sure that the conclusions I reach are thought through instead of assumed without critical questioning.
 
-\newpage
 Using the ImmunityDebugger gave me a little trouble at first.
 A lot of time was spent during the first session learning the tooling and accustoming myself to the environment.
 
