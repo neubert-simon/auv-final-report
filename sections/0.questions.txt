@@ -1,0 +1,8 @@
+1. CVSS
+- Does subsequent systems include subsequent attack vectors, like guessing passwords for the unix user?
+- How detailed does the explanations of reasoning need to be?
+
+2. Prune parameters?
+3. Prune explanations?
+
+4. ChatGPT removed. Is that ok in Appendix?
