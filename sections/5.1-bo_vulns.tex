@@ -10,17 +10,6 @@ The vulnerability can be classified as:\\
 \textbf{CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')} \autocite{mitre:cwe:120}\\
 There is no CVE entry for the vulnerability in the VulnServer program, since it was specifically designed as an educational tool for Buffer Overflows \autocite{vulnserver}.
 
-\paragraph{Working principle}
-Cowan et al. explain the principle is, that a program vulnerable to Buffer Overflow does not validate input length or contents, instead writing the input to memory without proper bounds-checks. The attacker's goal is exploiting the fact that input isn't being validated correctly by the server, enabling them to overwrite memory with malicious code, taking over the program \autocite{cowan2000buffer}.
-
-Cowan et al. continue that the program should be provided a string as input, which is made up of native CPU instructions. 
-The program then writes this string to the buffer, storing the injected code. Since there are insufficient bounds-checks, the allotted buffer can be overstepped, writing to adjacent memory.
-The exploit used intends to overwrite \textit{code pointers}, pointing to the instruction that should be executed next.
-Cowan et al. go on to explain that the program lays down an Activation Record on the Stack for each function call, contain the return address, which point the operating system to the next instruction to run after the function has returned \autocite{cowan2000buffer}. 
-In the case of the attacked Windows machine, this return address is held in the EIP register.
-By corrupting this register with a suitable address, the attacker can force the target system to execute the injected code, which is called \enquote{The stack-smashing attack} \autocite{https://doi.org/10.1002/spe.515}.
-The most common approach is to provide the vulnerable service with a string, that overflows the buffer, corrupts the return address and provides the payload right after \autocite{aleph:96}, which was utilized in this assignment.
-
 \paragraph{Cause and Prevention of the vulnerability}
 The VulnServer application cloneable from Bradshaw's Github repository uses \emph{strcpy} (see \cref{strcopy}), a C function which does not check if enough space is present before it copies input into the buffer \autocite{microsoft:strcpy}. 
 

@@ -6,3 +6,9 @@
 3. Prune explanations?
 
 4. ChatGPT removed. Is that ok in Appendix?
+
+5. Toc depth?
+
+6. Own script?
+
+risk assessment, this approach and this fix

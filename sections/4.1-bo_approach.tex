@@ -12,7 +12,7 @@ The goal of the Nmap scan was to obtain information about the operating system, 
 To achieve this, the following Nmap parameters were used:
 \begin{figure}[h]
 \makebox[1.05\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/flags}
+	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/params}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - Configuration used to scan the target system}
@@ -29,13 +29,11 @@ Enables OS detection, provides information about the target machine’s operatin
 Instructs Nmap to scan the complete port range to discover open ports on the target machine.
 \item[-]{\textbf{sV}}\\
 Instructs Nmap to scan for services and their versions on open ports.
-\item[\texttt{--}]{\textbf{script}=\enquote{default,vuln}}\\
-Executes the default non-intrusive general and vulnerability scripts during the scan. 
+\item[-]{\textbf{sC}}\\
+Executes the default non-intrusive scripts during the scan. 
 \item[-]{\textbf{Pn}}\\
 This flag instructs Nmap to treat all hosts as online, skipping the ICMP ``ping" Nmap would otherwise perform before scanning the system.
 It was known that the target was a Windows machine, which don't answer pings by default. Therefore, Nmap would assume the host was down if this flag weren’t set, ending the scan prematurely.
-\item[-]{\textbf{v}}\\
-Sets the output to ``verbose". This was chosen to see results immediately as they were found, enabling work on the already discovered information without having to wait for the whole scan to finish.
 \item[-]{\textbf{oN} nmap.txt}\\
 Writes the output to the file ``nmap.txt" in normal mode to record the scan results.
 \item[-]{192.168.61.45}\\
@@ -430,7 +428,7 @@ This enabled determining which characters got processed by analyzing the memory 
 If the \enquote{B}s didn't show up in memory, a bad character had to have been sent since the input processing was terminated prematurely.
 
 Sending the original unaltered bad character string prevented the input from being processed fully, meaning a bad character was present. Immediately noticeable was, that the required string of \enquote{B}s was not present (see \cref{no-b}).\\
-Since no characters from the bad\_chars list showed up in memory, it was assumed that the first byte (\enquote{\textbackslash x00}, the null byte) was a bad character and needed to be removed.
+Since no characters from the bad\_chars list showed up in memory, it was assumed that the first byte (\enquote{\textbf{\textbackslash x00}}, the null byte) was a bad character and needed to be removed.
 
 \begin{figure}[!htb]
 	\centering
@@ -441,7 +439,7 @@ Since no characters from the bad\_chars list showed up in memory, it was assumed
 
 Removing the character \enquote{\textbf{\textbackslash x00}} (see \cref{no_bad_chars}) resulted in the input being parsed completely and written to the buffer (see \cref{yes-b}), meaning no other bad characters were relevant in this context.
 
-After the string of \enquote{A}s, the interpreted characters from the bad\_chars sequence were observable in memory, followed by the sequence of \enquote{B}s (see \cref{yes-b}).
+After the string of \enquote{A}s, the interpreted characters from the \textit{bad\_chars} sequence were observable in memory, followed by the sequence of \enquote{B}s (see \cref{yes-b}).
  The \enquote{B}s were placed to make a fully processed input more easily identifiable.
 
 \begin{figure}[!htb]
@@ -464,10 +462,10 @@ After the string of \enquote{A}s, the interpreted characters from the bad\_chars
 \clearpage
 \newpage
 \paragraph{Finding JMP ESP instruction}
-To inject a payload carrying malicious code that creates a reverse shell, a reliable way of executing the reverse shell instructions was needed.
+A reliable way of executing the reverse shell instructions was needed for the attack to work.
 To instruct the host system to run the payload code, it must jump to the injected code and execute it.
-Since the buffer is filled by the input sent to the target machine, and the ESP points to the top of the stack, the ESP will point to the injected code. Instruct the system to jump to the ESP would therefore lead to it executing the payload.
-This can be achieved by writing the memory address of a JMP ESP instruction to the EIP, since it stores the address of the next instruction the system should execute after the current method returns.
+Since the buffer is filled by the input sent to the target machine, and the ESP points to the top of the stack, the ESP will point to the injected input upon running the attack. 
+This can be exploited by writing the memory address of a JMP ESP instruction to the EIP, since it stores the address of the next instruction the system should execute after the current method returns.
 
 First, the Opcode for JMP ESP needs to be determined.
 The NASM shell, which shows opcodes for instructions on x86 systems \autocite{github:nasm_shell}, shows the JMP ESP opcode to be \textbf{0xFF 0xE4} (see \cref{4_jmp_esp_opcode}).
@@ -539,7 +537,7 @@ Memory addresses cannot be randomized inside the module to make accessing the JM
 If memory is marked as non-executable, using the JMP ESP instruction wouldn't work, even if such an instruction were present.
 \end{itemize}
 
-The  vulnerable server process itself (\textit{VulnServer.exe}) had both ASLR and DEP not enabled, (see \cref{modules_zoomed}, a zoomed-in cutout of \cref{modules}).
+The  vulnerable server process itself (\textit{VulnServer.exe}) had both ASLR and DEP disabled, (see \cref{modules_zoomed}, a zoomed-in cutout of \cref{modules}).
 
 \begin{figure}[htb]
 	\centering
@@ -714,7 +712,7 @@ The chosen payload \enquote{windows/shell\_reverse\_tcp} used a TCP connection t
 
 The reverse shell served as a \enquote{Command and Scripting Interpreter: Windows Command Shell (T1059.003)} \autocite{mitre:attack:T1059.003} enabling the attacker to take over the host system via reverse shell, which was opened by the injected payload.
 
-The scope of the assignment ended at this point, not requiring further privilege escalation, lateral movement, or exploitation of any kind. Access via reverse shell on the system is a dangerous attack vector, since the attacker gets interactive control over the target machine. Mitigation, Detection and Defense Strategies and countermeasures are discussed in \fullref{buff:vulns}.
+The scope of the assignment ended at this point, not requiring further privilege escalation, lateral movement, or exploitation of any kind. Access via reverse shell on the system is a dangerous attack vector, since the attacker gets interactive control over the target machine. A risk assessment and possible countermeasures are discussed in \fullref{buff:vulns}.
 
 \newpage
 \begin{figure}[!h]

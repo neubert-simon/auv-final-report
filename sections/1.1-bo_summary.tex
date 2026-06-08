@@ -6,6 +6,7 @@
 The participants were granted access to two machines, an attacking system and a target system.
 The target system was running a server that was vulnerable to a Buffer Overflow attack.
 Said system was scanned before the Buffer Overflow weakness was exploited to create a reverse shell.
+\vspace{-10mm}
 \subsubsection{Active Scan}
 
 \begin{enumerate}
@@ -20,23 +21,26 @@ Port 5555: & Unidentified Server (known to be VulnServer application)
 \end{tabular}	
 \end{enumerate}
 
-The scan revealed a remote code execution vulnerability in the server running on port 445.
-\vspace{-2mm}
+\vspace{-6mm}
 \subsubsection{Buffer Overflow Attack}
 
 \begin{enumerate}
 \item{\textbf{Crashing the server}}\\
-An input was sent that was not validated correctly, enabling the EIP to be overwritten.\\
+An input was sent that was not validated correctly, resulting in a Denial Of Service.\\
 \textit{This could be prevented by validating the input, updating the software if a fix is available, or rewriting the program with bounded functions to avoid memory corruption.}
 
 \item{\textbf{Gathering information about input processing and generating a payload}}\\
-Next, the offset to write to the return address was determined, which characters should not be used in the payload, and where to find instructions to get the system to execute the payload.
-This information was used to generate a payload that would eventually create a reverse shell.\\
+information about the vulnerability was gathered and used to generate a payload.\\
 \textit{Security systems could be installed that monitor requests, network traffic and application behavior. The application in question could be isolated, and a DMZ could be established.}
 
 \item{\textbf{Creating a reverse shell}}\\
 The payload was sent and executed, creating a reverse shell on the target machine.\\
 \textit{If this were to happen, a firewall configuration preventing the server from establishing unintended outbound connections could be able to stop the reverse shell.}
 \end{enumerate}
+
+\begin{tabular}{l l}
+\textbf{Vector}: & CVSS:4.0/AV:A/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H\\
+\textbf{CVSS v4.0 Score}: & 9.4 / Critical\\
+\end{tabular}
 
 \end{document}
