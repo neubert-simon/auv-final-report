@@ -35,15 +35,15 @@ To fix this vulnerability, a safer function like strcpy\_s could be used \autoci
 	\caption*{\small Source: \url{https://www.first.org/cvss/calculator/4.0}}
 \end{figure}
 \begin{tabular}{l l}
-\textbf{Vector}: & CVSS:4.0/AV:A/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H\\
-\textbf{CVSS v4.0 Score}: & 9.4 / Critical\\
+\textbf{Vector}: & CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/AU:Y\\
+\textbf{CVSS v4.0 Score}: & 10 / Critical\\
 \end{tabular}
 
 \paragraph*{Base Metrics}
 \subparagraph*{Exploitability Metrics}
 \begin{tabular}{L | L}
-Attack Vector (AV) & Adjacent (A)\\
-\tabnote{The attack had to be launched inside the laboratory subnet, the logical network of the server.}
+Attack Vector (AV) & Network (N)\\
+\tabnote{Is is assumed that the .}
 Attack Complexity (AC): & Low (L)\\
 \tabnote{Once the script was perfected, execution of the script was all an attacker needed to do.}
 Attack Requirements (AR): & None (N)\\
@@ -55,16 +55,18 @@ User Interaction (UI) & None (N)\\
 \end{tabular}
 
 \subparagraph*{Impact Metrics}
+These metrics in part depend on the privileges of the user which is used to run the VulnServer application, since a reverse shell allows for arbitrary code execution with the privileges of the initiating process. The calculation assumes \textit{High (H)} impact where applicable, but would possibly require alteration if real world circumstances would limit the impact the reverse shell could have on the system. 
+
 \begin{tabular}{L | L}
 Confidentiality & High (H)\\
-\tabnote{Files and information can be extracted via the reverse shell.}
+\tabnote{Sensitive files and information could be extracted via the reverse shell.}
 Integrity & High (H)\\
-\tabnote{The system can be altered via the reverse shell.}
+\tabnote{The system could be altered via the reverse shell.}
 Availability & High (H)\\
 \tabnote{The attack can crash the server, denying access to the service.}
 \end{tabular}
 
-Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), both metric types got the same scores.
+Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), both metric types got the same scores. This assumes a user with privileges able to impact the system has started the actual VulnServer process, which is not known based on the laboratory setup, and might require adjustments based on real world factors.
 
 \paragraph*{Supplemental Metrics}
 \begin{tabular}{L | L}
@@ -72,7 +74,6 @@ Automatable (AU) & Yes (Y)\\
 \tabnote{An attacker could automate scanning a network for servers matching the VulnServer fingerprint, create a listener on separate ports for each match, generate a payload for each port, and launch the script with different payloads against multiple machines automatically.}
 \end{tabular}
 
-\newpage
 \subsubsection{Countermeasures}
 \begin{itemize}
 \itemBF{Exploit Protection (M1050)}
@@ -95,6 +96,5 @@ Use the least privilege principle to limit exploitable permissions \autocite{mit
 \itemBF{Vulnerability Scanning (M1016)}
 Periodically scan public-facing systems for vulnerabilities \autocite{mitre:attack:M1016}. This could lead to the discovery of potential weaknesses like the Buffer Overflow.
 \end{itemize}
-
 
 \end{document}

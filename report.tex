@@ -96,6 +96,8 @@ Risk assessment is done via computation of CVSS v4.0 Scores \autocite{first:cvss
 The chosen metrics will be explained briefly. 
 If a metric isn't listed, it means there is insufficient information to to determine a score and it has been omitted for brevity. \enquote{Not Defined (X)}, \enquote{None (N)}, or \enquote{No (N)} will have be chosen in all such cases.
 Environmental Metrics for example are treated as such at points, since they would depend on an actual organization assessing a vulnerability, which doesn't apply to the laboratory setting.
+
+The risk assessment assumes that the VPN used to tunnel into the ICS laboratory only served for assignment conduction purposes, and doesn't mean the webpages / servers wouldn't normally be reachable via the public internet. If they were only accessible inside a local network, the \textit{Attack Vector (AV)} classifications might require changing to \textit{Adjacent (A)}.
 \end{itemize}
 
 \subfile{sections/5.1-bo_vulns}

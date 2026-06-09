@@ -1,12 +1,14 @@
-# Nmap 7.99 scan initiated Wed Apr 29 14:39:04 2026 as: /usr/lib/nmap/nmap -T4 -O -p- -sV --script default,vuln -Pn -v -oN nmap.txt 192.168.61.45
+# Nmap 7.99 scan initiated Mon Jun  8 15:24:48 2026 as: /usr/lib/nmap/nmap -T4 -O -p- -sV -sC -r -Pn -oN nmap.txt 192.168.61.45
 Nmap scan report for 192.168.61.45
-Host is up (0.00076s latency).
+Host is up (0.00097s latency).
 Not shown: 65532 filtered tcp ports (no-response)
-PORT     STATE SERVICE        VERSION
-445/tcp  open  microsoft-ds   Windows 7 Enterprise 7601 Service Pack 1 microsoft-ds (workgroup: WORKGROUP)
-3389/tcp open  ms-wbt-server?
-|_ssl-date: 2026-04-29T12:44:29+00:00; +1s from scanner time.
-|_ssl-ccs-injection: No reply from server (TIMEOUT)
+PORT     STATE SERVICE       VERSION
+445/tcp  open  microsoft-ds  Windows 7 Enterprise 7601 Service Pack 1 microsoft-ds (workgroup: WORKGROUP)
+3389/tcp open  ms-wbt-server Microsoft Terminal Service
+|_ssl-date: 2026-06-08T13:30:26+00:00; 0s from scanner time.
+| ssl-cert: Subject: commonName=WIN-ILACCGON861
+| Not valid before: 2026-03-30T12:45:48
+|_Not valid after:  2026-09-29T12:45:48
 | rdp-ntlm-info: 
 |   Target_Name: WIN-ILACCGON861
 |   NetBIOS_Domain_Name: WIN-ILACCGON861
@@ -14,17 +16,7 @@ PORT     STATE SERVICE        VERSION
 |   DNS_Domain_Name: WIN-ILACCGON861
 |   DNS_Computer_Name: WIN-ILACCGON861
 |   Product_Version: 6.1.7601
-|_  System_Time: 2026-04-29T12:43:29+00:00
-| ssl-cert: Subject: commonName=WIN-ILACCGON861
-| Issuer: commonName=WIN-ILACCGON861
-| Public Key type: rsa
-| Public Key bits: 2048
-| Signature Algorithm: sha1WithRSAEncryption
-| Not valid before: 2026-03-30T12:45:48
-| Not valid after:  2026-09-29T12:45:48
-| MD5:     a56e 2275 4477 edef 0c1b 3bf6 5446 91ef
-| SHA-1:   9cec bbbd a38c 3d70 f145 7d7a 1ae8 6afb 9354 abe8
-|_SHA-256: ad00 d22b ed83 68c8 cb21 5197 abaa e7d9 447b 4243 125a 7068 f230 7c90 20a6 2e07
+|_  System_Time: 2026-06-08T13:29:46+00:00
 5555/tcp open  freeciv?
 | fingerprint-strings: 
 |   DNSStatusRequestTCP, DNSVersionBindReqTCP, FourOhFourRequest, GenericLines, GetRequest, HTTPOptions, Help, JavaRMI, Kerberos, LANDesk-RC, LDAPBindReq, LDAPSearchReq, LPDString, NCP, NotesRPC, RPCCheck, RTSPRequest, SIPOptions, SMBProgNeg, SSLSessionReq, TLSSessionReq, TerminalServer, TerminalServerCookie, X11Probe, adbConnect: 
@@ -33,85 +25,64 @@ PORT     STATE SERVICE        VERSION
 |   NULL: 
 |_    >Hello There.
 1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port5555-TCP:V=7.99%I=7%D=4/29%Time=69F1FC50%P=x86_64-pc-linux-gnu%r(NU
-SF:LL,F,">Hello\x20There\.\r\n")%r(GenericLines,28,">Hello\x20There\.\r\n>
-SF:I\x20can\x20break\x20rules\x20too!\r\n")%r(DNSVersionBindReqTCP,28,">He
-SF:llo\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(SMBProgNe
-SF:g,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(
-SF:adbConnect,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!
-SF:\r\n")%r(GetRequest,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rule
-SF:s\x20too!\r\n")%r(HTTPOptions,28,">Hello\x20There\.\r\n>I\x20can\x20bre
-SF:ak\x20rules\x20too!\r\n")%r(RTSPRequest,28,">Hello\x20There\.\r\n>I\x20
-SF:can\x20break\x20rules\x20too!\r\n")%r(RPCCheck,28,">Hello\x20There\.\r\
-SF:n>I\x20can\x20break\x20rules\x20too!\r\n")%r(DNSStatusRequestTCP,28,">H
-SF:ello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(Help,28,
-SF:">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(SSLSe
-SF:ssionReq,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r
-SF:\n")%r(TerminalServerCookie,28,">Hello\x20There\.\r\n>I\x20can\x20break
-SF:\x20rules\x20too!\r\n")%r(TLSSessionReq,28,">Hello\x20There\.\r\n>I\x20
-SF:can\x20break\x20rules\x20too!\r\n")%r(Kerberos,28,">Hello\x20There\.\r\
-SF:n>I\x20can\x20break\x20rules\x20too!\r\n")%r(X11Probe,28,">Hello\x20The
-SF:re\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(FourOhFourRequest,2
-SF:8,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(LPD
-SF:String,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n
-SF:")%r(LDAPSearchReq,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules
-SF:\x20too!\r\n")%r(LDAPBindReq,28,">Hello\x20There\.\r\n>I\x20can\x20brea
-SF:k\x20rules\x20too!\r\n")%r(SIPOptions,28,">Hello\x20There\.\r\n>I\x20ca
-SF:n\x20break\x20rules\x20too!\r\n")%r(LANDesk-RC,28,">Hello\x20There\.\r\
-SF:n>I\x20can\x20break\x20rules\x20too!\r\n")%r(TerminalServer,28,">Hello\
-SF:x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(NCP,28,">Hell
-SF:o\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(NotesRPC,28
-SF:,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(Java
-SF:RMI,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n");
+SF-Port5555-TCP:V=7.99%I=7%D=6/8%Time=6A26C32A%P=x86_64-pc-linux-gnu%r(NUL
+SF:L,F,">Hello\x20There\.\r\n")%r(GenericLines,28,">Hello\x20There\.\r\n>I
+SF:\x20can\x20break\x20rules\x20too!\r\n")%r(DNSVersionBindReqTCP,28,">Hel
+SF:lo\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(SMBProgNeg
+SF:,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(a
+SF:dbConnect,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\
+SF:r\n")%r(GetRequest,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules
+SF:\x20too!\r\n")%r(HTTPOptions,28,">Hello\x20There\.\r\n>I\x20can\x20brea
+SF:k\x20rules\x20too!\r\n")%r(RTSPRequest,28,">Hello\x20There\.\r\n>I\x20c
+SF:an\x20break\x20rules\x20too!\r\n")%r(RPCCheck,28,">Hello\x20There\.\r\n
+SF:>I\x20can\x20break\x20rules\x20too!\r\n")%r(DNSStatusRequestTCP,28,">He
+SF:llo\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(Help,28,"
+SF:>Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(SSLSes
+SF:sionReq,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\
+SF:n")%r(TerminalServerCookie,28,">Hello\x20There\.\r\n>I\x20can\x20break\
+SF:x20rules\x20too!\r\n")%r(TLSSessionReq,28,">Hello\x20There\.\r\n>I\x20c
+SF:an\x20break\x20rules\x20too!\r\n")%r(Kerberos,28,">Hello\x20There\.\r\n
+SF:>I\x20can\x20break\x20rules\x20too!\r\n")%r(X11Probe,28,">Hello\x20Ther
+SF:e\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(FourOhFourRequest,28
+SF:,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(LPDS
+SF:tring,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n"
+SF:)%r(LDAPSearchReq,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\
+SF:x20too!\r\n")%r(LDAPBindReq,28,">Hello\x20There\.\r\n>I\x20can\x20break
+SF:\x20rules\x20too!\r\n")%r(SIPOptions,28,">Hello\x20There\.\r\n>I\x20can
+SF:\x20break\x20rules\x20too!\r\n")%r(LANDesk-RC,28,">Hello\x20There\.\r\n
+SF:>I\x20can\x20break\x20rules\x20too!\r\n")%r(TerminalServer,28,">Hello\x
+SF:20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(NCP,28,">Hello
+SF:\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(NotesRPC,28,
+SF:">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n")%r(JavaR
+SF:MI,28,">Hello\x20There\.\r\n>I\x20can\x20break\x20rules\x20too!\r\n");
 Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
 Device type: general purpose|phone
 Running (JUST GUESSING): Microsoft Windows 2008|7|8.1|Phone|Vista (96%)
 OS CPE: cpe:/o:microsoft:windows_server_2008:r2 cpe:/o:microsoft:windows_7 cpe:/o:microsoft:windows_8 cpe:/o:microsoft:windows_8.1 cpe:/o:microsoft:windows cpe:/o:microsoft:windows_vista
-Aggressive OS guesses: Microsoft Windows Server 2008 R2 or Windows 7 SP1 (96%), Microsoft Windows Server 2008 R2 or Windows 8 (96%), Microsoft Windows 7 or Windows Server 2008 R2 (92%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (92%), Microsoft Windows Server 2008 R2 SP1 (90%), Microsoft Windows 7 SP1 or Windows Server 2008 R2 or Windows 8.1 (89%), Microsoft Windows 7 (89%), Microsoft Windows 8.1 Update 1 (87%), Microsoft Windows Phone 7.5 or 8.0 (87%), Microsoft Windows Vista or Windows 7 (87%)
+Aggressive OS guesses: Microsoft Windows Server 2008 R2 or Windows 7 SP1 (96%), Microsoft Windows Server 2008 R2 or Windows 8 (96%), Microsoft Windows 7 or Windows Server 2008 R2 (92%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (92%), Microsoft Windows 7 (90%), Microsoft Windows 7 SP1 or Windows Server 2008 R2 or Windows 8.1 (89%), Microsoft Windows Server 2008 R2 SP1 (88%), Microsoft Windows Server 2008 (87%), Microsoft Windows 7 SP1 (87%), Microsoft Windows 8.1 Update 1 (87%)
 No exact OS matches for host (test conditions non-ideal).
-Uptime guess: 0.032 days (since Wed Apr 29 13:58:09 2026)
-TCP Sequence Prediction: Difficulty=258 (Good luck!)
-IP ID Sequence Generation: Incremental
 Service Info: Host: WIN-ILACCGON861; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
-| smb2-time: 
-|   date: 2026-04-29T12:43:32
-|_  start_date: 2026-04-29T11:58:57
-|_clock-skew: mean: -23m58s, deviation: 53m37s, median: 0s
+|_clock-skew: mean: -23m59s, deviation: 53m37s, median: 0s
+| smb2-security-mode: 
+|   2.1: 
+|_    Message signing enabled but not required
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
 | smb-os-discovery: 
 |   OS: Windows 7 Enterprise 7601 Service Pack 1 (Windows 7 Enterprise 6.1)
 |   OS CPE: cpe:/o:microsoft:windows_7::sp1
 |   Computer name: WIN-ILACCGON861
 |   NetBIOS computer name: WIN-ILACCGON861\x00
 |   Workgroup: WORKGROUP\x00
-|_  System time: 2026-04-29T14:43:34+02:00
-|_smb-vuln-ms10-061: NT_STATUS_ACCESS_DENIED
-|_smb-vuln-ms10-054: false
-| smb-security-mode: 
-|   account_used: <blank>
-|   authentication_level: user
-|   challenge_response: supported
-|_  message_signing: disabled (dangerous, but default)
-|_samba-vuln-cve-2012-1182: NT_STATUS_ACCESS_DENIED
-| smb2-security-mode: 
-|   2.1: 
-|_    Message signing enabled but not required
-| smb-vuln-ms17-010: 
-|   VULNERABLE:
-|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
-|     State: VULNERABLE
-|     IDs:  CVE:CVE-2017-0143
-|     Risk factor: HIGH
-|       A critical remote code execution vulnerability exists in Microsoft SMBv1
-|        servers (ms17-010).
-|           
-|     Disclosure date: 2017-03-14
-|     References:
-|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143
-|       https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
-|_      https://blogs.technet.microsoft.com/msrc/2017/05/12/customer-guidance-for-wannacrypt-attacks/
+|_  System time: 2026-06-08T15:29:51+02:00
+| smb2-time: 
+|   date: 2026-06-08T13:29:48
+|_  start_date: 2026-06-08T07:21:32
 
-Read data files from: /usr/share/nmap
 OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-# Nmap done at Wed Apr 29 14:44:37 2026 -- 1 IP address (1 host up) scanned in 332.91 seconds
+# Nmap done at Mon Jun  8 15:30:27 2026 -- 1 IP address (1 host up) scanned in 338.69 seconds

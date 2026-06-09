@@ -1,10 +1,19 @@
 \documentclass[../report.tex]{subfiles}
 
 \begin{document}
-
+\vspace{-4mm}
 \subsection{Windows Scanning and Buffer Overflow}
 
 \subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
+
+\begin{figure}[h]
+\makebox[\linewidth][c]{%
+	\includegraphics[height=17cm]{buffer_overflow/nmap/full}
+}
+	\caption{Nmap - Full scan result}
+\end{figure}
+
+\newpage
 The Active Scanning technique (T1595) (Reconnaissance (TA0043) tactic \autocite{mitre:attack:TA0043}) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.\\
 The goal of the Nmap scan was to obtain information about the operating system, open ports, service information, and vulnerabilities on the target system:
 
@@ -12,7 +21,7 @@ The goal of the Nmap scan was to obtain information about the operating system, 
 To achieve this, the following Nmap parameters were used:
 \begin{figure}[h]
 \makebox[1.05\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/params}
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/params}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - Configuration used to scan the target system}
@@ -31,6 +40,8 @@ Instructs Nmap to scan the complete port range to discover open ports on the tar
 Instructs Nmap to scan for services and their versions on open ports.
 \item[-]{\textbf{sC}}\\
 Executes the default non-intrusive scripts during the scan. 
+\item[-]{\textbf{r}}\\
+Disables randomized port ordering for a cleaner output.
 \item[-]{\textbf{Pn}}\\
 This flag instructs Nmap to treat all hosts as online, skipping the ICMP ``ping" Nmap would otherwise perform before scanning the system.
 It was known that the target was a Windows machine, which don't answer pings by default. Therefore, Nmap would assume the host was down if this flag weren’t set, ending the scan prematurely.
@@ -41,157 +52,61 @@ The IP adress of the target machine that was to be scanned.
 \end{itemize}
 
 \paragraph{Scan Results}
-
-\subparagraph{Port Scan}
-
-
-\begin{figure}[!h]
-\makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.034\linewidth]{../img/buffer_overflow/nmap/ports} \\
-}	
-	\caption{Nmap - Port scan results}
-	\label{portScan}
-\end{figure}
-\newpage
-
 \subparagraph{Service Scan} \label{paragraph:service-scan}
-Nmap attempted to identify the services running on the discovered open ports (see \cref{portScanResult}):
 
-
-\begin{figure}[h]
-\makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{../img/buffer_overflow/nmap/services1.png}
-}
-        \caption*{}     
-\end{figure}
-\vspace*{-13mm}
-\begin{figure}[h]
-\makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{../img/buffer_overflow/nmap/services2.png}
-}
-        \vspace*{-5mm}
-	\caption{Nmap - Service scan result}
-	\label{portScanResult}
-\end{figure}
-
-Nmap gathered the following information via service scan:
-
-\begin{tabular}{l | l}
-Port 445: & microsoft-ds\\
-\hline
-Port 3389: & tcpwrapped\\
-\hline
-Port 5555: & Service unrecognized
-\end{tabular}	
-
-\newpage
+Nmap gathered the following information via service scan (see \cref{serviceScanResult}):
 
 \begin{enumerate}
 \item{\textbf{Port 445 - Windows 7 Enterprise 7601 Service Pack 1 microsoft ds}}\\
 Nmap was able to identify the service running on port 445 as ``microsoft-ds".\\
-The directory service (``ds") running here is common for port 445, implying that the SMB (Server Message Block) protocol is being used. \enquote{The SMB protocol is a network file sharing protocol. SMB allows you to read and write to files over the network on top of TCP/IP or other protocols} \autocite{microsoft:smb_feature_descriptions}.
+The directory service (``ds") running here is common for port 445, implying that the SMB (Server Message Block) protocol is being used.
 
-\item{\textbf{Port 3389 - tcpwrapped}}\\
-Nmap returning \enquote{tcpwrapped} means the TCP handshake was completed, but that the connection was closed by the host immediately without transmitting further data \autocite{venema1992tcp}. 
-A service running on port 3389 usually is Microsoft's Remote Desktop Service \autocite{microsoft:rds_ports}.
+\item{\textbf{Port 3389 - Microsoft Terminal service}}\\
+The service running on port 3389 usually is Microsoft's Remote Desktop Service (formerly \enquote{Terminal Service}), which allows the user to remotely log into the system \autocite{microsoft:rds_ports}.
 
 \item{\textbf{Port 5555 - Service unrecognized}}\\
 Nmap could not infer the service running on port 5555.
 The closest fingerprint match it got is ``freeciv", a program that seems to be identified on port 5555 commonly by Nmap according to multiple user reports \autocite{samsepi0l:android4_vulnhub_writeup, nmap:issue1276, fahmifj:htb_explore_writeup}, even though it is not actually running on the port.
 
-The two following lines returned by the service can be gathered from the fingerprint:\\
+\begin{figure}[!h]
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.2\linewidth]{buffer_overflow/nmap/1_services}
+	}
+        \caption{Nmap service scan results}     
+        \label{serviceScanResult}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/fingerprint}
+}
+	\caption{Nmap - Excerpt of server fingerprint on port 5555}
+	\label{fingerprint}
+\end{figure}
+
+
+The two following lines returned by the service can be gathered from the fingerprint (see \cref{fingerprint}):\\
 - \textit{``Hello There.\textbackslash r\textbackslash n"}\\
-- \textit{``I break rules too!\textbackslash r\textbackslash n"}
+- \textit{``I can break rules too!\textbackslash r\textbackslash n"}
 
 All that can be gleamed from this scan result is that a service is running on port 5555 that returns text when called.
-
 \end{enumerate}
 
-To check if the service running on port 3389 was Microsoft's Remote Desktop service, a banner grabbing attempt was made via FreeRDP (see \cref{conn_attempt}).
-\begin{figure}[!h]
-\makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/conn_attempt.png}
-}
-        \caption{Connection attempt via Remote Desktop protocol on port 3389}     
-        \label{conn_attempt}
-\end{figure}
-
-\newpage
-FreeRDP is an open source tool preinstalled on Kali Linux that allows users to connect to systems via Remote Desktop protocol. In this case, an actual session will not be established, instead the software will be used to probe the target machine.
-The parameters were chosen with the following reasoning \autocite{freerdp:manual}:
-\begin{itemize}
-\item[/]{\textbf{sec}:rdp}\\
-Sets the protocol to Microsoft's Remote Desktop Protocol, which is suspected to be running on port 3389.
-\item[/]{\textbf{v}:192.168.61.45:3389}\\
-Provides FreeRDP with the target machine's IP and the port to connect to.
-\item[/]{\textbf{u}:}\\
-Leaves the user empty, since we are just probing to see if the service is running at all.
-\end{itemize}
-
-The connection attempt was successful, since a response was received. This confirms the suspicion that some Remote Desktop service is running on the open port. To determine the service version, another attempt to scan with nmap was made.
-
-The scan was repeated on a virtual Kali machine tunneled into the ICS network, running an older version of nmap (7.98 instead of 7.99) (see \cref{nmap2}).
-The following parameters were changed with the following reasoning \autocite{nmap}:
-\begin{itemize}
-\item[-]{\textbf{p} 445,3389,555}\\
-Limits the scanned port range to the ports already known to be open.
-\item[-]{\textbf{oN} nmap-3389.txt}\\
-Writes to a separate new file, to collect the scan results.
-\item[-]{\textbf{O}}\\
-Omitted, since the OS information already gathered seemed conclusive enough.
-\end{itemize}
-
-The second scan confirms that Microsoft's Terminal Service (renamed to Remote Desktop service after Windows 7) \autocite{microsoft:rds} is running on port 3389.
-
-Results from the vulnerability scan (see \fullref{sec:vuln_scan}) show that the service running on port 445 appears to be a Microsoft SMBv1 server.
-
-\newpage
-\begin{landscape}
-\begin{figure}[h]
-\makebox[\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{../img/buffer_overflow/nmap/3389_scan.png}
-}
-        \caption{Nmap - Service scan result showing Microsoft Terminal Service running on port 3389}     
-        \label{nmap2}
-\end{figure}
-\end{landscape}
-
-\clearpage
-\newpage
-
-\cref{portScanResult} was cut off for brevity, because showing the entire fingerprint of the unidentified service is not strictly necessary to show nmap being unable to resolve the service. Nevertheless, the full fingerprint is provided for a complete picture of the service scan (see \cref{fingerprint}). 
-
-\begin{figure}[htb]
-\centering
-\makebox[1.02\linewidth][c]{%
-  \begin{minipage}{1.1\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/fingerprint1.png}\\[-0.5em]
-    \includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/fingerprint2.png}
-  \end{minipage}
-}
-\caption{Nmap - Fingerprint of service running on port 5555}
-\label{fingerprint}
-\end{figure}
-
-To verify these findings the complete fingerprint and both complete Nmap scan reports can be viewed in the appended files under:\\
-\textit{Assignment 1 - Windows Scanning and Buffer Overflow → Nmap Scan}
-
-\clearpage
-\newpage
+To verify these findings the complete Nmap scan report can be viewed in the appended files:\\
+\textit{Assignment 1 - Windows Scanning and Buffer Overflow → Nmap Scan → nmap.txt}
 
 \subparagraph{Operating System Scan} \label{paragraph:os-scan}
-\begin{figure}[h]
-\makebox[1.02\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/os1.png}
+\begin{figure}[!h]
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/2_os}
 }
-	\vspace*{-5mm}
 	\caption{Nmap - OS scan results}
 	\label{osScanResult}
 \end{figure}
 
 Nmap tried to guess the host machine and came up with a few possible results.
 The guesses with the highest confidence score (96\%) (see \cref{osScanResult}) are:
+
 \begin{itemize}
 	\itemsep0em
 	\item{Windows Server 2008 R2}
@@ -199,50 +114,33 @@ The guesses with the highest confidence score (96\%) (see \cref{osScanResult}) a
 	\item{Windows 8}
 \end{itemize}
 
-As per previous mention, Nmap identified the ``Windows 7 Enterprise 7601
+As was mentioned previously, Nmap identified the ``Windows 7 Enterprise 7601
 Service Pack 1" on the machine, strengthening the evidence for a Windows 7 machine.\\
 This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
 \begin{figure}[h]
 \makebox[1.02\linewidth][c]{%
-	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/os2.png}
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/3_smb_os}
 }
-	\vspace*{-5mm}
 	\caption{Nmap - Smb-os discovery results}
 	\label{osScanResult2}
 \end{figure}
 
-\newpage
 \subparagraph{Vulnerability Scan} \label{sec:vuln_scan}
 
 \begin{figure}[h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.13\linewidth]{../img/buffer_overflow/nmap/vulns.png}
+	\includegraphics[width=1.13\linewidth]{../img/buffer_overflow/nmap/4_vulns}
 }
-	\vspace*{-5mm}
 	\caption{Nmap - Vulnerability scan results}
 	\label{vulnScanResult}
 \end{figure}
 
-\vspace*{-2mm}
-Nmap discovered the following vulnerability:
-\begin{itemize}
-\item{\textbf{smb-vuln-ms17-010} with the ID \textbf{CVE-2017-0143}}
-\end{itemize}
 
-According to CVE-2017-0143, Microsoft SMBv1 servers are susceptible to attacks via specially crafted packets that enable remote code execution  \autocite{cve:2017-0143}. This vulnerability has a CVSS score of 8.8 (high severity) (see \cref{cvss}).
+Nmap discovered a possibly exploitable misconfiguration.
 
-\begin{figure}[!h]
-	\includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/cvss.png} \\
-	\vspace*{-5mm}
-	\caption{CVSS score of CVE-2017-0143}
-	\vspace*{-1.5mm}
-	\caption*{\small Source: \url{https://www.cve.org/CVERecord?id=CVE-2017-0143}}
-	\label{cvss}
-\end{figure}
+SMB Message Block Signing is disabled, making the system potentially vulnerable to relay attacks, since a message's integrity can't be verified without the signature \autocite{microsoft:smb-signing}. 
 
-Furthermore, Nmap discovered possibly exploitable misconfigurations.
-SMB Message Block Signing is disabled on this machine, making the system potentially vulnerable to relay attacks, since a message's integrity can't be verified without the signature \autocite{microsoft:smb-signing}.
-Other scripts were unsucessful.
+Other default scripts did not find any vulnerabilities.
 \newpage
 
 \subsubsection{Buffer Overflow Attack} \label{subsec:buffer_overflow}
@@ -303,7 +201,7 @@ The EIP was filled by four \enquote{41}s (see \cref{1_eip}), corresponding to fo
 \end{figure}
 \\This lead to the crash, since \textit{41414141} is not a valid memory address containing instructions that should be performed after the function returned (see \cref{access_violation}).
 
-At this point, without any further exploitation set up, this cursory attack could be categorized as Endpoint Denial of Service: Application or System Exploitation \autocite{mitre:attack:T1499:004}, since all that is being achieved with the script is a server crash that denies regular users availability.
+At this point, without any further exploitation set up, this cursory attack could be categorized as \textit{Endpoint Denial of Service: Application or System Exploitation (T1499.004)} \autocite{mitre:attack:T1499:004}, since all that is being achieved with the script is a server crash that denies regular users availability.
 
 \clearpage\newpage
 \begin{figure}[!htb]
