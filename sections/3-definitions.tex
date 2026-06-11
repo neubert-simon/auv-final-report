@@ -2,18 +2,15 @@
 
 \begin{document}
 
-\section{Definitions - Terms and Abbreviations}
-\stoptoc
-This section defines terms, abbreviations, and concepts, which are going to be used in this report without repeated explanation.
-\subsection{General}
-\vspace{3mm}
+\section{Definitions and Abbreviations}
+
 \begin{itemize}
 	\item{\textbf{Extended Stack Pointer (ESP)}}\\
 	The register holding the memory address of the top of the stack \autocite{intel:dev_manual}.
 	\item{\textbf{Extended Instruction Pointer (EIP)}}\\
 	The register holding the return address, the address of the next instruction after a function returns \autocite{intel:dev_manual}.
 	\item{\textbf{Bad characters}}\\
-	In this context \enquote{bad characters} describe all characters that terminate the processing of inputs by the host system (e.g. line breaks, null bytes). They are to be avoided in payload generation because the execution of any injected code will terminate prematurely if a bad character is encoutered by the target machine during processing.
+	In this context, \enquote{bad characters} describe all characters that terminate the processing of inputs by a system (e.g. line breaks, null bytes). They are to be avoided in payload generation when attacking a system by transmitting malicious input because the execution of any injected code will terminate prematurely if a bad character is encoutered by the target machine during processing.
 	\item{\textbf{Address Space Layout Randomization (ASLR)}}\\
 	ASLR randomizes the address a process uses each time it is run, changing the location of data in memory \autocite{app9142928}.
 	\item{\textbf{Data Execution Prevention (DEP)}}\\
@@ -32,27 +29,10 @@ This section defines terms, abbreviations, and concepts, which are going to be u
 	A De-Militarized Zone is a physical or logical network, separating trusted and untrusted parts of internal and external networks, in line with the defense-in-depth principle \autocite{8473328}.
 	\itemBF{Open Source Intelligence (OSINT)}
 	OSINT describes information gathering via publicly accessible sources \autocite{osint_def}.
+	\itemBF{Command And Control Server (C2-Server)}
+	\enquote{A Command and Control, or C\&C, server is a computer used to coordinate the actions of computers infected by a bot, rootkit, worm or other malicious software (malware) that rely on another computer for instructions and updates} \autocite{eset:C2}.
 \end{itemize}
 
-\subsection{Assignment 1 - Windows Scanning and Buffer Overflow}
-\vspace{3mm}
-\begin{itemize}
-	\item{\textbf{Attacking machine}}\\
-	The attacker machine running Kali Linux, used for the active scan and Buffer Overflow attack.
-	\item{\textbf{Target machine}}\\
-	The target Windows machine running the vulnerable web server with the IP address \textit{192.168.61.45}.
-\end{itemize}
-
-\subsection{Assignment 2 - Linux - Complete Pentest (Mesa)}
-\vspace{3mm}
-\begin{itemize}
-	\item{\textbf{Attacking machine}}\\
-	The attacker machine running Kali Linux, used to attack the target machine.
-	\item{\textbf{Target machine}}\\
-	The target Windows machine running the vulnerable web server with the IP address \textit{192.168.61.65}.
-\end{itemize}
-
-\subsection{Assignment 3 - Digital Forensics}
-\resumetoc
+\textbf{\textit{Note:}} The following report occasionally references images in the Appendix, which show complete results as large images which had to be scaled down to fit onto the page.  More easily legible cutouts of the complete results will be used in the sections instead. The references to the full results are clickable, enabling easy navigation to the less legible figures in the Appendix. The figures in the Appendix provide links as well, which let the reader jump to the point where they are referenced in the report.
 
 \end{document}
