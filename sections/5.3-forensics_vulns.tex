@@ -3,5 +3,17 @@
 \begin{document}
 
 \subsection{Digital Forensics}
+\subsubsection{Spearphishing Attack}
 
+\paragraph{Risk Assessment}
+
+\begin{tabular}{l l}
+\textbf{Vector}: & CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:H/VA:H/SC:N/SI:N/SA:N\\
+\textbf{CVSS v4.0 Score}: & 7.0 / High\\
+\end{tabular}
 \end{document}
+
+The vulnerability works via \textit{Network (N)} by sending an E-Mail, has a \textit{Low (L)} \textit{Complexity (C)}, necessitates no \textit{Attack Requirements (AT)}, requires no \textit{Privileges (P)}, but does requite \textit{Active (A)} \textit{User Interaction (UI)} (clicking the Phishing link).
+
+The way the attack is set up in the example, the ransomware does not divulge any sensible information to the attacker, therefore not endangering \textit{Confidentiality (VC)} on the vulnerable system. This could change if the attacker decided to change the payload to also extract the files before encrypting them.
+\textit{Integrity (VI)} and \textit{Availability} on the other hand are highly compromised, since the files are altered and not their contents are not accessible anymore after the attack was successful. Subsequent systems do not seem to be affected, since no propagation of the ransomware over the network is present, nor does the attack target files that could damage other systems themselves running on the victim's machine.

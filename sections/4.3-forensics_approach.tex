@@ -201,7 +201,7 @@ The victim must have therefore clicked on the link, then clicked on the fake \te
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=1.12\linewidth]{forensics/5_reverse/4_restore}
+		\includegraphics[width=1.04\linewidth]{forensics/5_reverse/4_restore}
 	}
 	\caption{Original target machine state restored with default wallpaper}
 	\label{encr_restr}
@@ -252,7 +252,7 @@ To be able to analyze creates a reverse shell attack in the provided SIEM system
 There are a few indicators that make this occurrence suspicious:
 \begin{enumerate}
 \itemBF{A webserver spawns a bash process}
-This can happen naturally if the webserver needs to execute programs, but is already a little suspicious (see \cref{shell_spawn}).
+This can happen naturally if the webserver needs to execute programs, but could raise red flags if it is not intended (see \cref{shell_spawn}).
 \itemBF{The executed commands are suspicious}
 Commands like \textit{whoami} should most likely not be run by a webserver, indicating an attacker has logged on (see \cref{whoami}).
 \itemBF{Recorded reverse shell command}
@@ -283,7 +283,7 @@ Relevant results from \cref{raaaaaaaaa} will be split into more legible cutouts 
 		\includegraphics[width=0.9\linewidth]{forensics/7_siem2/shell_spawn}
 	}
 	\caption{Bash process spawn recorded by SIEM}
-	\label{whoami}
+	\label{shell_spawn}
 \end{figure}
 
 \begin{figure}[!htb]
@@ -292,7 +292,7 @@ Relevant results from \cref{raaaaaaaaa} will be split into more legible cutouts 
 		\includegraphics[width=0.4\linewidth]{forensics/7_siem2/whoami}
 	}
 	\caption{whoami command recorded by SIEM}
-	\label{shell_spawn}
+	\label{whoami}
 \end{figure}
 
 \begin{figure}[!htb]
