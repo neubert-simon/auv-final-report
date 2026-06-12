@@ -10,7 +10,7 @@ The vulnerability can be classified as:\\
 \textbf{CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')} \autocite{mitre:cwe:120}\\
 There is no CVE entry for the vulnerability in the VulnServer program, since it was specifically designed as an educational tool for Buffer Overflows \autocite{vulnserver}.
 
-\paragraph{Cause and Prevention of the vulnerability}
+\paragraph{Cause and Prevention}
 The VulnServer application cloneable from Bradshaw's Github repository uses \emph{strcpy} (see \cref{strcopy}), a C function which does not check if enough space is present before it copies input into the buffer \autocite{microsoft:strcpy}. 
 
 \begin{figure}[!h]
@@ -27,69 +27,42 @@ To fix this vulnerability, a safer function like strcpy\_s could be used \autoci
 
 \subsubsection{Risk Assessment}
 
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{buffer_overflow/analysis/cvss}
-	\caption{CVSS v4.0 Score calculation}
-	\vspace{-2mm}
-	\caption*{\small Source: \url{https://www.first.org/cvss/calculator/4.0}}
-\end{figure}
+%\begin{figure}[!h]
+%	\centering
+%	\includegraphics[width=0.75\linewidth]{buffer_overflow/analysis/cvss}
+%	\caption{CVSS v4.0 Score calculation}
+%	\vspace{-2mm}
+%	\caption*{\small Source: \url{https://www.first.org/cvss/calculator/4.0}}
+%\end{figure}
+
 \begin{tabular}{l l}
-\textbf{Vector}: & CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/AU:Y\\
-\textbf{CVSS v4.0 Score}: & 10 / Critical\\
+\textbf{Vector}: & CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:H/SI:H/SA:H\\
+\textbf{CVSS v4.0 Score}: & 9.3 / Critical\\
 \end{tabular}
 
-\paragraph*{Base Metrics}
-\subparagraph*{Exploitability Metrics}
-\begin{tabular}{L | L}
-Attack Vector (AV) & Network (N)\\
-\tabnote{Is is assumed that the .}
-Attack Complexity (AC): & Low (L)\\
-\tabnote{Once the script was perfected, execution of the script was all an attacker needed to do.}
-Attack Requirements (AR): & None (N)\\
-\tabnote{Attacks using the finalized script can be expected to work on all servers configured this way.}
-Privileges Required (PR) & None (N)\\
-\tabnote{No privileges are necessary, any unauthenticated user can execute the attack.}
-User Interaction (UI) & None (N)\\
-\tabnote{The system runs the payload without need for interaction.}
-\end{tabular}
+\paragraph*{Exploitability Metrics}
+The vulnerability works via \textit{Network (N)} by connecting to the server, has a \textit{Low (L)} \textit{Complexity (C)} since execution of the script is all that is required, necessitates no \textit{Attack Requirements (AT)} other than the server being up, requires no \textit{Privileges (P)}, and no \textit{User Interaction (UI)} to work.
 
-\subparagraph*{Impact Metrics}
-These metrics in part depend on the privileges of the user which is used to run the VulnServer application, since a reverse shell allows for arbitrary code execution with the privileges of the initiating process. The calculation assumes \textit{High (H)} impact where applicable, but would possibly require alteration if real world circumstances would limit the impact the reverse shell could have on the system. 
+\paragraph*{Impact Metrics}
+The vulnerable system (VulnServer) can be crashed by the attack, scoring \textit{High (H)} for \textit{Availability (VA)}. \textit{Confidentiality (VC)} and \textit{Integrity (VI)} are not endagered in the same manner, since attack the server itself does not divulge any sensitive data to the attacker, nor do  files change because of the Buffer Overflow.
 
-\begin{tabular}{L | L}
-Confidentiality & High (H)\\
-\tabnote{Sensitive files and information could be extracted via the reverse shell.}
-Integrity & High (H)\\
-\tabnote{The system could be altered via the reverse shell.}
-Availability & High (H)\\
-\tabnote{The attack can crash the server, denying access to the service.}
-\end{tabular}
-
-Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), both metric types got the same scores. This assumes a user with privileges able to impact the system has started the actual VulnServer process, which is not known based on the laboratory setup, and might require adjustments based on real world factors.
-
-\paragraph*{Supplemental Metrics}
-\begin{tabular}{L | L}
-Automatable (AU) & Yes (Y)\\
-\tabnote{An attacker could automate scanning a network for servers matching the VulnServer fingerprint, create a listener on separate ports for each match, generate a payload for each port, and launch the script with different payloads against multiple machines automatically.}
-\end{tabular}
+Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), \textit{Confidentiality (SC)}, \textit{Integrity (SI)}, and \textit{Availability (SA)} should be considered highly endangered. This assumes a user with privileges able to impact the system has started the actual VulnServer process, which is not known based on the laboratory setup, and might require adjustments based on real world factors.
 
 \subsubsection{Countermeasures}
 \begin{itemize}
 \itemBF{Exploit Protection (M1050)}
 Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult \autocite{mitre:attack:M1050}.
-
-\itemBF{Reducing attack surface}
-Reducing publicly accessible sensitive data is advisable to minimize damages \autocite{mitre:attack:M1056}.
-\itemBF{Detecting abnormal network traffic}
+\itemBF{Multi-factor Authentication (M1032)}
+Requiring multiple authentication factors prevents attackers from compromising accounts by only obtaining one factor \autocite{mitre:attack:M1032}.
+\itemBF{Filter Network Traffic (M1037)}
 Monitoring network traffic can help identify threats and prevent them.
 IP addresses could be blacklisted via firewall e.g. if port scanning is detected. \autocite{mitre:attack:DET0830, mitre:attack:DET0867}
-Monitoring outbound callbacks could also be of value. A webserver shouldn't connect to port 443 on another machine, that could have been blocked by a firewall rule as well \autocite{mitre:attack:DET0080, mitre:attack:M1037, mitre:attack:DET0444}.
-\itemBF{Isolating applications}
+Monitoring outbound callbacks could also be of value. A webserver shouldn't connect to port 443 on another machine, that could be blocked by a firewall rule \autocite{mitre:attack:DET0080, mitre:attack:M1037, mitre:attack:DET0444}.
+\itemBF{Application Isolation and Sandboxing (M1048)}
 If an attacker were to exploit a vulnerability, sandboxing the application could make it more difficult for the whole system to get compromised \autocite{mitre:attack:M1048}.
-\itemBF{Network segmentation}
+\itemBF{Network segmentation (M1030)}
 Create a demilitarized zone (DMZ) to encapsulate public-facing services can limit damages to the whole network if an attack were to be successful \autocite{mitre:attack:M1030}.
-\itemBF{Security monitoring}
+\itemBF{Exploit Protection (M1050)}
 Employing a SIEM system or other security applications (like IDS / IPS) could aid detection of malicious activity \autocite{mitre:attack:M1050}.
 \itemBF{Privileged Account Management (M1026)}
 Use the least privilege principle to limit exploitable permissions \autocite{mitre:attack:M1026}.

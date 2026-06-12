@@ -9,11 +9,39 @@
 
 \begin{tabular}{l l}
 \textbf{Vector}: & CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:H/VA:H/SC:N/SI:N/SA:N\\
-\textbf{CVSS v4.0 Score}: & 7.0 / High\\
+\textbf{CVSS v4.0 Score}: & 7.0 / High
 \end{tabular}
+
+\paragraph*{Exploitability Metrics}
+The vulnerability works via \textit{Network (N)} by sending an E-Mail, has a \textit{Low (L)} \textit{Complexity (C)}, necessitates no \textit{Attack Requirements (AT)}, requires no \textit{Privileges (P)}, but does require \textit{Active (A)} \textit{User Interaction (UI)} (clicking the Phishing link).
+
+\paragraph*{Impact Metrics}
+The way the attack is set up in the example, the ransomware does not divulge any sensible information to the attacker, therefore not endangering \textit{Confidentiality (VC)} on the vulnerable system.
+\textit{Integrity (VI)} and \textit{Availability} on the other hand are highly compromised, since the files are altered and not their contents are not accessible anymore after the attack was successful. Subsequent systems do not seem to be affected, since no propagation of the ransomware over the network is present, nor does the attack target files that could damage other systems running on the victim's machine.
+
+\newpage
+\paragraph{Countermeasures}
+\begin{itemize}
+\itemBF{User Training (M1017)}
+User's can be trained to identify Phishing E-Mails and to avoid behavior which leaves them vulnerable to exploitation. \autocite{mitre:attack:M1017}
+
+\itemBF{Software Configuration (M1054)}
+The E-Mail client can be configured to be hardened against Phishing attacks, automatically detecting such E-Mails. Policies can be implemented that scan for suspicious sender addresses for example  \autocite{mitre:attack:M1054}.
+
+\itemBF{Restrict Web-Based Content (M1021)}
+Malicious websites could be blocked, preventing the user from interacting further or downloading payloads even if they were to fall for a Spearfishing attempt. \autocite{mitre:attack:M1021}
+
+\itemBF{Blacklisting / Whitelisting}
+Extending the previous strategy, known malicious websites and senders could be blacklisted to prevent them from causing harm. 
+The inverse approach of only allowing trusted known sources works as well, but reduces user freedom. There could be hybrid solutions which warn the user of potentially malicious processes, which could increase their resilience against Phishing \autocite{Jain2016AutoUpdatedWhitelist}.
+
+\itemBF{Detection Strategy for Spearphishing Links (DET0107)}
+Detection chains could be formed, which would allow a monitoring system to correlate E-Mails, user behavior and accessed resources to identify Phishing \autocite{mitre:attack:DET0107}.
+
+\itemBF{Detect Social Engineering (DET0899)}
+Correlations between communication events and suspicious user activity can be recognized, enabling detection of Social Engineering attempts. \autocite{mitre:attack:DET0899}
+\end{itemize}
+
+There are many implementations of Anti-Phishing tools besides these general strategies that could be employed, but the most important measure seems to be improving employee's abilities to resist social engineering.
+
 \end{document}
-
-The vulnerability works via \textit{Network (N)} by sending an E-Mail, has a \textit{Low (L)} \textit{Complexity (C)}, necessitates no \textit{Attack Requirements (AT)}, requires no \textit{Privileges (P)}, but does requite \textit{Active (A)} \textit{User Interaction (UI)} (clicking the Phishing link).
-
-The way the attack is set up in the example, the ransomware does not divulge any sensible information to the attacker, therefore not endangering \textit{Confidentiality (VC)} on the vulnerable system. This could change if the attacker decided to change the payload to also extract the files before encrypting them.
-\textit{Integrity (VI)} and \textit{Availability} on the other hand are highly compromised, since the files are altered and not their contents are not accessible anymore after the attack was successful. Subsequent systems do not seem to be affected, since no propagation of the ransomware over the network is present, nor does the attack target files that could damage other systems themselves running on the victim's machine.

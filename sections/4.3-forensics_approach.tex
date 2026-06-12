@@ -32,8 +32,8 @@ Trying different encodings to display the file contents didn't yield legible res
 \subsubsection{Compromise Indicator Assessment}
 Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} \autocite{mitre:attack:T1566:002} technique to target the victim.
 
-They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}). The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: (\textit{IP:192.168.61.26, Port: 8080)} (see \cref{fish_mail_c2}). 
-The attackers created fake urgency by claiming the user's account had been compromised, leading them to fall victim to the Phishing tactic.
+They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}), leading the user to fall victim to the \textit{Social Engineering: Email Spoofing (T1684.002)} technique \autocite{mitre:attack:T1684:002}. The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: \textit{IP:192.168.61.26, Port: 8080} (see \cref{fish_mail_c2}). 
+The attackers created fake urgency by claiming the user's account had been compromised.
 
 \begin{figure}[!htb]
 	\centering
