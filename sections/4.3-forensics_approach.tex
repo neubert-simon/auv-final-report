@@ -116,8 +116,9 @@ If this filter had still returned too many packers, the filter \textit{http.requ
 Following the HTTP stream revealed the downloaded text file, containing the ransomware in form of a \textit{PowerShell} script.
 The extracted script can be viewed in the appended files under:\\
 {
-\small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Wireshark Trace  $\longrightarrow$ download.ps1}
+\small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Wireshark Trace Files  $\longrightarrow$ download.ps1}
 }
+
 \normalsize
 The attacker uses a SimpleHTTP Python server, running on Python version 3.11.2 (see \cref{shark_serv}).
 The script encrypts the following file types, while explicitly excluding packet capture (\textit{.pcap}) files (see \cref{shark_inc_ex}, marked red):

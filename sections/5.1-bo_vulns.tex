@@ -11,11 +11,11 @@ The vulnerability can be classified as:\\
 There is no CVE entry for the vulnerability in the VulnServer program, since it was specifically designed as an educational tool for Buffer Overflows \autocite{vulnserver}.
 
 \paragraph{Cause and Prevention}
-The VulnServer application cloneable from Bradshaw's Github repository uses \emph{strcpy} (see \cref{strcopy}), a C function which does not check if enough space is present before it copies input into the buffer \autocite{microsoft:strcpy}. 
+The VulnServer application from Bradshaw's Github repository uses \emph{strcpy} (see \cref{strcopy}), a C function which does not check if enough space is present before copying input to the buffer \autocite{microsoft:strcpy}. 
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{buffer_overflow/analysis/strcopy}
+	\includegraphics[width=0.7\linewidth]{buffer_overflow/analysis/strcopy}
 	\caption{Example of C Code vulnerable to Buffer Overflows from VulnServer Repo}
 	\vspace{-2mm}
 	\caption*{\small Source: \url{https://github.com/stephenbradshaw/vulnserver/blob/master/vulnserver.c}}
