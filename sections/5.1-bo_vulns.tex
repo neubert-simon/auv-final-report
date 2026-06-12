@@ -52,8 +52,6 @@ Since compromise of the vulnerable system (VulnServer) lead to a reverse shell o
 \begin{itemize}
 \itemBF{Exploit Protection (M1050)}
 Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult \autocite{mitre:attack:M1050}.
-\itemBF{Multi-factor Authentication (M1032)}
-Requiring multiple authentication factors prevents attackers from compromising accounts by only obtaining one factor \autocite{mitre:attack:M1032}.
 \itemBF{Filter Network Traffic (M1037)}
 Monitoring network traffic can help identify threats and prevent them.
 IP addresses could be blacklisted via firewall e.g. if port scanning is detected. \autocite{mitre:attack:DET0830, mitre:attack:DET0867}
