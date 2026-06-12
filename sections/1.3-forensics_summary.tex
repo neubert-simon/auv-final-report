@@ -4,4 +4,18 @@
 
 \subsection{Digital Forensics}
 
+The Spearphishing attack the user suffered was conducted via a Phishing E-Mail.
+The attackers impersonated Microsoft support, claiming urgent action was required.
+That goaded the user into clicking a malicious link, which copied a PowerSell command into their clipboard and instructed them to execute it.
+The command then downloaded a script which encrypted some files and created a ransom note.
+
+\textit{Educating and training users to spot Phishing attempts can help them avoid being victimized. Additionally, web content can be restricted to reduce the risk of malicious content being accessed.}
+
+\begin{tabular}{l l}
+\textbf{Vector}: & CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:H/VA:H/SC:N/SI:N/SA:N\\
+\textbf{CVSS v4.0 Score}: & 7.0 / High
+\end{tabular}
+
+A reverse shell was then created to observe it in a SIEM system, identifying that the combination of unusual spawned processes and executed commands can raise alarms that notify administrators of possible intrusions.
+
 \end{document}
