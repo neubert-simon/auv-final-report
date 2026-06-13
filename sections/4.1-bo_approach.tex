@@ -14,14 +14,14 @@
 \end{figure}
 
 \newpage
-The Active Scanning technique (T1595) (Reconnaissance (TA0043) tactic \autocite{mitre:attack:TA0043}) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.\\
+The \textit{Active Scanning (T1595)}  technique \autocite{mitre:attack:TA0043}) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.
 The goal of the Nmap scan was to obtain information about the operating system, open ports, service information, and vulnerabilities on the target system:
 
 \paragraph{Scan Setup} \label{bo:scan-setup}
 To achieve this, the following Nmap parameters were used:
 \begin{figure}[h]
-\makebox[1.05\linewidth][c]{%
-	\includegraphics[width=\linewidth]{../img/buffer_overflow/nmap/params}
+\makebox[\linewidth][c]{%
+	\includegraphics[width=0.7\linewidth]{../img/buffer_overflow/nmap/params}
 }
 	\vspace*{-5mm}
 	\caption{Nmap - Configuration used to scan the target system}
@@ -29,6 +29,7 @@ To achieve this, the following Nmap parameters were used:
 The parameters were chosen with the following reasoning \autocite{nmap}:
 \vspace{-2mm}
 \begin{itemize}
+\begin{multicols}{2}
 \item[-]{\textbf{T4}}\\
 Sets the timing template. In this case, the second fastest scanning mode was chosen.
 Since this scan happened in a laboratory setting, a stealthier (slower) option was not necessary.
@@ -47,15 +48,13 @@ This flag instructs Nmap to treat all hosts as online, skipping the ICMP ``ping"
 It was known that the target was a Windows machine, which don't answer pings by default. Therefore, Nmap would assume the host was down if this flag weren’t set, ending the scan prematurely.
 \item[-]{\textbf{oN} nmap.txt}\\
 Writes the output to the file ``nmap.txt" in normal mode to record the scan results.
-\item[-]{192.168.61.45}\\
-The IP adress of the target machine that was to be scanned.
+\end{multicols}
 \end{itemize}
 
 \paragraph{Scan Results}
 \subparagraph{Service Scan} \label{paragraph:service-scan}
 
 Nmap gathered the following information via service scan (see \cref{serviceScanResult}):
-
 \begin{enumerate}
 \item{\textbf{Port 445 - Windows 7 Enterprise 7601 Service Pack 1 microsoft ds}}\\
 Nmap was able to identify the service running on port 445 as ``microsoft-ds".\\
@@ -78,19 +77,19 @@ The closest fingerprint match it got is ``freeciv", a program that seems to be i
 
 \begin{figure}[!h]
 \makebox[\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/fingerprint}
+	\includegraphics[width=0.8\linewidth]{../img/buffer_overflow/nmap/fingerprint}
 }
 	\caption{Nmap - Excerpt of server fingerprint on port 5555}
 	\label{fingerprint}
 \end{figure}
+\end{enumerate}
 
-
-The two following lines returned by the service can be gathered from the fingerprint (see \cref{fingerprint}):\\
-- \textit{``Hello There.\textbackslash r\textbackslash n"}\\
-- \textit{``I can break rules too!\textbackslash r\textbackslash n"}
+The two following lines can be gathered from the fingerprint (see \cref{fingerprint}):\\
+- \textit{``Hello There.\textbackslash r\textbackslash n"}
+\textit{``I can break rules too!\textbackslash r\textbackslash n"}
 
 All that can be gleamed from this scan result is that a service is running on port 5555 that returns text when called.
-\end{enumerate}
+
 
 To verify these findings the complete Nmap scan report can be viewed in the appended files:\\
 \textit{Assignment 1 - Windows Scanning and Buffer Overflow → Nmap Scan → nmap.txt}
@@ -98,7 +97,7 @@ To verify these findings the complete Nmap scan report can be viewed in the appe
 \subparagraph{Operating System Scan} \label{paragraph:os-scan}
 \begin{figure}[!h]
 \makebox[\linewidth][c]{%
-	\includegraphics[width=1.1\linewidth]{../img/buffer_overflow/nmap/2_os}
+	\includegraphics[width=1.2\linewidth]{../img/buffer_overflow/nmap/2_os}
 }
 	\caption{Nmap - OS scan results}
 	\label{osScanResult}
@@ -106,14 +105,14 @@ To verify these findings the complete Nmap scan report can be viewed in the appe
 
 Nmap tried to guess the host machine and came up with a few possible results.
 The guesses with the highest confidence score (96\%) (see \cref{osScanResult}) are:
-
+\vspace{-4mm}
 \begin{itemize}
 	\itemsep0em
 	\item{Windows Server 2008 R2}
 	\item{Windows 7 SP1}
 	\item{Windows 8}
 \end{itemize}
-
+\vspace{-4mm}
 As was mentioned previously, Nmap identified the ``Windows 7 Enterprise 7601
 Service Pack 1" on the machine, strengthening the evidence for a Windows 7 machine.\\
 This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
@@ -129,17 +128,13 @@ This is also supported by the smb-os-discovery (see \cref{osScanResult2}).
 
 \begin{figure}[h]
 \makebox[1.03\linewidth][c]{%
-	\includegraphics[width=1.13\linewidth]{../img/buffer_overflow/nmap/4_vulns}
+	\includegraphics[width=0.8\linewidth]{../img/buffer_overflow/nmap/4_vulns}
 }
 	\caption{Nmap - Vulnerability scan results}
 	\label{vulnScanResult}
 \end{figure}
 
-
-Nmap discovered a possibly exploitable misconfiguration.
-
-SMB Message Block Signing is disabled, making the system potentially vulnerable to relay attacks, since a message's integrity can't be verified without the signature \autocite{microsoft:smb-signing}. 
-
+SMB Message Block Signing was disabled, making the system potentially vulnerable to relay attacks, since a message's integrity can't be verified without the signature \autocite{microsoft:smb-signing}. 
 Other default scripts did not find any vulnerabilities.
 \newpage
 
