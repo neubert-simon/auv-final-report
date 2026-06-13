@@ -12,3 +12,8 @@
 6. Own script?
 
 risk assessment, this approach and this fix
+
+Make sure no title contains citations
+check references and if everything is cited once
+clean up appendix
+create appendix links to phantomsections
