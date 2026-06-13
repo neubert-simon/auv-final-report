@@ -23,15 +23,15 @@ Trying different encodings to display the file contents didn't yield legible res
 	\caption{Gonnasmile ransom note}
 	\label{ransom}
 \end{figure}
-
+\phantomsection \label{target:document_encr_ex}
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{forensics/1_assessment/documents}
-	\caption{Example of encrypted file}
+	\caption{Example of encrypted file (for all files see \cref{encr1,encr2})}
 	\label{document_encr_ex}
 \end{figure}
 
 \subsubsection{Compromise Indicator Assessment}
-Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} \autocite{mitre:attack:T1566:002} technique to target the victim.
+Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail_c2}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} \autocite{mitre:attack:T1566:002} technique to target the victim.
 They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}), leading the user to fall victim to the \textit{Social Engineering: Email Spoofing (T1684.002)} technique \autocite{mitre:attack:T1684:002}. The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: \textit{IP:192.168.61.26, Port: 8080} (see \cref{fish_mail_c2}). 
 The attackers created fake urgency by claiming the user's account had been compromised.
 
@@ -161,10 +161,12 @@ The key and initialization vector were written to the following file (see \cref{
 	\label{shark_key_file}
 \end{figure}
 
-ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}). The script was then altered to additionally revert the wallpaper change and remove the created files (ransom note, key file, wallpaper). 
+ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}). \phantomsection \label{target:chat_script_encrypt}
+The script was then altered to additionally revert the wallpaper change and remove the created files (ransom note, key file, wallpaper). 
 A prompt for user input was added as well to enable the \textit{PowerShell} process to be captured (see \cref{encr_script}).
-A default wallpaper was chosen, since it was not apparent which wallpaper the user had before the incident, and the script was executed (see \cref{encr_restr}).
-The decrypted files have been opened to prove that they have been decrypted (see Appendix, \cref{decrypted_files}).
+A default wallpaper was chosen, since it was not apparent which wallpaper the user had before the incident, and the script was executed (see \cref{encr_restr}). \phantomsection \label{target:decrypt_shift}
+
+The decrypted files have been opened to prove that they have been decrypted (see Appendix, \cref{decrypted_files}). This was not explicitly forbidden, as it was with the sensitive data in the Penetration Testing assignment. In a real scenario the contract partner would be approached to clear up if the examination of files was in or out of scope, if it wasn't laid out in the contract already.
 The script can be viewed in the appended files:\\
 {
 \small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Recovery Script $\longrightarrow$ reverse.ps1}
@@ -214,6 +216,7 @@ The victim must have clicked the link, then clicked the fake \textit{Captcha} bu
 
 \subsubsection{Reverse Shell Attack Analysis}
 %TODO add technique
+\phantomsection \label{target:fish}
 To be able to analyze a reverse shell attack in the provided SIEM system, a Command Injection was conducted on the provided DVWA server (see \cref{fishiens}) to create the reverse shell.
 The complete SIEM results can be viewed in the appendix (see \cref{raaaaaaaaa}).
 There are a few indicators that make this occurrence suspicious:

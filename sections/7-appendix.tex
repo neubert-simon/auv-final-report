@@ -32,6 +32,12 @@
 	\enquote{A Command and Control, or C\&C, server is a computer used to coordinate the actions of computers infected by a bot, rootkit, worm or other malicious software (malware) that rely on another computer for instructions and updates} \autocite{eset:C2}.
 \end{itemize}
 
+\hypersetup{
+    hidelinks=false,
+    colorlinks=false,
+    pdfborder={0 0 1}
+}
+
 \stoptoc
 \vspace{-5mm}
 \subsection{Buffer Overflow}  \label{Appendix-1}
@@ -39,19 +45,18 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[height=24cm]{buffer_overflow/nmap/full}
 }
-	\caption{Nmap - Full scan result}
+	\caption{Nmap scan result - \hyperref[subsec:Nmap_scan]{Jump to reference}}
 	\label{beeg}
 \end{figure}
 
 \clearpage \newpage
 \begin{landscape}
 
-
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=0.75\linewidth]{buffer_overflow/flimsy/3_run}
 }
-\caption{Running attack using the impermanent address found before the restart}
+\caption{Running attack using the impermanent address found before the restart - \jtf{target:succ_fail}}
 \label{reverse_foreign}
 \end{figure}
 
@@ -59,7 +64,7 @@
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=0.85\linewidth]{buffer_overflow/flimsy/4_shell}
 }
-\caption{Reverse shell created by exploiting the impermanent pre-restart JMP ESP location}
+\caption{Reverse shell created by exploiting the impermanent pre-restart JMP ESP location - \jtf{target:succ_fail}}
 \label{succ_end}
 \end{figure}
 
@@ -70,7 +75,7 @@
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=0.9\linewidth]{buffer_overflow/flimsy/pre_address/2_no_conn}
 }
-\caption{No reverse shell when attacking with the impernanent JMP ESP address post restart}
+\caption{No reverse shell from attack with the impernanent JMP ESP address post restart - \jtf{target:succ_fail}}
 \label{fail_end}
 \end{figure}
 \stoptoc
@@ -81,7 +86,7 @@
 	\makebox[1.03\linewidth][c]{%
 	\includegraphics[width=1.2\linewidth]{pentest/1_active_scan/6_vulns/1337.png}
 	}
-	\caption{Nikto results for port 1337}
+	\caption{Nikto results for port 1337 - \jtf{target:nikto_1337}}
 	\label{nikto_1337}
 \end{figure}
 
@@ -89,7 +94,7 @@
 	\makebox[1.03\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{pentest/1_active_scan/4_fuzzing/ffuf/ffuf_1337}
 	}
-	\caption{Ffuf fuzzing on port 1337}
+	\caption{Full Ffuf fuzzing result for port 80 1337 - \jtf{target:ffuf_1337}}
 	\label{ffuf_1337}
 \end{figure}
 
@@ -97,19 +102,28 @@
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=0.75\linewidth]{pentest/1_active_scan/4_fuzzing/ffuf/ffuf}
 }
-\caption{Port 80 Ffuf result}
+\caption{Full Ffuf fuzzing result for port 80 - \jtf{target:ffuf_1337}}
 \label{ffuf_80_full}
 \end{figure}
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.62\linewidth]{pentest/1_active_scan/5_technologies/port_80/bootstrap/chatgpt}
-	\caption{Whatweb - Reasons for multiple Bootstrap versions on port 80 ChatGPT log}
+	\caption{Reasons for multiple Bootstrap versions on port 80 ChatGPT log - \jtf{target:multiple_versions_log}}
 	\vspace{-2mm}
+\hypersetup{
+    hidelinks=true,
+    colorlinks=false,
+}
 	\caption*{Source: \url{https://chatgpt.com}}
 	\label{multiple_versions_log}
 \end{figure}
 
+\hypersetup{
+    hidelinks=false,
+    colorlinks=false,
+    pdfborder={0 0 1}
+}
 \clearpage \newpage
 \begin{landscape}
 
@@ -117,7 +131,7 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{pentest/2_login/sql_injection/full_inject1}
 }
-	\caption{Successful SQL injection attempt 1}
+	\caption{Successful SQL injection attempt 1 - \jtf{target:inject}}
 	\label{full_inject1}
 \end{figure}
 
@@ -125,7 +139,7 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{pentest/2_login/sql_injection/full_inject2}
 }
-	\caption{Successful SQL injection attempt 2}
+	\caption{Successful SQL injection attempt 2 - \jtf{target:inject}}
 	\label{full_inject2}
 \end{figure}
 
@@ -133,7 +147,7 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{pentest/2_login/sql_injection/full_inject3}
 }
-	\caption{Successful SQL injection attempt 3}
+	\caption{Successful SQL injection attempt 3 - \jtf{target:inject}}
 	\label{full_inject3}
 \end{figure}
 
@@ -144,7 +158,7 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.1\linewidth]{pentest/4_source_code/2_login.php}
 }
-	\caption{login.php read via reverse shell}
+	\caption{Source code of login.php read via reverse shell -\\ \jtf{src_anal}}
 	\label{login_php_full}
 \end{figure}
 
@@ -152,15 +166,15 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.18\linewidth]{pentest/4_source_code/1_login_save}
 }
-	\caption{login.php.save read via reverse shell}
+	\caption{Source code of login.php.save read via reverse shell -\\ \jtf{src_anal}}
 	\label{login_save_full}
 \end{figure}
 
 \begin{figure}[!htb]
 \makebox[\linewidth][c]{%
-	\includegraphics[width=1.18\linewidth]{pentest/4_source_code/3_management.php}
+	\includegraphics[width=1.15\linewidth]{pentest/4_source_code/3_management.php}
 }
-	\caption{management.php read via reverse shell}
+	\caption{Source code of management.php read via reverse shell -\\ \jtf{src_anal}}
 	\label{management_full}
 \end{figure}
 
@@ -169,7 +183,7 @@
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.9\linewidth]{pentest/5_cracking/hashid/hashid_full}
-	\caption{Complete list of possible password hashing algorithms produced by Hashid}
+	\caption{Complete list of possible password hashing algorithms produced by Hashid - \jtf{target:same_hash}}
 	\label{hashid_full}
 \end{figure}
 \end{landscape}
@@ -180,15 +194,25 @@
 	\makebox[\linewidth][c]{%
 	\includegraphics[width=1.05\linewidth]{pentest/5_cracking/hashid/chatgpt_sort_unique}
 	}
-	\caption{ChatGPT chatlog for unique line command generation}
+	\caption{ChatGPT chatlog for unique line command generation - \jtf{target:same_hash}}
+\hypersetup{
+    hidelinks=true,
+    colorlinks=false,
+}
 	\caption*{Source: \url{https://chatgpt.com}}
 	\label{chatgpt_sort_unique}
 \end{figure}
 
+\hypersetup{
+    hidelinks=false,
+    colorlinks=false,
+    pdfborder={0 0 1}
+}
+
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.96\linewidth]{pentest/5_cracking/john/0_complete_john}
-	\caption{Complete hash cracking session with john}
+	\caption{Complete hash cracking  shell session with john -\\ \jtf{target:phantom_john}}
 	\label{0_complete_john}
 \end{figure}
 
@@ -197,7 +221,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{pentest/5_cracking/hydra/logins}
 	}
-	\caption{Logging into all Unix accounts with cracked passwords via ssh}
+	\caption{Logging into all Unix accounts with cracked passwords via ssh - \jtf{target:ssh_login}}
 	\label{login1}
 \end{figure}
 
@@ -206,7 +230,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{pentest/6_privilige_escalation/3_linpeas/0_run}
 	}
-	\caption{Running Linpeas on the remote target machine}
+	\caption{Running Linpeas on the remote target machine - \jtf{{target:linpeas}}}
 	\label{run_linpeas}
 \end{figure}
 
@@ -215,7 +239,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{pentest/6_privilige_escalation/4_composer/shell/0_full.png}
 	}
-	\caption{Complete execution of adding super user friend}
+	\caption{Complete shell session of adding super user friend - \jtf{composer_script}}
 	\label{full_composer_friend}
 \end{figure}
 
@@ -226,7 +250,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.17\linewidth]{pentest/6_privilige_escalation/4_composer/reverse/0_full.png}
 	}
-	\caption{Complete execution of PHP reverse shell creation via composer}
+	\caption{Complete execution of PHP reverse shell creation via composer - \jtf{{target:composer2}}}
 	\label{full_composer_reverse}
 \end{figure}
 \end{landscape}
@@ -239,7 +263,7 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.1\linewidth]{forensics/1_assessment/documents1}
 }
-	\caption{Encrypted files pt.1}
+	\caption{Encrypted files pt.1 - \jtf{target:document_encr_ex}}
 	\label{encr1}
 \end{figure}
 
@@ -247,30 +271,62 @@
 \makebox[\linewidth][c]{%
 	\includegraphics[width=1.1\linewidth]{forensics/1_assessment/documents2}
 }
-	\caption{Encrypted files pt.2}
+	\caption{Encrypted files pt.2 - \jtf{target:document_encr_ex}}
 	\label{encr2}
 \end{figure}
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.5\linewidth]{forensics/5_reverse/chatlog_small}
-	\caption{Complete prompt and response for encryption reversal script}
+	\caption{Complete prompt and response for encryption reversal script - \jtf{target:chat_script_encrypt}}
+		\hypersetup{
+    hidelinks=true,
+    colorlinks=false,
+}
+	\caption*{Source: \url{https://chatgpt.com}}
 	\label{chatlog_small}
 \end{figure}
 
+\hypersetup{
+    hidelinks=false,
+    colorlinks=false,
+    pdfborder={0 0 1}
+}
 \begin{figure}[!htb]
 \centering
+	\centering
 	\includegraphics[width=0.9\linewidth]{forensics/5_reverse/chatlog_med}
-	\caption{Shortened prompt and response for encryption reversal script for better legibility}
+	\caption{Shortened prompt / response for reversal script for better legibility -\jtf{target:chat_script_encrypt}}
+	\hypersetup{
+    hidelinks=true,
+    colorlinks=false,
+}
+	\caption*{Source: \url{https://chatgpt.com}}
 	\label{chatlog_encrev}
 \end{figure}
 
+\hypersetup{
+    hidelinks=false,
+    colorlinks=false,
+    pdfborder={0 0 1}
+}
 \begin{figure}[!htb]
 \centering
 	\includegraphics[width=0.6\linewidth]{forensics/5_reverse/chatlog_prompt}
-	\caption{Complete prompt for encryption reversal script for better legibility}
+	\caption{Complete prompt for encryption reversal script for better legibility - \jtf{target:chat_script_encrypt}}
+	\hypersetup{
+    hidelinks=true,
+    colorlinks=false,
+}
+	\caption*{Source: \url{https://chatgpt.com}}
 	\label{chatlog_prompt}
 \end{figure}
+
+\hypersetup{
+    hidelinks=false,
+    colorlinks=false,
+    pdfborder={0 0 1}
+}
 
 \newpage \clearpage
 \begin{landscape}
@@ -279,7 +335,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{forensics/5_reverse/decrypted_files}
 	}
-	\caption{Decrypted files}
+	\caption{Decrypted files - \jtf{target:decrypt_shift}}
 	\label{decrypted_files}
 \end{figure}
 \end{landscape}
@@ -292,7 +348,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{forensics/7_siem2/analyzer}
 	}
-	\caption{Complete SIEM results for reverse shell analysis}
+	\caption{Complete SIEM results for reverse shell analysis - \jtf{target:fish}}
 	\label{raaaaaaaaa}
 \end{figure}
 \end{landscape}

@@ -376,7 +376,8 @@ Upon restarting the target machine, this JMP ESP instruction was not located at 
 \end{figure}
 
 The address discovered via the \enquote{Search For} feature was inside the memory space of a non-main thread (see \cref{jmp_found_post}, marked green), meaning the location in memory changed across restarts since the thread will be opened anew by the process with differently allocated memory \autocite{microsoft:threads_in_stack}.
-This address stops working in the attack after a machine restart (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{fail_end} - \cref{succ_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
+\phantomsection \label{target:succ_fail}
+This address stops working in the attack after a machine restart (see Appendix, \cref{reverse_foreign} - \cref{succ_end}). To perfect the attack, an address holding the JMP ESP command was necessary, which persisted beyond reboots.
 This instruction could be located within the address space of any accessible module. The command \textit{!mona modules} \autocite{mona} was used to list them (see \cref{modules}).
 
 \newpage
@@ -548,10 +549,9 @@ This method returns the string representation of the payload generated with msfv
 \item{\textbf{\enquote{\textbackslash x71 \textbackslash x1D \textbackslash xD1 \textbackslash x65}}}\\
 The previously determined memory address holding the JMP ESP instruction.
 It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering, storing the least significant byte at the smallest address, therefore reading the address right to left \autocite{microsoft:little_endian}.\\
-The attack was also done twice more with the discovered memory addresses which were impermanent across restarts, to show them not working anymore after a reboot (see \textit{\hyperref[Appendix-1]{Appendix}}, \cref{private_vpn1} - \cref{reverse_foreign}).
 \end{itemize}
 
-Upon executing the attack, the payload initiated a connection to the attacking system, which had the netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
+Upon execution of the attack, the payload initiated a connection to the attacking system, which had the netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
 
 \begin{figure}[!htb]
 	\makebox[1.02\linewidth][c]{%
