@@ -12,7 +12,7 @@
 	\item{\textbf{Bad characters}}\\
 	In this context, \enquote{bad characters} describe all characters that terminate the processing of inputs by a system (e.g. line breaks, null bytes).
 	\item{\textbf{Address Space Layout Randomization (ASLR)}}\\
-	ASLR randomizes the address a process uses each time it is run, changing the location of data in memory \autocite{app9142928}.
+	ASLR randomizes the addresses a process uses after each restart \autocite{app9142928}.
 	\item{\textbf{Data Execution Prevention (DEP)}}\\
 	An operating system feature that allows parts of memory to be marked as non-executable \autocite{microsoft:dep}.
 	\item{\textbf{\enquote{No Operation} Opcodes (NOOPS)}}\\
@@ -32,12 +32,12 @@
 	\enquote{A Command and Control, or C\&C, server is a computer used to coordinate the actions of computers infected by a bot, rootkit, worm or other malicious software (malware) that rely on another computer for instructions and updates} \autocite{eset:C2}.
 \end{itemize}
 
-\newpage
 \stoptoc
+\vspace{-5mm}
 \subsection{Buffer Overflow}  \label{Appendix-1}
 \begin{figure}[h]
 \makebox[\linewidth][c]{%
-	\includegraphics[height=17cm]{buffer_overflow/nmap/full}
+	\includegraphics[height=24cm]{buffer_overflow/nmap/full}
 }
 	\caption{Nmap - Full scan result}
 	\label{beeg}
@@ -49,7 +49,7 @@
 
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/3_run}
+	\includegraphics[width=0.75\linewidth]{buffer_overflow/flimsy/3_run}
 }
 \caption{Running attack using the impermanent address found before the restart}
 \label{reverse_foreign}
@@ -57,24 +57,33 @@
 
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/4_shell}
+	\includegraphics[width=0.85\linewidth]{buffer_overflow/flimsy/4_shell}
 }
 \caption{Reverse shell created by exploiting the impermanent pre-restart JMP ESP location}
 \label{succ_end}
 \end{figure}
 
+\end{landscape}
+
+\clearpage \newpage
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/pre_address/2_no_conn}
+	\includegraphics[width=0.9\linewidth]{buffer_overflow/flimsy/pre_address/2_no_conn}
 }
 \caption{No reverse shell when attacking with the impernanent JMP ESP address post restart}
 \label{fail_end}
 \end{figure}
-\end{landscape}
-
-\clearpage \newpage
 \stoptoc
 \subsection{Linux - Complete Pentest (Mesa)}  \label{Appendix-2}
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[1.03\linewidth][c]{%
+	\includegraphics[width=1.2\linewidth]{pentest/1_active_scan/6_vulns/1337.png}
+	}
+	\caption{Nikto results for port 1337}
+	\label{nikto_1337}
+\end{figure}
 
 \begin{figure}[!htb]
 	\makebox[1.03\linewidth][c]{%
@@ -91,18 +100,6 @@
 \caption{Port 80 Ffuf result}
 \label{ffuf_80_full}
 \end{figure}
-
-\clearpage \newpage
-\begin{landscape}
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.99\linewidth]{pentest/1_active_scan/6_vulns/1337.png}
-	\caption{Nikto results for port 1337}
-	\label{nikto_1337}
-\end{figure}
-\end{landscape}
-\clearpage
-\newpage
 
 \begin{figure}[!htb]
 	\centering
@@ -171,7 +168,7 @@
 \begin{landscape}
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{pentest/5_cracking/hashid/hashid_full}
+	\includegraphics[width=0.9\linewidth]{pentest/5_cracking/hashid/hashid_full}
 	\caption{Complete list of possible password hashing algorithms produced by Hashid}
 	\label{hashid_full}
 \end{figure}
@@ -180,16 +177,17 @@
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{pentest/5_cracking/hashid/chatgpt_sort_unique}
+	\makebox[\linewidth][c]{%
+	\includegraphics[width=1.05\linewidth]{pentest/5_cracking/hashid/chatgpt_sort_unique}
+	}
 	\caption{ChatGPT chatlog for unique line command generation}
 	\caption*{Source: \url{https://chatgpt.com}}
 	\label{chatgpt_sort_unique}
 \end{figure}
 
-\vspace{-3mm}
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{pentest/5_cracking/john/0_complete_john}
+	\includegraphics[width=0.96\linewidth]{pentest/5_cracking/john/0_complete_john}
 	\caption{Complete hash cracking session with john}
 	\label{0_complete_john}
 \end{figure}
@@ -206,7 +204,7 @@
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=0.9\linewidth]{pentest/6_privilige_escalation/3_linpeas/0_run}
+		\includegraphics[width=1.2\linewidth]{pentest/6_privilige_escalation/3_linpeas/0_run}
 	}
 	\caption{Running Linpeas on the remote target machine}
 	\label{run_linpeas}
@@ -235,39 +233,42 @@
 \clearpage \newpage
 
 
-
 \subsection{Digital Forensics}  \label{Appendix-3}
 
 \begin{figure}[!htb]
-	\includegraphics[width=\linewidth]{forensics/1_assessment/documents1}
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{forensics/1_assessment/documents1}
+}
 	\caption{Encrypted files pt.1}
 	\label{encr1}
 \end{figure}
 
 \begin{figure}[!htb]
-	\includegraphics[width=\linewidth]{forensics/1_assessment/documents2}
+\makebox[\linewidth][c]{%
+	\includegraphics[width=1.1\linewidth]{forensics/1_assessment/documents2}
+}
 	\caption{Encrypted files pt.2}
 	\label{encr2}
 \end{figure}
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics{forensics/5_reverse/chatlog_small}
-	\caption{Prompt and response for encryption reversal script}
+	\includegraphics[width=0.5\linewidth]{forensics/5_reverse/chatlog_small}
+	\caption{Complete prompt and response for encryption reversal script}
 	\label{chatlog_small}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
-	\includegraphics{forensics/5_reverse/chatlog_med}
-	\caption{Prompt and response for encryption reversal script}
+	\includegraphics[width=0.9\linewidth]{forensics/5_reverse/chatlog_med}
+	\caption{Shortened prompt and response for encryption reversal script for better legibility}
 	\label{chatlog_encrev}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
-	\includegraphics{forensics/5_reverse/chatlog_prompt}
-	\caption{Complete prompt for encryption reversal script}
+	\includegraphics[width=0.6\linewidth]{forensics/5_reverse/chatlog_prompt}
+	\caption{Complete prompt for encryption reversal script for better legibility}
 	\label{chatlog_prompt}
 \end{figure}
 
@@ -291,7 +292,7 @@
 	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.2\linewidth]{forensics/7_siem2/analyzer}
 	}
-	\caption{Complete SIEM results}
+	\caption{Complete SIEM results for reverse shell analysis}
 	\label{raaaaaaaaa}
 \end{figure}
 \end{landscape}
