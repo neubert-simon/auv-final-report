@@ -7,22 +7,23 @@
 \subsubsection{Target Machine Examination}
 The group which apparently conducted  attack calls their ransomware \enquote{Gonnasmile} (see \cref{for_wallpaper}). They claim that the victim's files have been encrypted, and that they can find instructions to recover them in the text file placed on the Desktop.
 
+The text file contains a ransom note that demands 500\$ to be sent to a cryptocurrency wallet (see \cref{ransom}). The files in the user's \textit{Documents} folder have a \textit{.encrypted} file ending, and are illegible (see \cref{document_encr_ex}). All documents render in the same manner (see Appendix, \cref{encr1,encr2}), displaying either placeholder or Chinese characters.
+Trying different encodings to display the file contents didn't yield legible results, meaning the files were most likely actually cryptographically altered instead of having just their encodings changed, lending credence to the claim of encryption in the ransom note.
+
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{forensics/1_assessment/desktop}
 	\caption{Victim's desktop wallpaper post attack}
 	\label{for_wallpaper}
 \end{figure}
 
-The text file contains a ransom note that demands 500\$ to be sent to a cryptocurrency wallet (see \cref{ransom}).
+
 \begin{figure}[!htb]
-	\includegraphics[width=\linewidth]{forensics/1_assessment/ransom}
+	\centering
+	\includegraphics[width=0.6\linewidth]{forensics/1_assessment/ransom}
 	\caption{Gonnasmile ransom note}
 	\label{ransom}
 \end{figure}
 
-The files in the user's \textit{Documents} folder have a \textit{.encrypted} file ending, and are illegible (see \cref{document_encr_ex}). All documents render in the same manner (see Appendix, \cref{encr1,encr2}), displaying either placeholder or Chinese characters.
-
-Trying different encodings to display the file contents didn't yield legible results, meaning the files were most likely actually cryptographically altered instead of having just their encodings changed, lending credence to the claim of encryption in the ransom note.
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{forensics/1_assessment/documents}
 	\caption{Example of encrypted file}
@@ -31,22 +32,12 @@ Trying different encodings to display the file contents didn't yield legible res
 
 \subsubsection{Compromise Indicator Assessment}
 Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} \autocite{mitre:attack:T1566:002} technique to target the victim.
-
 They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}), leading the user to fall victim to the \textit{Social Engineering: Email Spoofing (T1684.002)} technique \autocite{mitre:attack:T1684:002}. The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: \textit{IP:192.168.61.26, Port: 8080} (see \cref{fish_mail_c2}). 
 The attackers created fake urgency by claiming the user's account had been compromised.
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{forensics/2_fish/fish}
-	\caption{Spearphishing E-Mail containing malicious link}
-	\label{fish_mail}
-\end{figure}
-
-\vspace{4mm}
-
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.6\linewidth]{forensics/2_fish/fish_mail}
+	\includegraphics[width=0.45\linewidth]{forensics/2_fish/fish_mail}
 	\caption{Spearphishing E-Mail address impersonating Microsoft support}
 	\label{fish_mail_mail}
 \end{figure}
@@ -55,7 +46,7 @@ The attackers created fake urgency by claiming the user's account had been compr
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\linewidth]{forensics/2_fish/fish_real}
+	\includegraphics[width=0.7\linewidth]{forensics/2_fish/fish_real}
 	\caption{Spearphishing E-Mail as plain text containing malicious link}
 	\label{fish_mail_c2}
 \end{figure}
@@ -186,7 +177,7 @@ ChatGPT was prompted to create a script which reverses the encryption process (s
 A prompt for user input was added as well to enable the \textit{PowerShell} process to be captured (see \cref{encr_script}).
 A default wallpaper was chosen, since it was not apparent which wallpaper the user had before the incident, and the script was executed (see \cref{encr_restr}).
 The decrypted files have been opened to prove that they have been decrypted (see Appendix, \cref{decrypted_files}).
-The script can be viewed in the appended files under:\\
+The script can be viewed in the appended files:\\
 {
 \small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Recovery Script $\longrightarrow$ reverse.ps1}
 }
@@ -194,7 +185,7 @@ The script can be viewed in the appended files under:\\
 \subsubsection{Attack Validation}
 Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves (see \cref{captchga}). The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that the button's onClick-handler calls a function, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}). This can be categorized as \textit{User Execution: Malicious Copy and Paste (T1204.004)} \autocite{mitre:attack:T1204:004}.
 
-The victim must have clicked on the link, then clicked on the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
+The victim must have clicked the link, then clicked the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
 
 \newpage \clearpage
 \begin{landscape}
