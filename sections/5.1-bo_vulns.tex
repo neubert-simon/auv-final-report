@@ -15,7 +15,7 @@ The VulnServer application from Bradshaw's Github repository uses \emph{strcpy} 
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.7\linewidth]{buffer_overflow/analysis/strcopy}
+	\includegraphics[width=0.6\linewidth]{buffer_overflow/analysis/strcopy}
 	\caption{Example of C Code vulnerable to Buffer Overflows from VulnServer Repo}
 	\vspace{-2mm}
 	\caption*{\small Source: \url{https://github.com/stephenbradshaw/vulnserver/blob/master/vulnserver.c}}
@@ -46,9 +46,10 @@ The vulnerability works via \textit{Network (N)} by connecting to the server, ha
 \paragraph*{Impact Metrics}
 The vulnerable system (VulnServer) can be crashed by the attack, scoring \textit{High (H)} for \textit{Availability (VA)}. \textit{Confidentiality (VC)} and \textit{Integrity (VI)} are not endagered in the same manner, since attack the server itself does not divulge any sensitive data to the attacker, nor do  files change because of the Buffer Overflow.
 
-Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), \textit{Confidentiality (SC)}, \textit{Integrity (SI)}, and \textit{Availability (SA)} should be considered highly endangered. This assumes a user with privileges able to impact the system has started the actual VulnServer process, which is not known based on the laboratory setup, and might require adjustments based on real world factors.
+Since compromise of the vulnerable system (VulnServer) lead to a reverse shell on the subsequent system (Windows 7 machine), \textit{Confidentiality (SC)}, \textit{Integrity (SI)}, and \textit{Availability (SA)} should be considered highly endangered on the subsequent system. The privileges the actual VulnServer process would run with in a real world scenario are not know, but it is safe to assume that reverse shell access to the system is a highly threatening to the CIA triad.
 
-\subsubsection{Countermeasures}
+\newpage
+\subsubsection{Countermeasures} \label{counta}
 \begin{itemize}
 \itemBF{Exploit Protection (M1050)}
 Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult \autocite{mitre:attack:M1050}.

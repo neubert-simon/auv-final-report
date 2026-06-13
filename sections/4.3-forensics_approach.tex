@@ -102,7 +102,7 @@ The C2 server was known to be running on port 8080, therefore limiting the displ
 	\label{shark_filter}
 \end{figure}
 
-If this filter had still returned too many packers, the filter \textit{http.request.uri matches "download.txt"} could have been used to show just the packets containing the payload script. The filter limited the results enough to enable the relevant packet to be identified (see \cref{shark_load}).
+The filter limited the results enough to enable the relevant packet to be identified (see \cref{shark_load}).
 Following the HTTP stream revealed the downloaded text file, containing the ransomware in form of a \textit{PowerShell} script.
 The extracted script can be viewed in the appended files under:\\
 {
@@ -110,25 +110,12 @@ The extracted script can be viewed in the appended files under:\\
 }
 
 \normalsize
-The attacker uses a SimpleHTTP Python server, running on Python version 3.11.2 (see \cref{shark_serv}).
-The script encrypts the following file types, while explicitly excluding packet capture (\textit{.pcap}) files (see \cref{shark_inc_ex}, marked red):
-\begin{itemize}
-\begin{multicols}{3}
-\item{Text files (\textit{.txt})}
-\item{Microsoft Word files (\textit{.docx}}
-\item{Microsoft Excel files (\textit{.xlsx})}
-\end{multicols}
-\end{itemize}
-The generated encryption key and initialization vector (see \cref{shark_inc_ex}, marked green) are written to a key file in the users home directory (see \cref{shark_inc_ex}, marked cyan).
+The C2 server is a SimpleHTTP 0.6 Python server, running on Python version 3.11.2 (see \cref{shark_serv}).
 
-
-\newpage
-\clearpage
-\begin{landscape}
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=0.8\linewidth]{forensics/4_shark/server}
+		\includegraphics[width=0.92\linewidth]{forensics/4_shark/server}
 	}
 	\caption{Server used by the attacker}
 	\label{shark_serv}
@@ -137,30 +124,31 @@ The generated encryption key and initialization vector (see \cref{shark_inc_ex},
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=1.15\linewidth]{forensics/4_shark/incex}
-	}
-	\caption{File types included and excluded by the payload}
-	\label{shark_inc_ex}
-\end{figure}
-\end{landscape}
-\newpage
-\clearpage
-
-\newpage
-\clearpage
-\begin{landscape}
-\begin{figure}[!htb]
-	\centering
-	\makebox[\linewidth][c]{%
 		\includegraphics[width=1.15\linewidth]{forensics/4_shark/shark}
 	}
 	\caption{Wireshark trace after filtering}
 	\label{shark_load}
 \end{figure}
-\end{landscape}
-\newpage
-\clearpage
 
+\subsubsection{Payload Analysis}
+The script encrypts the following file types, while explicitly excluding packet capture (\textit{.pcap}) files (see \cref{shark_inc_ex}, marked red):
+\begin{itemize}
+%\begin{multicols}{3}
+\item{Text files (\textit{.txt})}
+\item{Microsoft Word files (\textit{.docx})}
+\item{Microsoft Excel files (\textit{.xlsx})}
+%\end{multicols}
+\end{itemize}
+The generated encryption key and initialization vector (see \cref{shark_inc_ex}, marked green) are written to a key file in the user's home directory (see \cref{shark_inc_ex}, marked cyan).
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.2\linewidth]{forensics/4_shark/incex}
+	}
+	\caption{File types included and excluded by the payload}
+	\label{shark_inc_ex}
+\end{figure}
 
 The key and initialization vector were written to the following file (see \cref{shark_key_file}):\\
 \textit{C:\textbackslash Users\textbackslash User\textbackslash encryption\_key.txt1}
@@ -182,24 +170,6 @@ The script can be viewed in the appended files:\\
 \small \textit{Assignment 3 - Digital Forensics $\longrightarrow$ Recovery Script $\longrightarrow$ reverse.ps1}
 }
 
-\subsubsection{Attack Validation}
-Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves (see \cref{captchga}). The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that the button's onClick-handler calls a function, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}). This can be categorized as \textit{User Execution: Malicious Copy and Paste (T1204.004)} \autocite{mitre:attack:T1204:004}.
-
-The victim must have clicked the link, then clicked the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
-
-\newpage \clearpage
-\begin{landscape}
-\begin{figure}[!htb]
-	\centering
-	\makebox[\linewidth][c]{%
-		\includegraphics[width=1.04\linewidth]{forensics/5_reverse/4_restore}
-	}
-	\caption{Original target machine state restored with default wallpaper}
-	\label{encr_restr}
-\end{figure}
-\end{landscape}
-\newpage \clearpage
-
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
@@ -212,7 +182,22 @@ The victim must have clicked the link, then clicked the fake \textit{Captcha} bu
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=0.75\linewidth]{forensics/6_fished/captchga}
+		\includegraphics[width=1.04\linewidth]{forensics/5_reverse/4_restore}
+	}
+	\caption{Original target machine state restored with default wallpaper}
+	\label{encr_restr}
+\end{figure}
+
+\newpage
+\subsubsection{Attack Validation}
+Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves (see \cref{captchga}). The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that the button's onClick-handler calls a function, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}). This can be categorized as \textit{User Execution: Malicious Copy and Paste (T1204.004)} \autocite{mitre:attack:T1204:004}.
+
+The victim must have clicked the link, then clicked the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
+
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=0.5\linewidth]{forensics/6_fished/captchga}
 	}
 	\caption{Attacker's Phishing page}
 	\label{captchga}
@@ -221,7 +206,7 @@ The victim must have clicked the link, then clicked the fake \textit{Captcha} bu
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=\linewidth]{forensics/6_fished/clipboard}
+		\includegraphics[width=0.7\linewidth]{forensics/6_fished/clipboard}
 	}
 	\caption{Popup instructing user to execute \textit{PowerShell} command stored in clipboard}
 	\label{clipboard}
@@ -229,17 +214,8 @@ The victim must have clicked the link, then clicked the fake \textit{Captcha} bu
 
 \subsubsection{Reverse Shell Attack Analysis}
 %TODO add technique
-To be able to analyze creates a reverse shell attack in the provided SIEM system, a Command Injection was conducted on the provided DVWA server (see \cref{fishiens}). 
-
-\begin{figure}[!htb]
-	\centering
-	\makebox[\linewidth][c]{%
-		\includegraphics[width=\linewidth]{forensics/7_siem2/reverse_final}
-	}
-	\caption{Creating a reverse shell via Command Injection}
-	\label{fishiens}
-\end{figure}
-
+To be able to analyze a reverse shell attack in the provided SIEM system, a Command Injection was conducted on the provided DVWA server (see \cref{fishiens}) to create the reverse shell.
+The complete SIEM results can be viewed in the appendix (see \cref{raaaaaaaaa}).
 There are a few indicators that make this occurrence suspicious:
 \begin{enumerate}
 \itemBF{A webserver spawns a bash process}
@@ -250,24 +226,15 @@ Commands like \textit{whoami} should most likely not be run by a webserver, indi
 A webserver should not establish an outbound connection via netcat (see \cref{nccommand}).
 \end{enumerate}
 
-\newpage \clearpage
-\begin{landscape}
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
-		\includegraphics[width=1.2\linewidth]{forensics/7_siem2/analyzer}
+		\includegraphics[width=0.7\linewidth]{forensics/7_siem2/reverse_final}
 	}
-	\caption{Complete SIEM results}
-	\label{raaaaaaaaa}
+	\caption{Creating a reverse shell via Command Injection}
+	\label{fishiens}
 \end{figure}
 
-Relevant results from \cref{raaaaaaaaa} will be split into more legible cutouts on the following pages.
-\end{landscape}
-\newpage \clearpage
-
-
-\newpage \clearpage
-\begin{landscape}
 \begin{figure}[!htb]
 	\centering
 	\makebox[\linewidth][c]{%
@@ -278,23 +245,24 @@ Relevant results from \cref{raaaaaaaaa} will be split into more legible cutouts 
 \end{figure}
 
 \begin{figure}[!htb]
-	\centering
-	\makebox[\linewidth][c]{%
-		\includegraphics[width=0.4\linewidth]{forensics/7_siem2/whoami}
-	}
-	\caption{whoami command recorded by SIEM}
-	\label{whoami}
-\end{figure}
+    \centering
 
-\begin{figure}[!htb]
-	\centering
-	\makebox[\linewidth][c]{%
-		\includegraphics[width=0.6\linewidth]{forensics/7_siem2/command}
-	}
-	\caption{Reverse shell command recorded by SIEM}
-	\label{nccommand}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{forensics/7_siem2/whoami}
+        \caption{whoami command recorded by SIEM}
+        \label{whoami}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{forensics/7_siem2/command}
+        \caption{Reverse shell command recorded by SIEM}
+        \label{nccommand}
+    \end{subfigure}
+
+    \caption{SIEM log evidence of suspicious activity}
+    \label{fig:siem_logs}
 \end{figure}
-\end{landscape}
-\newpage \clearpage
 
 \end{document}

@@ -1,26 +1,57 @@
 \documentclass[../report.tex]{subfiles}
 
 \begin{document}
+\section{Appendix} \label{Appendix}
+\vspace{-4mm}
+\subsection{Definitions and Abbreviations}
+\begin{itemize}
+	\item{\textbf{Extended Stack Pointer (ESP)}}\\
+	The register holding the memory address of the top of the stack \autocite{intel:dev_manual}.
+	\item{\textbf{Extended Instruction Pointer (EIP)}}\\
+	The register holding the return address, the address of the next instruction after a function returns \autocite{intel:dev_manual}.
+	\item{\textbf{Bad characters}}\\
+	In this context, \enquote{bad characters} describe all characters that terminate the processing of inputs by a system (e.g. line breaks, null bytes).
+	\item{\textbf{Address Space Layout Randomization (ASLR)}}\\
+	ASLR randomizes the address a process uses each time it is run, changing the location of data in memory \autocite{app9142928}.
+	\item{\textbf{Data Execution Prevention (DEP)}}\\
+	An operating system feature that allows parts of memory to be marked as non-executable \autocite{microsoft:dep}.
+	\item{\textbf{\enquote{No Operation} Opcodes (NOOPS)}}\\
+	Codes that don't prompt the executing system to run any operation \autocite{arm_developer:nop}.
+	\item{\textbf{\enquote{JMP ESP} instruction}}\\
+	An assembly instruction, prompting the system to jump to the top of the stack to look for the next operation \autocite{arm_developer:jmp}.
+	\item{\textbf{Security information and event management (SIEM) systems}}\\
+	\enquote{These types of solutions collect, aggregate, and analyze large volumes of data from organization-wide applications, devices, servers, and users in real time.} \autocite{microsoft:siem}
+	\item{\textbf{Intrusion detection systems (IDS)}/ \textbf{Intrusion prevention systems (IPS)}}\\
+	Intrusion detection systems (IDS) are pieces of software that automatically conduct the intrusion detection process \autocite{scarfone2007guide}.
+	An IPS is an IDS with the extendeded capability to attempt the prevention of detected intrusion attempts \autocite{scarfone2007guide}.
+	\item{\textbf{De-Militarized Zone (DMZ)}}\\
+	A De-Militarized Zone is a physical or logical network, separating trusted and untrusted parts of internal and external networks, in line with the defense-in-depth principle \autocite{8473328}.
+	\itemBF{Open Source Intelligence (OSINT)}
+	OSINT describes information gathering via publicly accessible sources \autocite{osint_def}.
+	\itemBF{Command And Control Server (C2-Server)}
+	\enquote{A Command and Control, or C\&C, server is a computer used to coordinate the actions of computers infected by a bot, rootkit, worm or other malicious software (malware) that rely on another computer for instructions and updates} \autocite{eset:C2}.
+\end{itemize}
+
+\newpage
+\stoptoc
+\subsection{Buffer Overflow}  \label{Appendix-1}
+\begin{figure}[h]
+\makebox[\linewidth][c]{%
+	\includegraphics[height=17cm]{buffer_overflow/nmap/full}
+}
+	\caption{Nmap - Full scan result}
+	\label{beeg}
+\end{figure}
 
 \clearpage \newpage
 \begin{landscape}
-\section{Appendix} \label{Appendix}
-\stoptoc
-\subsection{Buffer Overflow}  \label{Appendix-1}
 
-\begin{figure}[!h]
-\makebox[1.01\linewidth][c]{%
-	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/pre_address/2_no_conn}
-}
-\caption{No reverse shell when attacking with the old JMP ESP address post restart}
-\label{fail_end}
-\end{figure}
 
 \begin{figure}[!h]
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/3_run}
 }
-\caption{Running attack using the impermanent address found after the restart}
+\caption{Running attack using the impermanent address found before the restart}
 \label{reverse_foreign}
 \end{figure}
 
@@ -28,8 +59,16 @@
 \makebox[1.01\linewidth][c]{%
 	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/4_shell}
 }
-\caption{Reverse shell created by exploiting the impermanent post-restart JMP ESP location}
+\caption{Reverse shell created by exploiting the impermanent pre-restart JMP ESP location}
 \label{succ_end}
+\end{figure}
+
+\begin{figure}[!h]
+\makebox[1.01\linewidth][c]{%
+	\includegraphics[width=1.15\linewidth]{buffer_overflow/flimsy/pre_address/2_no_conn}
+}
+\caption{No reverse shell when attacking with the impernanent JMP ESP address post restart}
+\label{fail_end}
 \end{figure}
 \end{landscape}
 
@@ -241,6 +280,19 @@
 	}
 	\caption{Decrypted files}
 	\label{decrypted_files}
+\end{figure}
+\end{landscape}
+\newpage \clearpage
+
+\newpage \clearpage
+\begin{landscape}
+\begin{figure}[!htb]
+	\centering
+	\makebox[\linewidth][c]{%
+		\includegraphics[width=1.2\linewidth]{forensics/7_siem2/analyzer}
+	}
+	\caption{Complete SIEM results}
+	\label{raaaaaaaaa}
 \end{figure}
 \end{landscape}
 \newpage \clearpage
