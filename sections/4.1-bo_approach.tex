@@ -401,9 +401,9 @@ This instruction could be located within the address space of any accessible mod
 
 The instruction inside an accessible module needs to meet the following criteria: \vspace{-4mm}
 \begin{itemize}
-\item{\textbf{No ASLR}}\\
+\item{\textbf{ASLR disabled}}\\
 Memory addresses cannot be randomized inside the module to make accessing the JMP ESP instruction reliable.
-\item{\textbf{No DEP}}\\
+\item{\textbf{DEP disabled}}\\
 If memory is marked as non-executable, using the JMP ESP instruction wouldn't work, even if such an instruction were present.
 \end{itemize}
 
