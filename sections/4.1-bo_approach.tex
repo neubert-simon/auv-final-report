@@ -6,7 +6,7 @@
 
 \subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
 
-The \textit{Active Scanning (T1595)}  technique \autocite{mitre:attack:T1595}) was utilized via Nmap to gather information about the target system. The will following section will contain zoomed in cutouts of \cref{beeg}, which has been documented in the appendix.
+The \textit{Active Scanning (T1595)} technique) was utilized via Nmap to gather information about the target system. The will following section will contain zoomed in cutouts of \cref{beeg}, which has been documented in the appendix.
 
 \newpage
 \paragraph{Scan Setup} \label{bo:scan-setup}
@@ -192,7 +192,7 @@ The EIP was filled by four \enquote{41}s (see \cref{1_eip}), corresponding to fo
 	\label{1_eip}
 \end{figure}
 This lead to the crash, since \textit{41414141} is not a valid memory address containing instructions that should be performed after the function returned (see \cref{access_violation}).
-At this point, without any further exploitation set up, this cursory attack could be categorized as \textit{Endpoint Denial of Service: Application or System Exploitation (T1499.004)} \autocite{mitre:attack:T1499:004}.
+At this point, without any further exploitation set up, this cursory attack could be categorized as \textit{Endpoint Denial of Service: Application or System Exploitation (T1499.004)}.
 
 \paragraph{Determining the offset} \label{subsubsec:offset_calc}
 Now that the possibility of a crash was confirmed, the offset to write to the EIP needed to be determined.
@@ -561,15 +561,15 @@ Upon execution of the attack, the payload initiated a connection to the attackin
 	\label{reverse_shell}
 \end{figure}
 
-The technique \textit{Exploit Public-Facing Application (T1190)} \autocite{mitre:attack:T1190} was used with the finalized attack to in order to get \textit{Initial Access (TA0001)} \autocite{mitre:attack:TA0001} to the target system, since the Buffer Overflow in the public facing VulnerServer application was exploited to get a payload onto the system.
+The technique \textit{Exploit Public-Facing Application (T1190)} was used with the finalized attack to in order to get \textit{Initial Access (TA0001)} to the target system, since the Buffer Overflow in the public facing VulnerServer application was exploited to get a payload onto the system.
 
-\textit{Execution (TA0002)} \autocite{mitre:attack:TA0002} of the payload happened because the unprotected buffer was exploited, which is categorized as \textit{Exploitation for Client Execution (T1203)} \autocite{mitre:attack:T1203}. 
+\textit{Execution (TA0002)} of the payload happened because the unprotected buffer was exploited, which is categorized as \textit{Exploitation for Client Execution (T1203)}. 
 Arbitrary code was executed by the target machine because of the exploited vulnerability in the VulnServer process.
 
-\textit{Command and Control (TA0011)} \autocite{mitre:attack:TA0101} was then established to the attacking machine via \textit{Application Layer Protocol (T1071)} \autocite{mitre:attack:T1071}.
+\textit{Command and Control (TA0011)} was then established to the attacking machine via \textit{Application Layer Protocol (T1071)}.
 The chosen payload \enquote{windows/shell\_reverse\_tcp} used a TCP connection to established an outbound connection to port 443 on the attacker machine.
 
-The reverse shell served as a \textit{Command and Scripting Interpreter: Windows Command Shell (T1059.003)} \autocite{mitre:attack:T1059.003} enabling the attacker to take over the host system.
+The reverse shell served as a \textit{Command and Scripting Interpreter: Windows Command Shell (T1059.003)} enabling the attacker to take over the host system.
 
 The scope of the assignment ended at this point, not requiring further techniques, lateral movement, or exploitation of any kind. Access via reverse shell on the system is a dangerous attack vector, since the attacker gets interactive control over the target machine. A risk assessment and possible countermeasures are discussed in \fullref{buff:vulns}.
 

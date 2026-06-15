@@ -7,7 +7,7 @@
 \subsubsection{Vulnerability - Buffer Overflow} \label{subsubsec:buffer_overflow_expl}
 To access the system initially, a Buffer Overflow vulnerability was used (see \fullref{subsec:buffer_overflow} for execution details).
 The vulnerability can be classified as:\\
-\textbf{CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')} \autocite{mitre:cwe:120}\\
+\textbf{CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')} \autocite{mitre:cwe}\\
 There is no CVE entry for the vulnerability in the VulnServer program, since it was specifically designed as an educational tool for Buffer Overflows \autocite{vulnserver}.
 
 \paragraph{Cause and Prevention}
@@ -52,21 +52,21 @@ Since compromise of the vulnerable system (VulnServer) lead to a reverse shell o
 \subsubsection{Countermeasures} \label{counta}
 \begin{itemize}
 \itemBF{Exploit Protection (M1050)}
-Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult \autocite{mitre:attack:M1050}.
+Necessitating DEP and enabling ASLR for the VulnServer process would have prevented the abuse of the permanent JMP ESP location command, making repeated exploitation more difficult.
 \itemBF{Filter Network Traffic (M1037)}
 Monitoring network traffic can help identify threats and prevent them.
-IP addresses could be blacklisted via firewall e.g. if port scanning is detected. \autocite{mitre:attack:DET0830, mitre:attack:DET0867}
-Monitoring outbound callbacks could also be of value. A webserver shouldn't connect to port 443 on another machine, that could be blocked by a firewall rule \autocite{mitre:attack:DET0080, mitre:attack:M1037, mitre:attack:DET0444}.
+IP addresses could be blacklisted via firewall e.g. if port scanning is detected (\textit{DET0830, DET0867}).
+Monitoring outbound callbacks could also be of value. A webserver shouldn't connect to port 443 on another machine, that could be blocked by a firewall rule  (\textit{DET0080, M1037, DET0444}).
 \itemBF{Application Isolation and Sandboxing (M1048)}
-If an attacker were to exploit a vulnerability, sandboxing the application could make it more difficult for the whole system to get compromised \autocite{mitre:attack:M1048}.
+If an attacker were to exploit a vulnerability, sandboxing the application could make it more difficult for the whole system to get compromised.
 \itemBF{Network segmentation (M1030)}
-Create a demilitarized zone (DMZ) to encapsulate public-facing services can limit damages to the whole network if an attack were to be successful \autocite{mitre:attack:M1030}.
+Create a demilitarized zone (DMZ) to encapsulate public-facing services can limit damages to the whole network if an attack were to be successful.
 \itemBF{Exploit Protection (M1050)}
-Employing a SIEM system or other security applications (like IDS / IPS) could aid detection of malicious activity \autocite{mitre:attack:M1050}.
+Employing a SIEM system or other security applications (like IDS / IPS) could aid detection of malicious activity.
 \itemBF{Privileged Account Management (M1026)}
-Use the least privilege principle to limit exploitable permissions \autocite{mitre:attack:M1026}.
+Use the least privilege principle to limit exploitable permissions.
 \itemBF{Vulnerability Scanning (M1016)}
-Periodically scan public-facing systems for vulnerabilities \autocite{mitre:attack:M1016}. This could lead to the discovery of potential weaknesses like the Buffer Overflow.
+Periodically scan public-facing systems for vulnerabilities. This could lead to the discovery of potential weaknesses like the Buffer Overflow.
 \end{itemize}
 
 \end{document}
