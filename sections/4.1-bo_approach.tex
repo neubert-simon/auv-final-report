@@ -160,7 +160,7 @@ To run the script conveniently, an alias passing the target machine's IP address
 	\label{alias}
 \end{figure}
 
-Connection to the server was possible via netcat, confirming it was running.
+Connection to the server was possible via Netcat, confirming it was running.
 Running the script unmodified crashed the server, which (besides being observable on the target machine) was confirmed by attempting a new connection, which failed (see \cref{execution}).
 \begin{figure}[!htb]
 	\centering
@@ -494,7 +494,7 @@ Provides the IP address of the attacking system, enabling the script to establis
 \begin{itemize}
 \begin{multicols}{2}
 \item[-]{\textbf{LPORT}=443}\\
-The port on the attacking system on which netcat will be listening for the incoming reverse shell connection attempt.
+The port on the attacking system on which Netcat will be listening for the incoming reverse shell connection attempt.
 \item[-]{\textbf{EXITFUNC}=thread}\\
 Prevents a crash when disconnecting by starting a thread on the target system for the reverse shell.
 \item[-]{\textbf{a} x86}\\
@@ -515,16 +515,16 @@ Saves the ouput to the specified file.
 \end{itemize}
 
 It should be noted, that an outbound connection to port 443 might not be typical for the server that is being attacked. Since this was being done in a laboratory environment, no analysis was done to determine the port that would arouse the least suspicion.
-Before starting the attack, a listener for the reverse shell was created via netcat on the attacking machine (see \cref{2_start_reverse_shell}).
+Before starting the attack, a listener for the reverse shell was created via Netcat on the attacking machine (see \cref{2_start_reverse_shell}).
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[height=2cm]{../img/buffer_overflow/payload/2_start_reverse_shell.png} \\
-	\caption{Starting a reverse shell listener via netcat}
+	\caption{Starting a reverse shell listener via Netcat}
 	\label{2_start_reverse_shell}
 \end{figure}
 
-The parameters for netcat were chosen with the following reasoning \autocite{nmap:ncat}:
+The parameters for Netcat were chosen with the following reasoning \autocite{nmap:ncat}:
 \begin{itemize}
 \item[-]{\textbf{l}}\\
 Starts \enquote{listener} mode, listening for incoming connections.
@@ -551,7 +551,7 @@ The previously determined memory address holding the JMP ESP instruction.
 It is in reverse byte order, since Windows 7 uses "Little Endian" byte ordering, storing the least significant byte at the smallest address, therefore reading the address right to left \autocite{microsoft:little_endian}.\\
 \end{itemize}
 
-Upon execution of the attack, the payload initiated a connection to the attacking system, which had the netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
+Upon execution of the attack, the payload initiated a connection to the attacking system, which had the Netcat listener waiting on an incoming connection (see \cref{reverse_shell}). 
 
 \begin{figure}[!htb]
 	\makebox[1.02\linewidth][c]{%

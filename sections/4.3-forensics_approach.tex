@@ -5,8 +5,9 @@
 \subsection{Digital Forensics}
 
 \subsubsection{Target Machine Examination}
-The group which apparently conducted  attack calls their ransomware \enquote{Gonnasmile} (see \cref{for_wallpaper}). They claim that the victim's files have been encrypted, and that they can find instructions to recover them in the text file placed on the Desktop.
+The group which apparently conducted the attack called their ransomware \enquote{Gonnasmile} (see \cref{for_wallpaper}). They claim that the victim's files have been encrypted, and that they can find instructions to recover them in the text file placed on the Desktop.
 
+\phantomsection \label{target:document_encr_ex}
 The text file contains a ransom note that demands 500\$ to be sent to a cryptocurrency wallet (see \cref{ransom}). The files in the user's \textit{Documents} folder have a \textit{.encrypted} file ending, and are illegible (see \cref{document_encr_ex}). All documents render in the same manner (see Appendix, \cref{encr1,encr2}), displaying either placeholder or Chinese characters.
 Trying different encodings to display the file contents didn't yield legible results, meaning the files were most likely actually cryptographically altered instead of having just their encodings changed, lending credence to the claim of encryption in the ransom note.
 
@@ -23,10 +24,10 @@ Trying different encodings to display the file contents didn't yield legible res
 	\caption{Gonnasmile ransom note}
 	\label{ransom}
 \end{figure}
-\phantomsection \label{target:document_encr_ex}
+
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{forensics/1_assessment/documents}
-	\caption{Example of encrypted file (for all files see \cref{encr1,encr2})}
+	\caption{Example of encrypted file}
 	\label{document_encr_ex}
 \end{figure}
 
@@ -161,7 +162,8 @@ The key and initialization vector were written to the following file (see \cref{
 	\label{shark_key_file}
 \end{figure}
 
-ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}). \phantomsection \label{target:chat_script_encrypt}
+\phantomsection \label{target:chat_script_encrypt}
+ChatGPT was prompted to create a script which reverses the encryption process (see Appendix, \cref{chatlog_small} - \cref{chatlog_prompt}).
 The script was then altered to additionally revert the wallpaper change and remove the created files (ransom note, key file, wallpaper). 
 A prompt for user input was added as well to enable the \textit{PowerShell} process to be captured (see \cref{encr_script}).
 A default wallpaper was chosen, since it was not apparent which wallpaper the user had before the incident, and the script was executed (see \cref{encr_restr}). \phantomsection \label{target:decrypt_shift}
