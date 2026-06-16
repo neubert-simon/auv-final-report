@@ -6,7 +6,7 @@
 
 \subsubsection{Nmap Scan} \label{subsec:Nmap_scan}
 
-The \textit{Active Scanning (T1595)} technique) was utilized via Nmap to gather information about the target system. The will following section will contain zoomed in cutouts of \cref{beeg}, which has been documented in the appendix.
+The \textit{Active Scanning (T1595)} technique was utilized via Nmap to gather information about the target system. The will following section will contain zoomed in cutouts of \cref{beeg}, which has been documented in the appendix.
 
 \newpage
 \paragraph{Scan Setup} \label{bo:scan-setup}
@@ -51,7 +51,7 @@ Nmap gathered the following information via service scan (see \cref{serviceScanR
 \begin{enumerate}
 \item{\textbf{Port 445 - Windows 7 Enterprise 7601 Service Pack 1 microsoft ds}}\\
 Nmap was able to identify the service running on port 445 as ``microsoft-ds".\\
-The directory service (``ds") running here is common for port 445, implying that the SMB (Server Message Block) protocol is being used.
+The directory service (``ds") running here is common for port 445, implying that the SMB (Server Message Block) protocol is being used \autocite{microsoft:smb_feature_descriptions}.
 
 \item{\textbf{Port 3389 - Microsoft Terminal service}}\\
 The service running on port 3389 usually is Microsoft's Remote Desktop Service (formerly \enquote{Terminal Service}), which allows the user to remotely log into the system \autocite{microsoft:rds_ports}.
